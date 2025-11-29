@@ -1,4 +1,4 @@
-[![Build .NET](https://github.com/sharpomatic/sharpomatic/actions/workflows/dotnet-build-and-test.yml/badge.svg)](https://github.com/sharpomatic/sharpomatic/actions/workflows/dotnet-build-and-test.yml)
+[![Build Angular Editor](https://github.com/sharpomatic/sharpomatic/actions/workflows/angular-editor.yml/badge.svg)](https://github.com/sharpomatic/sharpomatic/actions/workflows/angular-editor.yml)
 
 ## UNDER CONSTRUCTION
 
