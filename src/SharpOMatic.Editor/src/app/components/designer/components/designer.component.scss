@@ -1,0 +1,185 @@
+.designer-surface {
+  margin-top: 1px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #212529;;
+  background-image: radial-gradient(circle, #444444 1px, transparent 1px);
+  background-size: 16px 16px;
+  overflow: hidden;
+}
+
+.selection-rect {
+  position: absolute;
+  border: 1px dashed #fff;
+  background-color: rgba(192, 192, 192, 0.25);
+  z-index: 9999;
+}
+
+@keyframes border-pulse {
+  0% {
+    border-color: #377af5; /* Color 1: Blue */
+  }
+  100% {
+    border-color: #d53e33; /* Color 2: Red */
+  }
+}
+
+.node {
+  position: absolute;
+  color: #CED4DA;
+  background-color: #495057;
+  border: 4px solid #495057;
+  border-radius: 12px;
+  user-select: none;
+  cursor: grab;
+
+  &.selected {
+    color: #FFFFFF;
+    background-color: #3184FD;
+    border-color: #0D6EFD;
+  }
+
+  &.dragging {
+    color: #FFFFFF;
+    background-color: #3184FD;
+    border-color: #0D6EFD;
+    cursor: grabbing;
+    z-index: 1000;
+  }
+
+  &.running {
+    border-color: orange;
+  }
+
+  &.success {
+    border-color: green;
+  }
+
+  &.failed {
+    border-color: red;
+  }
+}
+
+.node-title {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  padding-bottom: 4px;
+  color: #FFFFFF;
+  pointer-events: none;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.node-symbol {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.connector {
+  position: absolute;
+  background-color: #343A40;
+  border: 2px solid #DEE2E6;
+  border-radius: 4px;
+  cursor: crosshair;
+  z-index: 10;
+
+  &.input {
+    left: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  &.output {
+    right: 0;
+    transform: translate(50%, -50%);
+  }
+
+  &:hover {
+    border-color: #0D6EFD;
+    background-color: #3184FD;
+  }
+}
+
+.connector-surface {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+}
+
+.connector-path {
+  fill: none;
+  stroke: #DEE2E6;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  pointer-events: none;
+
+  &.pending {
+    stroke-dasharray: 5, 5;
+  }
+
+  &.selected {
+    stroke: #3184FD;
+  }
+}
+
+.connection-wrapper {
+  cursor: pointer;
+}
+
+.connection-path-hit-area {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 12px;
+  stroke-linecap: round;
+  pointer-events: stroke;
+}
+
+.connection-path {
+  fill: none;
+  stroke: #DEE2E6;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  pointer-events: none; // Clicks are handled by the hit area
+
+  &.pending {
+    stroke: #3184FD;
+    stroke-dasharray: 5, 5;
+    pointer-events: none;
+  }
+
+  &.selected {
+    stroke: #3184FD;
+  }
+}
+
+.connector-label {
+  position: absolute;
+  color: #DEE2E6;
+  background-color: #2d2e2e88;
+  border-radius: 6px;
+  padding: 3px;
+  pointer-events: none; /* So dragging works on the title */
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 20;
+
+  &.input {
+    right: 0;
+  }
+
+  &.output {
+    left: 0;
+  }
+}
+

@@ -1,0 +1,74 @@
+<div class="d-flex flex-column bg-body-secondary h-100">
+  <!-- Header with title and action buttons -->
+  <div class="flex-shrink-0">
+    <div class="d-flex justify-content-between align-items-center p-3 pt-2 pb-0">
+      <h2 class=""><i class="bi bi-share pe-3 icon-sm"></i>{{ workflowService.workflow().name() }}</h2>
+      <div class="d-flex">
+        @if (activeTab === 'Design') {
+        <div class="dropdown" dropdown>
+          <button class="btn btn-primary dropdown-toggle me-2" type="button" id="add-node-dropdown"
+            data-bs-toggle="dropdown" aria-expanded="false" dropdownToggle>Add</button>
+          <ul class="dropdown-menu" aria-labelledby="add-node-dropdown" *dropdownMenu>
+            <li><a class="dropdown-item" [class.disabled]="hasStartNode()" (click)="onAddStartNode($event)"><i
+                  class="dropdown-icon bi bi-chevron-bar-left"></i>Start</a></li>
+            <li><a class="dropdown-item" (click)="updateService.addEndNode(workflowService.workflow())"><i
+                  class="dropdown-icon bi bi-chevron-bar-right"></i>End</a></li>
+            <li><a class="dropdown-item" (click)="updateService.addEditNode(workflowService.workflow())"><i
+                  class="dropdown-icon bi bi-pencil"></i>Edit</a></li>
+            <li><a class="dropdown-item" (click)="updateService.addCodeNode(workflowService.workflow())"><i
+                  class="dropdown-icon bi bi-filetype-cs"></i>Code</a></li>
+            <li><a class="dropdown-item" (click)="updateService.addSwitchNode(workflowService.workflow())"><i
+                  class="dropdown-icon bi bi-option"></i>Switch</a></li>
+            <li><a class="dropdown-item" (click)="updateService.addFanInNode(workflowService.workflow())"><i
+                  class="dropdown-icon bi bi-box-arrow-in-right"></i>Fan In</a></li>
+            <li><a class="dropdown-item" (click)="updateService.addFanOutNode(workflowService.workflow())"><i
+                  class="dropdown-icon bi bi-box-arrow-right"></i>Fan Out</a></li>
+          </ul>
+        </div>
+        }
+        <button class="btn btn-primary me-2" [disabled]="!workflowService.workflow().isDirty()"
+          (click)="save()">Save</button>
+        <button class="btn btn-primary" [disabled]="workflowService.workflow().isDirty() || workflowService.isRunning()"
+          (click)="run()">Run</button>
+      </div>
+    </div>
+
+    <button class="btn trace-toggle" (click)="toggleTracebar()">
+      <i class="bi" [class.bi-layout-sidebar]="isTracebarClosed()"
+        [class.bi-layout-sidebar-inset]="!isTracebarClosed()"></i>
+    </button>
+  </div>
+
+  <!-- Tabs for main content-->
+  <div class="tab-shell mt-1">
+    <app-tab [tabs]="tabs" [(activeTabId)]="activeTabId" (activeTabChange)="onActiveTabChange($event)"
+      [preventOverflow]="true"></app-tab>
+  </div>
+
+  <ng-template #designTab>
+    <div class="d-flex flex-row h-100">
+      <app-designer class="flex-grow-1" [workflow]="workflowService.workflow"
+        [traces]="workflowService.traces"></app-designer>
+      @if (!isTracebarClosed()) {
+      <app-tracebar class="trace-panel flex-shrink-0" [style.width.px]="tracebarWidth()"
+        (tracebarWidthChange)="onTracebarWidthChange($event)"></app-tracebar>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template #detailsTab>
+    <div class="p-3 details bg-body-tertiary h-100">
+      <div class="mb-3 title">
+        <label for="workflow-title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="workflow-title" [ngModel]="workflowService.workflow().name()"
+          (ngModelChange)="workflowService.workflow().name.set($event)" />
+      </div>
+      <div class="mb-3 description">
+        <label for="workflow-description" class="form-label">Description</label>
+        <textarea class="form-control" id="workflow-description" rows="3"
+          [ngModel]="workflowService.workflow().description()"
+          (ngModelChange)="workflowService.workflow().description.set($event)"></textarea>
+      </div>
+    </div>
+  </ng-template>
+</div>

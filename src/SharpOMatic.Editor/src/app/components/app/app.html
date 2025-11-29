@@ -1,0 +1,78 @@
+<!-- Left Column -->
+<div class="left-column d-flex flex-column bg-body-secondary" [class.closed]="isSidebarClosed">
+  <div class="d-flex justify-content-between align-items-center ps-3 pe-1 pt-2 pb-1">
+    <h2 class="productName">{{ !isSidebarClosed ? 'Sharp-O-Matic' : '|' }}</h2>
+    <button class="btn" (click)="toggleSidebar()">
+      <i class="bi" [class.bi-layout-sidebar]="!isSidebarClosed" [class.bi-layout-sidebar-inset]="isSidebarClosed"></i>
+    </button>
+  </div>
+
+  <!-- Separator -->
+  <hr class="m-0"/>
+
+  <ul class="nav nav-pills mb-auto p-3">
+    <li class="nav-item w-100">
+      <button class="nav-link w-100 d-flex" routerLink="/workflows" routerLinkActive="active"
+          #workflowsLink="routerLinkActive"
+          [class.active]="workflowsLink.isActive"
+          [class.link-body-emphasis]="!workflowsLink.isActive">
+          <i class="bi bi-share" [class.me-3]="!isSidebarClosed"></i>
+          @if(!isSidebarClosed) {
+            <span>Workflows</span>
+          }
+        </button>
+    </li>
+    <li class="nav-item w-100 ">
+      <button class="nav-link w-100 d-flex" routerLink="/status" routerLinkActive="active"
+          #statusLink="routerLinkActive"
+          [class.active]="statusLink.isActive"
+          [class.link-body-emphasis]="!statusLink.isActive">
+          <i class="bi bi-activity" [class.me-3]="!isSidebarClosed"></i>
+          @if(!isSidebarClosed) {
+            <span >Status</span>
+          }
+        </button>
+    </li>
+  </ul>
+
+  <!-- Separator -->
+  <hr class="m-0"/>
+
+  <!-- Theme Selection -->
+  <div class="dropdown p-3">
+    <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+      @if(!isSidebarClosed) {
+        <span class="bi" [class.ms-2]="!isSidebarClosed">{{ activeTheme|titlecase }}</span>
+      }
+      @if(isSidebarClosed) {
+        <span class="bi" [class]="activeThemeIcon"></span>
+      }
+    </a>
+    <ul class="dropdown-menu text-small shadow">
+      <li>
+        <a class="dropdown-item d-flex align-items-center" (click)="setTheme('light')" [class.active]="activeTheme === 'light'">
+          <i class="bi bi-sun-fill me-2"></i>
+          Light
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item d-flex align-items-center" (click)="setTheme('dark')" [class.active]="activeTheme === 'dark'">
+          <i class="bi bi-moon-stars-fill me-2"></i>
+          Dark
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item d-flex align-items-center" (click)="setTheme('auto')" [class.active]="activeTheme === 'auto'">
+          <i class="bi bi-circle-half me-2"></i>
+          Auto
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Select Page -->
+<div class="right-column d-flex flex-column flex-grow-1  bg-body-tertiary">
+    <router-outlet></router-outlet>
+</div>
+

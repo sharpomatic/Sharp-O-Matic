@@ -1,0 +1,27 @@
+﻿global using Microsoft.CodeAnalysis;
+global using Microsoft.CodeAnalysis.CSharp.Scripting;
+global using Microsoft.CodeAnalysis.Scripting;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Design;
+global using Microsoft.Extensions.DependencyInjection;
+global using SharpOMatic.Engine.Contexts;
+global using SharpOMatic.Engine.Entities;
+global using SharpOMatic.Engine.Enumerations;
+global using SharpOMatic.Engine.Exceptions;
+global using SharpOMatic.Engine.FastSerializer;
+global using SharpOMatic.Engine.Helpers;
+global using SharpOMatic.Engine.Interfaces;
+global using SharpOMatic.Engine.Models;
+global using SharpOMatic.Engine.Nodes;
+global using SharpOMatic.Engine.Repository;
+global using System.Collections;
+global using System.Collections.Immutable;
+global using System.Collections.ObjectModel;
+global using System.ComponentModel.DataAnnotations;
+global using System.Diagnostics.CodeAnalysis;
+global using System.Reflection;
+global using System.Runtime.CompilerServices;
+global using System.Text;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
+

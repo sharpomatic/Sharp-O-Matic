@@ -1,0 +1,40 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.icon-sm {
+  font-size: 1.5rem;
+}
+
+.details {
+  .title {
+    max-width: 350px;
+    width: 350px;
+  }
+
+  .description {
+    max-width: 700px;
+    width: 700px;
+  }
+}
+
+.trace-toggle {
+  position: absolute;
+  right: 8px;
+}
+
+.trace-panel {
+  border-left: 1px solid var(--bs-border-color);
+}
+
+.tab-shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.dropdown-icon {
+  margin-right: 12px;
+}

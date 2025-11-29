@@ -1,0 +1,128 @@
+<div class="d-flex flex-column dialog-overlay bg-body-secondary">
+  <div class="d-flex flex-column dialog-content">
+    <div class="d-flex justify-content-between align-items-center p-3 pt-2 pb-1">
+      <h2 class=""><i class="bi bi-chevron-bar-left pe-3 icon-sm"></i>Start Node</h2>
+      <button class="btn btn-primary" (click)="onClose()">Close</button>
+    </div>
+    
+    <div class="tab-shell">
+      <app-tab [tabs]="tabs" [(activeTabId)]="activeTabId"></app-tab>
+    </div>
+
+    <ng-template #detailsTab>
+      <div class="details bg-body-tertiary p-3">
+        <div class="mb-3 title">
+          <label for="workflow-title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="workflow-title" [ngModel]="node.title()" (ngModelChange)="node.title.set($event)"/>
+        </div>
+
+        <hr/>
+
+        <div class="mb-3">
+          <h4 class="form-label mb-4">Initialization</h4>
+          <div class="form-check form-switch mb-4">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="apply-initialization"
+              [ngModel]="node.applyInitialization()"
+              (ngModelChange)="node.applyInitialization.set($event)"/>
+            <label class="form-check-label" for="apply-initialization">Initialize the context</label>
+          </div>
+          @if (node.applyInitialization()) {
+            <div class="d-flex align-items-start gap-2 mb-2">
+              <label class="editPath">Path</label>
+              <label class="editOptional">Optional</label>
+              <label class="editType">Type</label>
+              <label class="editValue">Default Value</label>            
+            </div>
+            @for (entry of node.initializing().entries(); track entry.id) {
+              <div class="d-flex align-items-start gap-2 mb-2">
+                <input type="text" class="form-control editPath" [ngModel]="entry.inputPath()" (ngModelChange)="entry.inputPath.set($event)"/>
+                <select class="form-select editOptional" [ngModel]="entry.optional()" (ngModelChange)="entry.optional.set($event)">
+                  <option [ngValue]="false">Mandatory</option>
+                  <option [ngValue]="true">Optional</option>
+                </select>
+                @if (entry.optional()) {
+                  <select class="flex-skrink-0 flex-grow-0 form-select editType" [ngModel]="entry.entryType()" (ngModelChange)="entry.entryType.set(+$event)">
+                    @for (key of contextEntryTypeKeys; track key) {
+                      <option [value]="getEnumValue(key)">{{ getEnumDisplay(key) }}</option>
+                    }
+                  </select>
+                  @if (entry.entryType() === contextEntryType.JSON) {
+                    <div class="editValue">
+                      <ngx-monaco-editor class="editJson" [options]="getEditorOptions(entry)" [ngModel]="entry.entryValue()" (ngModelChange)="entry.entryValue.set($event)"/>
+                    </div>
+                  } @else if (entry.entryType() === contextEntryType.Expression) {
+                    <div class="editValue editExpression">
+                      <ngx-monaco-editor class="editExpression" [options]="getEditorOptions(entry)" [ngModel]="entry.entryValue()" (ngModelChange)="entry.entryValue.set($event)"/>
+                    </div>
+                  } @else if (entry.entryType() === contextEntryType.Bool) {
+                    <div class="d-flex editValue">
+                      <div class="editBoolValue">
+                        <select class="form-select"
+                                [ngModel]="entry.entryValue() || 'False'"
+                                (ngModelChange)="entry.entryValue.set(($event ?? 'False').toString())">
+                          <option value="True">True</option>
+                          <option value="False">False</option>
+                        </select>
+                      </div>
+                    </div>
+                  } @else if (entry.entryType() === contextEntryType.Int) {
+                    <div class="editValue">
+                      <input type="number"
+                            class="form-control editValue"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            step="1"
+                            [ngModel]="entry.entryValue() !== '' ? +entry.entryValue() : null"
+                            (ngModelChange)="entry.entryValue.set(($event ?? '').toString())"/>
+                    </div>
+                  } @else if (entry.entryType() === contextEntryType.Double) {
+                    <div class="editValue">
+                      <input type="number"
+                            class="form-control editValue"
+                            inputmode="decimal"
+                            step="any"
+                            [ngModel]="entry.entryValue() !== '' ? +entry.entryValue() : null"
+                            (ngModelChange)="entry.entryValue.set(($event ?? '').toString())"/>
+                    </div>
+                  } @else {
+                    <div class="editValue">
+                      <input type="text" class="form-control editValue" [ngModel]="entry.entryValue()" (ngModelChange)="entry.entryValue.set($event)"/>
+                    </div>
+                  }
+                } @else {
+                  <div class="editType"></div>
+                  <div class="editValue"></div>
+                }
+                <button class="btn btn-outline-primary"
+                        [disabled]="!canMoveEntryUp(entry)"
+                        (click)="onMoveEntryUp(entry)">
+                  <i class="bi bi-arrow-up"></i>
+                </button>
+                <button class="btn btn-outline-primary"
+                        [disabled]="!canMoveEntryDown(entry)"
+                        (click)="onMoveEntryDown(entry)">
+                  <i class="bi bi-arrow-down"></i>
+                </button>
+                <button class="btn btn-outline-danger" (click)="onDeleteEntry(entry.id)"><i class="bi bi-trash"></i></button>
+              </div>
+            }
+            <button class="btn btn-primary mt-2" (click)="onAppendEntry()">Add</button>
+          }
+          </div>
+      </div>
+    </ng-template>
+    <ng-template #inputsTab>
+      <div class="bg-body-tertiary p-3">
+        <app-context-viewer [contexts]="inputTraces"></app-context-viewer>
+      </div>
+    </ng-template>
+    <ng-template #outputsTab>
+      <div class="bg-body-tertiary p-3">
+        <app-context-viewer [contexts]="outputTraces"></app-context-viewer>
+      </div>
+    </ng-template>
+  </div>
+</div>
