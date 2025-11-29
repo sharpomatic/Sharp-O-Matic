@@ -1,6 +1,7 @@
 name: Build Angular Editor
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'src/SharpOMatic.Editor/**'
