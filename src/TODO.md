@@ -3,9 +3,6 @@
 
 # Minimum Viable Product Features
 
-Traces needs to map node type to an icon for display
-Check that removing a switcher output or fan out, removes any associated connections
-
 End Node
 	- Do not need to finish on an end mode, just when all threads are completed, but uses the last End Node processed for the output
 

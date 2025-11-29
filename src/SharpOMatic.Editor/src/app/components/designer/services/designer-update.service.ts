@@ -124,4 +124,25 @@ export class DesignerUpdateService {
       }),
     );
   }
+
+  deleteSwitch(workflow: WorkflowEntity, node: SwitchNodeEntity, switchId: string) {
+    const switches = node.switches();
+    const index = switches.findIndex(s => s.id === switchId);
+    if (index === -1) return;
+
+    const connector = node.outputs()[index];
+    node.deleteSwitch(switchId);
+
+    workflow.connections.update(conns => conns.filter(c => c.from() !== connector.id));
+  }
+
+  deleteFanOutOutput(workflow: WorkflowEntity, node: FanOutNodeEntity, index: number) {
+    const outputs = node.outputs();
+    if (index < 0 || index >= outputs.length) return;
+
+    const connector = outputs[index];
+    node.deleteOutput(index);
+
+    workflow.connections.update(conns => conns.filter(c => c.from() !== connector.id));
+  }
 }

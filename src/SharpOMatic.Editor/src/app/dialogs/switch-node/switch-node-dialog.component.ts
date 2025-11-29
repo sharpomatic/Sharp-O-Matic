@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output, TemplateRef, ViewChild, inject } from '@angular/core';
 import { DIALOG_DATA } from '../services/dialog.service';
 import { FormsModule } from '@angular/forms';
 import { SwitchNodeEntity } from '../../entities/definitions/switch-node.entity';
@@ -8,6 +8,8 @@ import { MonacoService } from '../../services/monaco.service';
 import { TabComponent, TabItem } from '../../components/tab/tab.component';
 import { TraceProgressModel } from '../../pages/workflow/interfaces/trace-progress-model';
 import { ContextViewerComponent } from '../../components/context-viewer/context-viewer.component';
+import { DesignerUpdateService } from '../../components/designer/services/designer-update.service';
+import { WorkflowService } from '../../pages/workflow/services/workflow.service';
 
 @Component({
   selector: 'app-end-node-dialog',
@@ -29,15 +31,18 @@ export class SwitchNodeDialogComponent implements OnInit {
 
   public node: SwitchNodeEntity;
   public inputTraces: string[];
-  public outputTraces: string[]; 
+  public outputTraces: string[];
   public editorOptions = MonacoService.editorOptionsCSharp;
   public tabs: TabItem[] = [];
   public activeTabId = 'details';
 
+  private readonly designerUpdateService = inject(DesignerUpdateService);
+  private readonly workflowService = inject(WorkflowService);
+
   constructor(@Inject(DIALOG_DATA) data: { node: SwitchNodeEntity, nodeTraces: TraceProgressModel[] }) {
     this.node = data.node;
     this.inputTraces = (data.nodeTraces ?? []).map(trace => trace.inputContext).filter((context): context is string => context != null);
-    this.outputTraces = (data.nodeTraces ?? []).map(trace => trace.outputContext).filter((context): context is string => context != null); 
+    this.outputTraces = (data.nodeTraces ?? []).map(trace => trace.outputContext).filter((context): context is string => context != null);
   }
 
   ngOnInit(): void {
@@ -53,7 +58,7 @@ export class SwitchNodeDialogComponent implements OnInit {
   }
 
   onDeleteSwitch(entryId: string): void {
-    this.node.deleteSwitch(entryId);
+    this.designerUpdateService.deleteSwitch(this.workflowService.workflow(), this.node, entryId);
   }
 
   onUpSwitch(entryId: string): void {
