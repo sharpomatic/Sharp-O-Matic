@@ -27,4 +27,14 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddSharpOMaticJsonConverters(this IServiceCollection services, params Type[] converterTypes)
         => services.AddSharpOMaticJsonConverters((IEnumerable<Type>)converterTypes);
+
+    public static IServiceCollection AddSharpOMaticEngine(this IServiceCollection services)
+    {
+        services.AddSingleton<ICodeCheck, CodeCheckService>();
+        services.AddTransient<IRepository, RepositoryService>();
+        services.AddTransient<IEngine, EngineService>();
+        services.AddSingleton<INodeQueue, NodeQueueService>();
+        services.AddHostedService<NodeExecutionService>();
+        return services;
+    }
 }

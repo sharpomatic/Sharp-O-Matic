@@ -26,10 +26,10 @@ public abstract class RunNode<T> where T : NodeEntity
         };
     }
 
-    public virtual async Task<NodeEntity?> Run()
+    public virtual async Task<IEnumerable<NodeEntity>> Run()
     {
         await NodeUpdated();
-        return null;
+        return Enumerable.Empty<NodeEntity>();
     }
 
     protected async Task NodeUpdated()

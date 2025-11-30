@@ -1,13 +1,13 @@
 ﻿namespace SharpOMatic.Engine.Services;
 
-public class SharpOMaticCode : ISharpOMaticCode
+public class CodeCheckService : ICodeCheck
 {
     private static readonly List<Assembly> s_assemblies = [];
     private static readonly List<MetadataReference> s_metadataReference = [];
     private static readonly List<string> s_excludeNamespace = ["Internal", "Microsoft.Win32.SafeHandles", "Microsoft.CodeAnalysis"];
     private static readonly List<string> s_namespaces = [];
 
-    static SharpOMaticCode()
+    static CodeCheckService()
     {
         s_assemblies = [.. AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))];
         s_metadataReference = [.. s_assemblies.Select(a => a.Location).Select(l => MetadataReference.CreateFromFile(l)).Cast<MetadataReference>()];
@@ -72,6 +72,6 @@ public class SharpOMaticCode : ISharpOMaticCode
             }
         }
 
-        return namespaces.ToList();
+        return [.. namespaces];
     }
 }

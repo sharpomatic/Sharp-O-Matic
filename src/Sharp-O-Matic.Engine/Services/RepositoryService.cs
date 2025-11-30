@@ -1,7 +1,6 @@
 namespace SharpOMatic.Engine.Services;
 
-public class SharpOMaticRepository(IDbContextFactory<SharpOMaticDbContext> dbContextFactory) 
-    : ISharpOMaticRepository
+public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContextFactory) : IRepository
 {
     private static readonly JsonSerializerOptions _options = new()
     {
@@ -23,17 +22,16 @@ public class SharpOMaticRepository(IDbContextFactory<SharpOMaticDbContext> dbCon
                               where w.WorkflowId == workflowId
                               select w).AsNoTracking().FirstOrDefaultAsync();
 
-        if (workflow is null)
-            throw new SharpOMaticException($"Workflow '{workflowId}' cannot be found.");
-
-        return new WorkflowEntity()
+        return workflow is null
+            ? throw new SharpOMaticException($"Workflow '{workflowId}' cannot be found.")
+            : new WorkflowEntity()
         {
             Id = workflow.WorkflowId,
             Name = workflow.Named,
             Description = workflow.Description,
             Nodes = System.Text.Json.JsonSerializer.Deserialize<NodeEntity[]>(workflow.Nodes, _options)!,
             Connections = System.Text.Json.JsonSerializer.Deserialize<ConnectionEntity[]>(workflow.Connections, _options)!,
-        }; 
+        };
     }
 
     public async Task UpsertWorkflow(WorkflowEntity workflow)

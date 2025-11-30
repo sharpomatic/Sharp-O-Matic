@@ -1,6 +1,6 @@
 namespace SharpOMatic.Engine.Interfaces;
 
-public interface ISharpOMaticRepository
+public interface IRepository
 {
     IQueryable<Workflow> GetWorkflows();
     Task<WorkflowEntity> GetWorkflow(Guid workflowId);

@@ -2,7 +2,7 @@ using SharpOMatic.Engine.Interfaces;
 
 namespace SharpOMatic.Server.Services;
 
-public class SharpOMaticNotification(IHubContext<NotificationHub> hubContext) : ISharpOMaticNotification
+public class SharpOMaticNotification(IHubContext<NotificationHub> hubContext) : INotification
 {
     public async Task RunProgress(Run model)
     {

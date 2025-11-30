@@ -3,13 +3,14 @@
 public class FanOutNode(RunContext runContext, FanOutNodeEntity node)
     : RunNode<FanOutNodeEntity>(runContext, node)
 {
-    public override async Task<NodeEntity?> Run()
+    public override async Task<IEnumerable<NodeEntity>> Run()
     {
         await base.Run();
 
         try
         {
-            var nextNode = RunContext.ResolveSingleOutput(Node);
+            // Resolve all outputs for FanOut
+            var nextNodes = RunContext.ResolveMultipleOutputs(Node);
 
             Trace.Message = "Threads started";
             Trace.NodeStatus = NodeStatus.Success;
@@ -17,7 +18,7 @@ public class FanOutNode(RunContext runContext, FanOutNodeEntity node)
             Trace.OutputContext = RunContext.TypedSerialization(RunContext.NodeContext);
             await NodeUpdated();
 
-            return nextNode;
+            return nextNodes;
         }
         catch (Exception ex)
         {

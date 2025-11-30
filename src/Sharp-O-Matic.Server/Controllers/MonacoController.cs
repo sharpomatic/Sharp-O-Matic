@@ -2,7 +2,7 @@ namespace SharpOMatic.Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class MonacoController(ISharpOMaticCode code): ControllerBase
+public class MonacoController(ICodeCheck code): ControllerBase
 {
     [HttpPost("codecheck")]
     public Task<List<CodeCheckResultModel>> CodeCheck([FromBody] CodeCheckRequestModel request)

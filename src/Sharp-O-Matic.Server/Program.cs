@@ -8,10 +8,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new NodeEntityConverter());
 });
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<ISharpOMaticEngine, SharpOMaticEngine>();
-builder.Services.AddSingleton<ISharpOMaticCode, SharpOMaticCode>();
-builder.Services.AddSingleton<ISharpOMaticRepository, SharpOMaticRepository>();
-builder.Services.AddSingleton<ISharpOMaticNotification, SharpOMaticNotification>();
+builder.Services.AddSharpOMaticEngine();
+builder.Services.AddSingleton<INotification, SharpOMaticNotification>();
 builder.Services.AddDbContextFactory<SharpOMaticDbContext>(options =>
 {
     var folder = Environment.SpecialFolder.LocalApplicationData;

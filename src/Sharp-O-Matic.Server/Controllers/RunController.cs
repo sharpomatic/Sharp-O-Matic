@@ -12,7 +12,7 @@ public class RunController : ControllerBase
     };
 
     [HttpGet("latestforworkflow/{id}")]
-    public async Task<Run?> GetLatestRunForWorkflow(ISharpOMaticRepository repository, Guid id)
+    public async Task<Run?> GetLatestRunForWorkflow(IRepository repository, Guid id)
     {
         var run = await (from r in repository.GetWorkflowRuns(id)
                          orderby r.Created descending

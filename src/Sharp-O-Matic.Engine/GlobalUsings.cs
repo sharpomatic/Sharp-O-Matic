@@ -4,6 +4,7 @@ global using Microsoft.CodeAnalysis.Scripting;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Design;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
 global using SharpOMatic.Engine.Contexts;
 global using SharpOMatic.Engine.Entities;
 global using SharpOMatic.Engine.Enumerations;
@@ -24,4 +25,5 @@ global using System.Runtime.CompilerServices;
 global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
+global using System.Threading.Channels;
 

@@ -14,7 +14,7 @@ public class WorkflowController : ControllerBase
     };
 
     [HttpGet]
-    public Task<List<WorkflowEditSummary>> GetWorkflowEditSummaries(ISharpOMaticRepository repository)
+    public Task<List<WorkflowEditSummary>> GetWorkflowEditSummaries(IRepository repository)
     {
         return (from w in repository.GetWorkflows()
                 orderby w.Named
@@ -27,13 +27,13 @@ public class WorkflowController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<WorkflowEntity>> Get(ISharpOMaticRepository repository, Guid id)
+    public async Task<ActionResult<WorkflowEntity>> Get(IRepository repository, Guid id)
     {
         return await repository.GetWorkflow(id);
     }
 
     [HttpPost()]
-    public async Task Upsert(ISharpOMaticRepository repository)
+    public async Task Upsert(IRepository repository)
     {
         string requestBody;
         using var reader = new StreamReader(Request.Body);
@@ -43,14 +43,14 @@ public class WorkflowController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task Delete(ISharpOMaticRepository repository, Guid id)
+    public async Task Delete(IRepository repository, Guid id)
     {
         await repository.DeleteWorkflow(id);
     }
 
 
     [HttpPost("run/{id}")]
-    public async Task<ActionResult<Guid>> Run(ISharpOMaticEngine engine, Guid id)
+    public async Task<ActionResult<Guid>> Run(IEngine engine, Guid id)
     {
         // Parse the incoming ContextEntryListEntity data
         using var reader = new StreamReader(Request.Body);

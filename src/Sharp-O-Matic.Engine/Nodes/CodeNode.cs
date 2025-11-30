@@ -3,7 +3,7 @@
 public class CodeNode(RunContext runContext, CodeNodeEntity node)
     : RunNode<CodeNodeEntity>(runContext, node)
 {
-    public override async Task<NodeEntity?> Run()
+    public override async Task<IEnumerable<NodeEntity>> Run()
     {
         await base.Run();
 
@@ -46,7 +46,7 @@ public class CodeNode(RunContext runContext, CodeNodeEntity node)
             Trace.OutputContext = RunContext.TypedSerialization(RunContext.NodeContext);
             await NodeUpdated();
 
-            return nextNode;
+            return nextNode != null ? new[] { nextNode } : Enumerable.Empty<NodeEntity>();
         }
         catch (Exception ex)
         {

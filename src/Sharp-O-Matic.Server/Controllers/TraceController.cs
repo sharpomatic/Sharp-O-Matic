@@ -5,7 +5,7 @@ namespace SharpOMatic.Server.Controllers;
 public class TraceController : ControllerBase
 {
     [HttpGet("forrun/{id}")]
-    public async Task<IEnumerable<Trace>> GetRunTraces(ISharpOMaticRepository repository, Guid id)
+    public async Task<IEnumerable<Trace>> GetRunTraces(IRepository repository, Guid id)
     {
         return await (from t in repository.GetRunTraces(id)
                       orderby t.Created

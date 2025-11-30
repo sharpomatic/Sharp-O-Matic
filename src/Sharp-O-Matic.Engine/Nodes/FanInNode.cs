@@ -3,7 +3,7 @@
 public class FanInNode(RunContext runContext, FanInNodeEntity node)
     : RunNode<FanInNodeEntity>(runContext, node)
 {
-    public override async Task<NodeEntity?> Run()
+    public override async Task<IEnumerable<NodeEntity>> Run()
     {
         await base.Run();
 
@@ -17,7 +17,7 @@ public class FanInNode(RunContext runContext, FanInNodeEntity node)
             Trace.OutputContext = RunContext.TypedSerialization(RunContext.NodeContext);
             await NodeUpdated();
 
-            return nextNode;
+            return nextNode != null ? new[] { nextNode } : Enumerable.Empty<NodeEntity>();
         }
         catch (Exception ex)
         {

@@ -3,7 +3,7 @@
 public class SwitchNode(RunContext runContext, SwitchNodeEntity node)
     : RunNode<SwitchNodeEntity>(runContext, node)
 {
-    public override async Task<NodeEntity?> Run()
+    public override async Task<IEnumerable<NodeEntity>> Run()
     {
         await base.Run();
 
@@ -58,7 +58,7 @@ public class SwitchNode(RunContext runContext, SwitchNodeEntity node)
             }
 
             matchingIndex ??= Node.Switches.Length - 1;
-            var nextNode = RunContext.ResolveOutput(Node, Node.Outputs[matchingIndex.Value]);
+            var nextNode = RunContext.ResolveOutput(Node.Outputs[matchingIndex.Value]);
 
             Trace.NodeStatus = NodeStatus.Success;
             Trace.Finished = DateTime.Now;
@@ -66,7 +66,7 @@ public class SwitchNode(RunContext runContext, SwitchNodeEntity node)
             Trace.OutputContext = RunContext.TypedSerialization(RunContext.NodeContext);
             await NodeUpdated();
 
-            return nextNode;
+            return nextNode != null ? new[] { nextNode } : Enumerable.Empty<NodeEntity>();
         }
         catch (Exception ex)
         {

@@ -9,7 +9,7 @@ namespace SharpOMatic.Engine.Nodes;
 public class EndNode(RunContext runContext, EndNodeEntity node)
     : RunNode<EndNodeEntity>(runContext, node)
 {
-    public override async Task<NodeEntity?> Run()
+    public override async Task<IEnumerable<NodeEntity>> Run()
     {
         await base.Run();
 
@@ -53,7 +53,7 @@ public class EndNode(RunContext runContext, EndNodeEntity node)
             Trace.OutputContext = RunContext.TypedSerialization(RunContext.NodeContext);
             await NodeUpdated();
 
-            return null;
+            return Enumerable.Empty<NodeEntity>();
         }
         catch (Exception ex)
         {
