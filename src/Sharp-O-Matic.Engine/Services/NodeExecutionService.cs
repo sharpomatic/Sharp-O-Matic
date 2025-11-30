@@ -16,7 +16,7 @@ public class NodeExecutionService(INodeQueue queue) : BackgroundService
                 // Graceful shutdown
                 break;
             }
-            catch (Exception)
+            catch
             {
             }
         }
@@ -27,11 +27,24 @@ public class NodeExecutionService(INodeQueue queue) : BackgroundService
         try
         {
             var nextNodes = await EngineService.RunNode(runContext, nodeContext, node);
-            foreach (var nextNode in nextNodes)
-                queue.Enqueue(runContext, nextNode.NodeContext, nextNode.Node);
+
+            if (runContext.UpdateRunningThreadCount(nextNodes.Count - 1) == 0)
+            {
+                runContext.Run.RunStatus = RunStatus.Success;
+                runContext.Run.Message = "Success";
+                runContext.Run.Stopped = DateTime.Now;
+                runContext.Run.OutputContext = runContext.TypedSerialization(nodeContext);
+                await runContext.RunUpdated();
+            }
+            else
+            {
+                foreach (var nextNode in nextNodes)
+                    queue.Enqueue(runContext, nextNode.NodeContext, nextNode.Node);
+            }
         }
-        catch
+        catch (Exception ex)
         {
+            // TODO, handle exception in the node, decrement count by one and then finish up
         }
     }
 }

@@ -3,7 +3,7 @@
 
 # Minimum Viable Product Features
 
-Add run context, total running threads, decrement when not returned nodes, at zero close the workflow
+Error during execution of a node
 Add run context, add the last seen end node context so closing workflow returns that else the node just processed.
 Add fancontext to queue and nextnode and handle
 

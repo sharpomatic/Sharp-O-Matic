@@ -24,6 +24,11 @@ public class EngineService(IRepository Repository,
             }
         }
 
+        var workflow = await Repository.GetWorkflow(workflowId) ?? throw new SharpOMaticException($"Could not load workflow {workflowId}.");
+        var currentNodes = workflow.Nodes.Where(n => n.NodeType == NodeType.Start).ToList();
+        if (currentNodes.Count != 1)
+            throw new SharpOMaticException("Must have exactly one start node.");
+
         var run = new Run()
         {
             WorkflowId = workflowId,
@@ -32,25 +37,13 @@ public class EngineService(IRepository Repository,
             Message = "Created",
             Created = DateTime.Now,
             InputEntries = inputJson,
+            InputContext = JsonSerializer.Serialize(context, new JsonSerializerOptions().BuildOptions(JsonConverters))
         };
 
-        await RunUpdated(run);
-
-        var workflow = await Repository.GetWorkflow(workflowId) ?? throw new SharpOMaticException($"Could not load workflow {workflowId}.");
-        var currentNodes = workflow.Nodes.Where(n => n.NodeType == NodeType.Start).ToList();
-        if (currentNodes.Count != 1)
-            throw new SharpOMaticException("Must have exactly one start node.");
-
-        var runContext = new RunContext(Repository, Notifications, JsonConverters, workflow, run.RunId);
-
-        run.RunStatus = RunStatus.Running;
-        run.Message = "Running";
-        run.Started = DateTime.Now;
-        run.InputContext = runContext.TypedSerialization(context);
-        await RunUpdated(run);
+        var runContext = new RunContext(Repository, Notifications, JsonConverters, workflow, run);
+        await runContext.RunUpdated();
 
         Queue.Enqueue(runContext, context, currentNodes[0]);
-
         return run.RunId;
     }
 
@@ -69,9 +62,5 @@ public class EngineService(IRepository Repository,
         };
     }
 
-    private async Task RunUpdated(Run run)
-    {
-        await Repository.UpsertRun(run);
-        await Notifications.RunProgress(run);
-    }
+
 }

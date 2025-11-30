@@ -10,19 +10,27 @@ public class RunContext
     public INotification Notifications { get; init; }
     public IEnumerable<JsonConverter> JsonConverters { get; init; }
     public WorkflowEntity Workflow { get; init; }
-    public Guid RunId { get; init; }
+    public Run Run { get; init; }
+    
+    private int _runningThreadCount = 1;
+    public int RunningThreadCount => _runningThreadCount;
+
+    public int UpdateRunningThreadCount(int delta)
+    {
+        return System.Threading.Interlocked.Add(ref _runningThreadCount, delta);
+    }
 
     public RunContext(IRepository repository, 
                       INotification notifications,
                       IEnumerable<JsonConverter> jsonConverters,
                       WorkflowEntity workflow, 
-                      Guid runId)
+                      Run run)
     {
         Repository = repository;
         Notifications = notifications;
         JsonConverters = jsonConverters;
         Workflow = workflow;
-        RunId = runId;
+        Run = run;
 
         foreach (var node in workflow.Nodes)
         {
@@ -34,6 +42,12 @@ public class RunContext
         }
 
         _fromToConnection = workflow.Connections.ToDictionary(c => c.From, c => c);
+    }
+
+    public async Task RunUpdated()
+    {
+        await Repository.UpsertRun(Run);
+        await Notifications.RunProgress(Run);
     }
 
     public NodeEntity ResolveSingleOutput(NodeEntity node)

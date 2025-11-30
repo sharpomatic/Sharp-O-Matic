@@ -16,7 +16,7 @@ public abstract class RunNode<T> where T : NodeEntity
         Trace = new Trace()
         {
             WorkflowId = runContext.Workflow.Id,
-            RunId = runContext.RunId,
+            RunId = runContext.Run.RunId,
             TraceId = Guid.NewGuid(),
             NodeEntityId = node.Id,
             Created = DateTime.Now,

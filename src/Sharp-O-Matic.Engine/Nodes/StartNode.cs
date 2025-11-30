@@ -1,9 +1,16 @@
-﻿namespace SharpOMatic.Engine.Nodes;
+﻿using SharpOMatic.Engine.Repository;
+
+namespace SharpOMatic.Engine.Nodes;
 
 public class StartNode(RunContext runContext, ContextObject nodeContext, StartNodeEntity node) : RunNode<StartNodeEntity>(runContext, nodeContext, node)
 {
     protected override async Task<(string, List<NextNodeData>)> RunInternal()
     {
+        RunContext.Run.RunStatus = RunStatus.Running;
+        RunContext.Run.Message = "Running";
+        RunContext.Run.Started = DateTime.Now;
+        await RunContext.RunUpdated();
+
         if (Node.ApplyInitialization)
         {
             var outputContext = new ContextObject();
