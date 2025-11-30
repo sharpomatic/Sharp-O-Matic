@@ -15,6 +15,6 @@ Currently under construction but with an intended first release in early 2026.
 
 ## Affiliation
 
-Sharp-O-Matic is a personal project created and maintained by Philip Wright.
+Sharp-O-Matic is a personal project created and maintained by Phil Wright.
 It is not affiliated with, sponsored by, or endorsed by my employer.
 All names and trademarks remain the property of their respective owners.
