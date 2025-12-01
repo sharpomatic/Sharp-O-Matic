@@ -2,22 +2,43 @@ namespace SharpOMatic.Engine.Services;
 
 public class NodeExecutionService(INodeQueue queue) : BackgroundService
 {
+    private readonly SemaphoreSlim _semaphore = new(5);
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
+            await _semaphore.WaitAsync(stoppingToken);
+
             try
             {
                 var (threadContext, node) = await queue.DequeueAsync(stoppingToken);
 
-                // If the workflow has already been failed, then ignore the node execution
-                if (threadContext.RunContext.Run.RunStatus != RunStatus.Failed)
-                    await ProcessNode(threadContext, node);
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        // If the workflow has already been failed, then ignore the node execution
+                        if (threadContext.RunContext.Run.RunStatus != RunStatus.Failed)
+                            await ProcessNode(threadContext, node);
+                    }
+                    finally
+                    {
+                        _semaphore.Release();
+                    }
+                }, stoppingToken);
             }
             catch (OperationCanceledException)
             {
+                _semaphore.Release();
+                
                 // Graceful shutdown
                 break;
+            }
+            catch
+            {
+                _semaphore.Release();
+                throw;
             }
         }
     }
