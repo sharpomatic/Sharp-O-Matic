@@ -1,8 +1,6 @@
-﻿using System.Net.NetworkInformation;
+﻿namespace SharpOMatic.Engine.Nodes;
 
-namespace SharpOMatic.Engine.Nodes;
-
-public class EndNode(RunContext runContext, ContextObject nodeContext, EndNodeEntity node) : RunNode<EndNodeEntity>(runContext, nodeContext, node)
+public class EndNode(ThreadContext threadContext, EndNodeEntity node) : RunNode<EndNodeEntity>(threadContext, node)
 {
     protected override async Task<(string, List<NextNodeData>)> RunInternal()
     {
@@ -20,7 +18,7 @@ public class EndNode(RunContext runContext, ContextObject nodeContext, EndNodeEn
                 if (string.IsNullOrWhiteSpace(mapping.OutputPath))
                     throw new SharpOMaticException($"End node output path cannot be empty.");
 
-                if (NodeContext.TryGet<object?>(mapping.InputPath, out var mapValue))
+                if (ThreadContext.NodeContext.TryGet<object?>(mapping.InputPath, out var mapValue))
                 {
                     outputContext.TrySet(mapping.OutputPath, mapValue);
                     mapped++;
@@ -29,14 +27,14 @@ public class EndNode(RunContext runContext, ContextObject nodeContext, EndNodeEn
                     missing++;
             }
 
-            NodeContext = outputContext;
+            ThreadContext.NodeContext = outputContext;
             Trace.Message = $"{mapped} mapped, {missing} missing";
         }
         else
             Trace.Message = "Exited workflow";
 
         // Last run EndNode has its output used as the output of the workflow
-        RunContext.Run.OutputContext = RunContext.TypedSerialization(NodeContext);
+        RunContext.Run.OutputContext = RunContext.TypedSerialization(ThreadContext.NodeContext);
 
         return (Trace.Message, []);
     }

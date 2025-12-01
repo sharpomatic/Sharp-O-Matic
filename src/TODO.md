@@ -3,18 +3,6 @@
 
 # Minimum Viable Product Features
 
-Add fancontext to queue and nextnode and handle
-
-FanOut
-	- Defined list of at least 2 outputs that are then run in parallel
-	- Each new thread gets a copy (by serial/deserial) of the starting context
-	- Show the input context
-
-FanIn
-	- All arriving inputs must be at the same level (depth) and fan out instance as the first that arrives
-	- Automatically merges the incoming contexts into a new context, if more than 1 value then they get turned into array
-	- Show the input for each arriving task and single merged output context
-
 Model Call
 	- Specify model from registry
 	- Specify instructions

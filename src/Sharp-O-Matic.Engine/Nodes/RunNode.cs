@@ -2,21 +2,20 @@
 
 public abstract class RunNode<T> where T : NodeEntity
 {
-    protected RunContext RunContext { get; init; }
-    protected ContextObject NodeContext { get; set; }
+    protected ThreadContext ThreadContext { get; set; }
     protected T Node { get; init; }
     protected Trace Trace { get; init; }
+    protected RunContext RunContext => ThreadContext.RunContext;
 
-    public RunNode(RunContext runContext, ContextObject nodeContext, NodeEntity node)
+    public RunNode(ThreadContext threadContext, NodeEntity node)
     {
-        RunContext = runContext;
-        NodeContext = nodeContext;
+        ThreadContext = threadContext;
         Node = (T)node;
 
         Trace = new Trace()
         {
-            WorkflowId = runContext.Workflow.Id,
-            RunId = runContext.Run.RunId,
+            WorkflowId = RunContext.Workflow.Id,
+            RunId = RunContext.Run.RunId,
             TraceId = Guid.NewGuid(),
             NodeEntityId = node.Id,
             Created = DateTime.Now,
@@ -24,7 +23,7 @@ public abstract class RunNode<T> where T : NodeEntity
             NodeStatus = NodeStatus.Running,
             Title = node.Title,
             Message = "Running",
-            InputContext = RunContext.TypedSerialization(NodeContext)
+            InputContext = RunContext.TypedSerialization(ThreadContext.NodeContext)
         };
     }
 
@@ -70,13 +69,13 @@ public abstract class RunNode<T> where T : NodeEntity
     {
         Trace.Finished = DateTime.Now;
         Trace.Message = message;
-        Trace.OutputContext = RunContext.TypedSerialization(NodeContext);
+        Trace.OutputContext = RunContext.TypedSerialization(ThreadContext.NodeContext);
         await RunContext.Repository.UpsertTrace(Trace);
         await RunContext.Notifications.TraceProgress(Trace);
     }
 
     protected Task<object?> EvaluateContextEntryValue(ContextEntryEntity entry)
     {
-        return ContextHelpers.EvaluateContextEntryValue(NodeContext, entry);
+        return ContextHelpers.EvaluateContextEntryValue(ThreadContext.NodeContext, entry);
     }
 }

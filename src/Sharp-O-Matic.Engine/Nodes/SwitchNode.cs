@@ -1,6 +1,6 @@
 ﻿namespace SharpOMatic.Engine.Nodes;
 
-public class SwitchNode(RunContext runContext, ContextObject nodeContext, SwitchNodeEntity node) : RunNode<SwitchNodeEntity>(runContext, nodeContext, node)
+public class SwitchNode(ThreadContext threadContext, SwitchNodeEntity node) : RunNode<SwitchNodeEntity>(threadContext, node)
 {
     protected override async Task<(string, List<NextNodeData>)> RunInternal()
     {
@@ -19,7 +19,7 @@ public class SwitchNode(RunContext runContext, ContextObject nodeContext, Switch
 
                 try
                 {
-                    var result = await CSharpScript.EvaluateAsync(switcher.Code, options, new ScriptCodeContext() { Context = NodeContext }, typeof(ScriptCodeContext));
+                    var result = await CSharpScript.EvaluateAsync(switcher.Code, options, new ScriptCodeContext() { Context = ThreadContext.NodeContext }, typeof(ScriptCodeContext));
                     if (result is null)
                         throw new SharpOMaticException($"Switch node entry '{switcher.Name}' returned null instead of a boolean value.");
 
@@ -53,6 +53,6 @@ public class SwitchNode(RunContext runContext, ContextObject nodeContext, Switch
         }
 
         matchingIndex ??= Node.Switches.Length - 1;
-        return ($"Switched to {Node.Switches[matchingIndex.Value].Name}", [new NextNodeData(NodeContext, RunContext.ResolveSingleOutput(Node))]);
+        return ($"Switched to {Node.Switches[matchingIndex.Value].Name}", [new NextNodeData(ThreadContext, RunContext.ResolveSingleOutput(Node))]);
     }
 }

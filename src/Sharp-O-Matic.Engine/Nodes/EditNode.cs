@@ -1,6 +1,6 @@
 ﻿namespace SharpOMatic.Engine.Nodes;
 
-public class EditNode(RunContext runContext, ContextObject nodeContext, EditNodeEntity node) : RunNode<EditNodeEntity>(runContext, nodeContext, node)
+public class EditNode(ThreadContext threadContext, EditNodeEntity node) : RunNode<EditNodeEntity>(threadContext, node)
 {
     protected override async Task<(string, List<NextNodeData>)> RunInternal()
     {
@@ -13,7 +13,7 @@ public class EditNode(RunContext runContext, ContextObject nodeContext, EditNode
 
                 var entryValue = await EvaluateContextEntryValue(entry);
 
-                if (!NodeContext.TrySet(entry.InputPath, entryValue))
+                if (!ThreadContext.NodeContext.TrySet(entry.InputPath, entryValue))
                     throw new SharpOMaticException($"Edit node entry '{entry.InputPath}' could not be assigned the value.");
             }
         }
@@ -25,7 +25,7 @@ public class EditNode(RunContext runContext, ContextObject nodeContext, EditNode
                 if (string.IsNullOrWhiteSpace(entry.InputPath))
                     throw new SharpOMaticException($"Edit node delete path cannot be empty.");
 
-                NodeContext.RemovePath(entry.InputPath);
+                ThreadContext.NodeContext.RemovePath(entry.InputPath);
             }
         }
 
@@ -42,6 +42,6 @@ public class EditNode(RunContext runContext, ContextObject nodeContext, EditNode
 
         message.Append($", {numDeletes} deleted");
 
-        return (message.ToString(), [new NextNodeData(NodeContext, RunContext.ResolveSingleOutput(Node))]);
+        return (message.ToString(), [new NextNodeData(ThreadContext, RunContext.ResolveSingleOutput(Node))]);
     }
 }

@@ -2,19 +2,19 @@ namespace SharpOMatic.Engine.Services;
 
 public class NodeQueueService : INodeQueue
 {
-    private readonly Channel<(RunContext runContext, ContextObject nodeContext, NodeEntity node)> _queue;
+    private readonly Channel<(ThreadContext threadContext, NodeEntity node)> _queue;
 
     public NodeQueueService()
     {
-        _queue = Channel.CreateUnbounded<(RunContext, ContextObject, NodeEntity)>();
+        _queue = Channel.CreateUnbounded<(ThreadContext, NodeEntity)>();
     }
 
-    public void Enqueue(RunContext runContext, ContextObject nodeContext, NodeEntity node)
+    public void Enqueue(ThreadContext threadContext, NodeEntity node)
     {
-        _queue.Writer.TryWrite((runContext, nodeContext, node));
+        _queue.Writer.TryWrite((threadContext, node));
     }
 
-    public ValueTask<(RunContext runContext, ContextObject nodeContext, NodeEntity node)> DequeueAsync(CancellationToken cancellationToken)
+    public ValueTask<(ThreadContext threadContext, NodeEntity node)> DequeueAsync(CancellationToken cancellationToken)
     {
         return _queue.Reader.ReadAsync(cancellationToken);
     }

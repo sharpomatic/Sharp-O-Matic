@@ -6,19 +6,15 @@ public class RunContext
     private readonly Dictionary<Guid, NodeEntity> _inputConnectorToNode = [];
     private readonly Dictionary<Guid, ConnectionEntity> _fromToConnection = [];
 
+    private int _threadCount = 1;
+    private int _threadId = 1;
+
     public IRepository Repository { get; init; }
     public INotification Notifications { get; init; }
     public IEnumerable<JsonConverter> JsonConverters { get; init; }
     public WorkflowEntity Workflow { get; init; }
     public Run Run { get; init; }
-    
-    private int _runningThreadCount = 1;
-    public int RunningThreadCount => _runningThreadCount;
-
-    public int UpdateRunningThreadCount(int delta)
-    {
-        return System.Threading.Interlocked.Add(ref _runningThreadCount, delta);
-    }
+    public int RunningThreadCount => _threadCount;
 
     public RunContext(IRepository repository, 
                       INotification notifications,
@@ -42,6 +38,16 @@ public class RunContext
         }
 
         _fromToConnection = workflow.Connections.ToDictionary(c => c.From, c => c);
+    }
+
+    public int UpdateThreadCount(int delta)
+    {
+        return Interlocked.Add(ref _threadCount, delta);
+    }
+
+    public int GetNextThreadId()
+    {
+        return Interlocked.Increment(ref _threadId);
     }
 
     public async Task RunUpdated()
@@ -72,7 +78,7 @@ public class RunContext
         if (!_fromToConnection.TryGetValue(connector.Id, out var connection) ||
             !_inputConnectorToNode.TryGetValue(connection.To, out var nextNode))
         {
-            if (connector.Name is not null)
+            if (string.IsNullOrWhiteSpace(connector.Name))
                 throw new SharpOMaticException($"Cannot traverse '{connector.Name}' output because it is not connected to another node.");
             else
                 throw new SharpOMaticException($"Cannot traverse output because it is not connected to another node.");
@@ -84,5 +90,43 @@ public class RunContext
     public string TypedSerialization(ContextObject nodeContext)
     {
         return JsonSerializer.Serialize(nodeContext, new JsonSerializerOptions().BuildOptions(JsonConverters));
+    }
+
+    public ContextObject TypedDeserialization(string json)
+    {
+        return JsonSerializer.Deserialize<ContextObject>(json, new JsonSerializerOptions().BuildOptions(JsonConverters))!;
+    }
+
+    public void MergeContexts(ContextObject target, ContextObject source)
+    {
+        foreach (var key in source.Keys)
+        {
+            if (!target.TryGetValue(key, out var targetValue))
+            {
+                target[key] = source[key];
+            }
+            else
+            {
+                var sourceValue = source[key];
+
+                if (targetValue is ContextObject targetObject && sourceValue is ContextObject sourceObject)
+                {
+                    MergeContexts(targetObject, sourceObject);
+                }
+                else if (targetValue is ContextList targetList && sourceValue is not ContextList)
+                {
+                    targetList.Add(sourceValue);
+                }
+                else
+                {
+                    var newList = new ContextList
+                    {
+                        targetValue,
+                        sourceValue
+                    };
+                    target[key] = newList;
+                }
+            }
+        }
     }
 }

@@ -2,6 +2,6 @@ namespace SharpOMatic.Engine.Interfaces;
 
 public interface INodeQueue
 {
-    void Enqueue(RunContext runContext, ContextObject nodeContext, NodeEntity node);
-    ValueTask<(RunContext runContext, ContextObject nodeContext, NodeEntity node)> DequeueAsync(CancellationToken cancellationToken);
+    void Enqueue(ThreadContext threadContext, NodeEntity node);
+    ValueTask<(ThreadContext threadContext, NodeEntity node)> DequeueAsync(CancellationToken cancellationToken);
 }

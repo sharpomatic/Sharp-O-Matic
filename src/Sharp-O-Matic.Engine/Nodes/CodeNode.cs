@@ -1,6 +1,6 @@
 ﻿namespace SharpOMatic.Engine.Nodes;
 
-public class CodeNode(RunContext runContext, ContextObject nodeContext, CodeNodeEntity node) : RunNode<CodeNodeEntity>(runContext, nodeContext, node)
+public class CodeNode(ThreadContext threadContext, CodeNodeEntity node) : RunNode<CodeNodeEntity>(threadContext, node)
 {
     protected override async Task<(string, List<NextNodeData>)> RunInternal()
     {
@@ -12,7 +12,7 @@ public class CodeNode(RunContext runContext, ContextObject nodeContext, CodeNode
 
             try
             {
-                var result = await CSharpScript.RunAsync(Node.Code, options, new ScriptCodeContext() { Context = NodeContext }, typeof(ScriptCodeContext));
+                var result = await CSharpScript.RunAsync(Node.Code, options, new ScriptCodeContext() { Context = ThreadContext.NodeContext }, typeof(ScriptCodeContext));
             }
             catch (CompilationErrorException e1)
             {
@@ -33,6 +33,6 @@ public class CodeNode(RunContext runContext, ContextObject nodeContext, CodeNode
             }
         }
 
-        return ("Code executed", [new NextNodeData(NodeContext, RunContext.ResolveSingleOutput(Node))]);
+        return ("Code executed", [new NextNodeData(ThreadContext, RunContext.ResolveSingleOutput(Node))]);
     }
 }

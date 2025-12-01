@@ -1,4 +1,4 @@
 ﻿
 namespace SharpOMatic.Engine.Nodes;
 
-public record class NextNodeData(ContextObject NodeContext, NodeEntity Node);
+public record class NextNodeData(ThreadContext ThreadContext, NodeEntity Node);

@@ -7,9 +7,9 @@ public class EngineService(IRepository Repository,
 {
 
 
-    public async Task<Guid> RunWorkflow(Guid workflowId, ContextObject? context = null, ContextEntryListEntity? inputEntries = null)
+    public async Task<Guid> RunWorkflow(Guid workflowId, ContextObject? nodeContext = null, ContextEntryListEntity? inputEntries = null)
     {
-        context ??= [];
+        nodeContext ??= [];
 
         string? inputJson = null;
         if (inputEntries is not null)
@@ -18,8 +18,8 @@ public class EngineService(IRepository Repository,
 
             foreach (var entry in inputEntries!.Entries)
             {
-                var entryValue = await ContextHelpers.EvaluateContextEntryValue(context, entry);
-                if (!context.TrySet(entry.InputPath, entryValue))
+                var entryValue = await ContextHelpers.EvaluateContextEntryValue(nodeContext, entry);
+                if (!nodeContext.TrySet(entry.InputPath, entryValue))
                     throw new SharpOMaticException($"Input entry '{entry.InputPath}' could not be assigned the value.");
             }
         }
@@ -37,30 +37,15 @@ public class EngineService(IRepository Repository,
             Message = "Created",
             Created = DateTime.Now,
             InputEntries = inputJson,
-            InputContext = JsonSerializer.Serialize(context, new JsonSerializerOptions().BuildOptions(JsonConverters))
+            InputContext = JsonSerializer.Serialize(nodeContext, new JsonSerializerOptions().BuildOptions(JsonConverters))
         };
 
         var runContext = new RunContext(Repository, Notifications, JsonConverters, workflow, run);
+        var threadContext = new ThreadContext(runContext, nodeContext);
+
         await runContext.RunUpdated();
 
-        Queue.Enqueue(runContext, context, currentNodes[0]);
+        Queue.Enqueue(threadContext, currentNodes[0]);
         return run.RunId;
     }
-
-    public static Task<List<NextNodeData>> RunNode(RunContext runContext, ContextObject nodeContext, NodeEntity node)
-    {
-        return node switch
-        {
-            StartNodeEntity startNode => new StartNode(runContext, nodeContext, startNode).Run(),
-            EndNodeEntity endNode => new EndNode(runContext, nodeContext, endNode).Run(),
-            EditNodeEntity editNode => new EditNode(runContext, nodeContext, editNode).Run(),
-            CodeNodeEntity codeNode => new CodeNode(runContext, nodeContext, codeNode).Run(),
-            SwitchNodeEntity switchNode => new SwitchNode(runContext, nodeContext, switchNode).Run(),
-            FanInNodeEntity fanInNode => new FanInNode(runContext, nodeContext, fanInNode).Run(),
-            FanOutNodeEntity fanOutNode => new FanOutNode(runContext, nodeContext, fanOutNode).Run(),
-            _ => throw new SharpOMaticException($"Unrecognized node type' {node.NodeType}'")
-        };
-    }
-
-
 }

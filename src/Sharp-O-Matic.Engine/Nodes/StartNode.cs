@@ -2,7 +2,7 @@
 
 namespace SharpOMatic.Engine.Nodes;
 
-public class StartNode(RunContext runContext, ContextObject nodeContext, StartNodeEntity node) : RunNode<StartNodeEntity>(runContext, nodeContext, node)
+public class StartNode(ThreadContext threadContext, StartNodeEntity node) : RunNode<StartNodeEntity>(threadContext, node)
 {
     protected override async Task<(string, List<NextNodeData>)> RunInternal()
     {
@@ -22,7 +22,7 @@ public class StartNode(RunContext runContext, ContextObject nodeContext, StartNo
                 if (string.IsNullOrWhiteSpace(entry.InputPath))
                     throw new SharpOMaticException($"Start node path cannot be empty.");
 
-                if (NodeContext.TryGet<object?>(entry.InputPath, out var mapValue))
+                if (ThreadContext.NodeContext.TryGet<object?>(entry.InputPath, out var mapValue))
                 {
                     outputContext.TrySet(entry.InputPath, mapValue);
                     provided++;
@@ -34,19 +34,19 @@ public class StartNode(RunContext runContext, ContextObject nodeContext, StartNo
 
                     var entryValue = await EvaluateContextEntryValue(entry);
 
-                    if (!NodeContext.TrySet(entry.InputPath, entryValue))
+                    if (!ThreadContext.NodeContext.TrySet(entry.InputPath, entryValue))
                         throw new SharpOMaticException($"Start node entry '{entry.InputPath}' could not be assigned the value.");
 
                     defaulted++;
                 }
             }
 
-            NodeContext = outputContext;
+            ThreadContext.NodeContext = outputContext;
             Trace.Message = $"{provided} provided, {defaulted} defaulted";
         }
         else
             Trace.Message = "Entered workflow";
 
-        return (Trace.Message, [new NextNodeData(NodeContext, RunContext.ResolveSingleOutput(Node))]);
+        return (Trace.Message, [new NextNodeData(ThreadContext, RunContext.ResolveSingleOutput(Node))]);
     }
 }

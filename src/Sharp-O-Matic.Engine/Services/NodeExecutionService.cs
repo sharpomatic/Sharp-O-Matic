@@ -8,11 +8,11 @@ public class NodeExecutionService(INodeQueue queue) : BackgroundService
         {
             try
             {
-                var (runContext, contextObject, node) = await queue.DequeueAsync(stoppingToken);
+                var (threadContext, node) = await queue.DequeueAsync(stoppingToken);
 
                 // If the workflow has already been failed, then ignore the node execution
-                if (runContext.Run.RunStatus != RunStatus.Failed)
-                    await ProcessNode(runContext, contextObject, node);
+                if (threadContext.RunContext.Run.RunStatus != RunStatus.Failed)
+                    await ProcessNode(threadContext, node);
             }
             catch (OperationCanceledException)
             {
@@ -22,13 +22,15 @@ public class NodeExecutionService(INodeQueue queue) : BackgroundService
         }
     }
 
-    private async Task ProcessNode(RunContext runContext, ContextObject nodeContext, NodeEntity node)
+    private async Task ProcessNode(ThreadContext threadContext, NodeEntity node)
     {
+        var runContext = threadContext.RunContext;
+
         try
         {
-            var nextNodes = await EngineService.RunNode(runContext, nodeContext, node);
+            var nextNodes = await RunNode(threadContext, node);
 
-            if (runContext.UpdateRunningThreadCount(nextNodes.Count - 1) == 0)
+            if (runContext.UpdateThreadCount(nextNodes.Count - 1) == 0)
             {
                 runContext.Run.RunStatus = RunStatus.Success;
                 runContext.Run.Message = "Success";
@@ -36,14 +38,14 @@ public class NodeExecutionService(INodeQueue queue) : BackgroundService
 
                 // If no EndNode was encountered then use the output of the last run node
                 if (runContext.Run.OutputContext is null)
-                    runContext.Run.OutputContext = runContext.TypedSerialization(nodeContext);
+                    runContext.Run.OutputContext = runContext.TypedSerialization(threadContext.NodeContext);
 
                 await runContext.RunUpdated();
             }
             else
             {
                 foreach (var nextNode in nextNodes)
-                    queue.Enqueue(runContext, nextNode.NodeContext, nextNode.Node);
+                    queue.Enqueue(nextNode.ThreadContext, nextNode.Node);
             }
         }
         catch (Exception ex)
@@ -55,9 +57,24 @@ public class NodeExecutionService(INodeQueue queue) : BackgroundService
 
             // If no EndNode was encountered then use the output of the last run node
             if (runContext.Run.OutputContext is null)
-                runContext.Run.OutputContext = runContext.TypedSerialization(nodeContext);
+                runContext.Run.OutputContext = runContext.TypedSerialization(threadContext.NodeContext);
 
             await runContext.RunUpdated();
         }
+    }
+
+    private static Task<List<NextNodeData>> RunNode(ThreadContext threadContext, NodeEntity node)
+    {
+        return node switch
+        {
+            StartNodeEntity startNode => new StartNode(threadContext, startNode).Run(),
+            EndNodeEntity endNode => new EndNode(threadContext, endNode).Run(),
+            EditNodeEntity editNode => new EditNode(threadContext, editNode).Run(),
+            CodeNodeEntity codeNode => new CodeNode(threadContext, codeNode).Run(),
+            SwitchNodeEntity switchNode => new SwitchNode(threadContext, switchNode).Run(),
+            FanInNodeEntity fanInNode => new FanInNode(threadContext, fanInNode).Run(),
+            FanOutNodeEntity fanOutNode => new FanOutNode(threadContext, fanOutNode).Run(),
+            _ => throw new SharpOMaticException($"Unrecognized node type' {node.NodeType}'")
+        };
     }
 }
