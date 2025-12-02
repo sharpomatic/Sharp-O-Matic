@@ -15,7 +15,6 @@ export class SignalrService {
 
   constructor() {
     effect(() => {
-      debugger;
       const nextApiUrl = this.settingsService.apiUrlState();
       if (nextApiUrl === this.currentApiUrl) {
         return;

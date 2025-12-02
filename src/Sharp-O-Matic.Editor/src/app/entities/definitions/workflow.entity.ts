@@ -47,9 +47,11 @@ export class WorkflowEntity extends Entity<WorkflowSnapshot> {
       // Must touch all nodes/connections dirty signals
       const currentNodesDirty = currentNodes.reduce((dirty, node) => node.isDirty() || dirty, false);
       const currentConnectionsDirty = currentConnections.reduce((dirty, connection) => connection.isDirty() || dirty, false);
+      const connectionIdsChanged = this.haveConnectionIdsChanged(currentConnections, snaphotConnections);
 
       const needsRefresh = (currentNodes.length !== snaphotNodes.length) ||
                            (currentConnections.length !== snaphotConnections.length) ||
+                           connectionIdsChanged ||
                            currentNodesDirty ||
                            currentConnectionsDirty;
 
@@ -113,6 +115,27 @@ export class WorkflowEntity extends Entity<WorkflowSnapshot> {
 
     public getConnectorById(id: string): ConnectorEntity | undefined {
     return this.connectorMap.get(id);
+  }
+
+  private haveConnectionIdsChanged(currentConnections: ConnectionEntity[], snapshotConnections: ConnectionSnapshot[]): boolean {
+    if (currentConnections.length !== snapshotConnections.length) {
+      return true;
+    }
+
+    const currentIds = new Set(currentConnections.map(c => c.id));
+    const snapshotIds = new Set(snapshotConnections.map(c => c.id));
+
+    if (currentIds.size !== snapshotIds.size) {
+      return true;
+    }
+
+    for (const id of currentIds) {
+      if (!snapshotIds.has(id)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private refreshCache(): void {

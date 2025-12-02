@@ -3,12 +3,6 @@
 
 # Minimum Viable Product Features
 
-Bugs
-  Double check the fan out and fan in
-     does it had double layers
-	 does it error when not all outputs go to the fan in
-
-
 Model Call
 	- Specify model from registry
 	- Specify instructions

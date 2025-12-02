@@ -9,5 +9,6 @@ public class ThreadContext(RunContext runContext, ContextObject nodeContext, Thr
     public int ThreadId { get; init; } = runContext.GetNextThreadId();
     public int FanOutCount { get; set; }
     public int FanInArrived { get; set; }
+    public Guid FanInId { get; set; }
     public ContextObject? FanInMergedContext { get; set; }
 }
