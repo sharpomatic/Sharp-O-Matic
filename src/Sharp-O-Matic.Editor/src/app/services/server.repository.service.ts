@@ -1,24 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
-import { API_URL } from '../components/app/app.tokens';
 import { WorkflowEntity, WorkflowSnapshot } from '../entities/definitions/workflow.entity';
 import { WorkflowSummaryEntity, WorkflowSummarySnapshot } from '../entities/definitions/workflow.summary.entity';
 import { RunProgressModel } from '../pages/workflow/interfaces/run-progress-model';
 import { TraceProgressModel } from '../pages/workflow/interfaces/trace-progress-model';
 import { ContextEntryListEntity } from '../entities/definitions/context-entry-list.entity';
 import { ToastService } from './toast.service';
+import { SettingsService } from './settings.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ServerRepositoryService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = inject(API_URL);
   private readonly toastService = inject(ToastService);
+  private readonly settingsService = inject(SettingsService);
 
   public getWorkflows(): Observable<WorkflowSummaryEntity[]> {
-    return this.http.get<WorkflowSummarySnapshot[]>(`${this.apiUrl}/api/workflow`).pipe(
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.get<WorkflowSummarySnapshot[]>(`${apiUrl}/api/workflow`).pipe(
       map(snapshots => snapshots.map(WorkflowSummaryEntity.fromSnapshot)),
       catchError((error) => {
         this.notifyError('Loading workflows', error);
@@ -28,7 +29,8 @@ export class ServerRepositoryService {
   }
 
   public getWorkflow(id: string): Observable<WorkflowEntity | null> {
-    return this.http.get<WorkflowSnapshot>(`${this.apiUrl}/api/workflow/${id}`).pipe(
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.get<WorkflowSnapshot>(`${apiUrl}/api/workflow/${id}`).pipe(
       map(snapshot => WorkflowEntity.fromSnapshot(snapshot)),
       catchError((error) => {
         this.notifyError('Loading workflow', error);
@@ -38,7 +40,8 @@ export class ServerRepositoryService {
   }
 
   public upsertWorkflow(workflow: WorkflowEntity): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/api/workflow`, workflow.toSnapshot()).pipe(
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.post<void>(`${apiUrl}/api/workflow`, workflow.toSnapshot()).pipe(
       catchError((error) => {
         this.notifyError('Saving workflow', error);
         return of(undefined);
@@ -47,7 +50,8 @@ export class ServerRepositoryService {
   }
 
   public runWorkflow(id: string, entryList: ContextEntryListEntity): Observable<string | undefined>  {
-    return this.http.post<string>(`${this.apiUrl}/api/workflow/run/${id}`, entryList.toSnapshot()).pipe(
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.post<string>(`${apiUrl}/api/workflow/run/${id}`, entryList.toSnapshot()).pipe(
       catchError((error) => {
         this.notifyError('Starting workflow run', error);
         return of(undefined);
@@ -56,7 +60,8 @@ export class ServerRepositoryService {
   }
 
   public deleteWorkflow(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/api/workflow/${id}`).pipe(
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.delete<void>(`${apiUrl}/api/workflow/${id}`).pipe(
       catchError((error) => {
         this.notifyError('Deleting workflow', error);
         return of(undefined);
@@ -65,7 +70,8 @@ export class ServerRepositoryService {
   }
 
   public getLatestWorkflowRun(id: string): Observable<RunProgressModel | null> {
-    return this.http.get<RunProgressModel>(`${this.apiUrl}/api/run/latestforworkflow/${id}`).pipe(
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.get<RunProgressModel>(`${apiUrl}/api/run/latestforworkflow/${id}`).pipe(
       catchError((error) => {
         this.notifyError('Loading latest workflow run', error);
         return of(null);
@@ -74,7 +80,8 @@ export class ServerRepositoryService {
   }
 
   public getRunTraces(id: string): Observable<TraceProgressModel[] | null> {
-    return this.http.get<TraceProgressModel[]>(`${this.apiUrl}/api/trace/forrun/${id}`).pipe(
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.get<TraceProgressModel[]>(`${apiUrl}/api/trace/forrun/${id}`).pipe(
       catchError((error) => {
         this.notifyError('Loading run traces', error);
         return of(null);

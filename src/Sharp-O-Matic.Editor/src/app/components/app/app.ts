@@ -2,7 +2,6 @@ import { Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { ServerConnectionService } from '../../services/server.connection.service';
 import { NotConnectedDialogComponent } from '../../dialogs/not-connected/not-connected-dialog.component';
 import { ToastService } from '../../services/toast.service';
 
@@ -21,7 +20,6 @@ import { ToastService } from '../../services/toast.service';
   styleUrl: './app.scss'
 })
 export class App implements OnInit, OnDestroy {
-  private readonly serverConnectionService = inject(ServerConnectionService);
   private readonly modalService = inject(BsModalService);
   protected readonly toastService = inject(ToastService);
   private modalRef?: BsModalRef;
@@ -31,13 +29,6 @@ export class App implements OnInit, OnDestroy {
   isSidebarClosed = false;
 
   constructor() {
-    effect(() => {
-      if (!this.serverConnectionService.isConnected()) {
-        this.openNotConnectedDialog();
-      } else {
-        this.closeNotConnectedDialog();
-      }
-    });
   }
 
   toggleSidebar(): void {

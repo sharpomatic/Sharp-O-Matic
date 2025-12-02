@@ -1,21 +1,21 @@
-import { Component, inject, Signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ServerConnectionService } from '../../services/server.connection.service';
-import { API_URL } from '../../components/app/app.tokens';
+import { FormsModule } from '@angular/forms';
+import { SettingsService } from '../../services/settings.service';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent {
-  private readonly serverConnectionService = inject(ServerConnectionService);
-  public readonly apiUrl = inject(API_URL);
-  public isConnected: Signal<boolean>;
+  private readonly settingsService = inject(SettingsService);
+  apiUrlValue = this.settingsService.apiUrl();
 
-  constructor() {
-    this.isConnected = this.serverConnectionService.isConnected;
+  onApiUrlChange(value: string): void {
+    this.settingsService.setApiUrl(value);
+    this.apiUrlValue = this.settingsService.apiUrl();
   }
 }

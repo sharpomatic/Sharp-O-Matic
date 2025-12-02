@@ -7,7 +7,6 @@ Bugs
   Double check the fan out and fan in
      does it had double layers
 	 does it error when not all outputs go to the fan in
-	 what happens if one of the threads errors
 
 
 Model Call
@@ -53,10 +52,6 @@ Build
 - 
 
 # Implementation Details
-
-Connection
-	Do not use dialog to overlay, instead have an error bar that covers the top of the page
-
 
 Leaving unsaved page
 	Should ask user if they really want to leave

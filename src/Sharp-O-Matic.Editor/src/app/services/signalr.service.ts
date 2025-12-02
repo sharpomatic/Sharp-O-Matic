@@ -1,20 +1,34 @@
 // src/app/services/signalr.service.ts
-import { inject, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { API_URL } from '../components/app/app.tokens';
+import { SettingsService } from './settings.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalrService {
-  private readonly apiUrl = inject(API_URL);
-  private hubConnection!: signalR.HubConnection;
+  private readonly settingsService = inject(SettingsService);
+  private hubConnection?: signalR.HubConnection;
   private readonly _isConnected = signal(false);
   public readonly isConnected = this._isConnected.asReadonly();
+  private currentApiUrl: string = '';
+
+  constructor() {
+    effect(() => {
+      debugger;
+      const nextApiUrl = this.settingsService.apiUrlState();
+      if (nextApiUrl === this.currentApiUrl) {
+        return;
+      }
+      this.currentApiUrl = nextApiUrl;
+      this.restartConnection();
+    });
+  }
 
   public startConnection = () => {
+    const apiUrl = this.currentApiUrl ?? this.settingsService.apiUrl();
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.apiUrl}/notifications`, {
+      .withUrl(`${apiUrl}/notifications`, {
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets
       })
@@ -28,16 +42,27 @@ export class SignalrService {
       .catch(err => console.log('Error while starting connection: ' + err));
   }
 
-  public stopConnection = () => {
-    if (this.hubConnection) {
-      this.hubConnection
-        .stop()
-        .then(() => {
-          console.log('SignalR Connection stopped');
-          this._isConnected.set(false);
-        })
-        .catch(err => console.log('Error while stopping connection: ' + err));
+  public stopConnection = (): Promise<void> => {
+    if (!this.hubConnection) {
+      return Promise.resolve();
     }
+
+    return this.hubConnection
+      .stop()
+      .then(() => {
+        console.log('SignalR Connection stopped');
+        this._isConnected.set(false);
+      })
+      .catch(err => {
+        console.log('Error while stopping connection: ' + err);
+      })
+      .finally(() => {
+        this.hubConnection = undefined;
+      });
+  }
+
+  private restartConnection(): void {
+    this.stopConnection().finally(() => this.startConnection());
   }
 
   public addListener(eventName: string, eventHandler: (...args: any[]) => void) {
