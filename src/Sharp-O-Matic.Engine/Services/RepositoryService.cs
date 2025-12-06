@@ -220,6 +220,21 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
         if (connection is null)
             throw new SharpOMaticException($"Connection '{connectionId}' configuration is invalid.");
 
+        // We need to ensure that any field that is a secret, is replaced to prevent it being available in the client
+        if ((connection.FieldValues.Count > 0) && !string.IsNullOrWhiteSpace(connection.ConfigId))
+        {
+            var config = await GetConnectionConfig(connection.ConfigId);
+            if (config is not null)
+            {
+                foreach (var authModes in config.AuthModes)
+                {
+                    foreach (var field in authModes.Fields)
+                        if ((field.Type == FieldDescriptorType.Secret) && connection.FieldValues.ContainsKey(field.Name))
+                            connection.FieldValues[field.Name] = "**********";
+                }
+            }
+        }
+
         return connection;
     }
 
