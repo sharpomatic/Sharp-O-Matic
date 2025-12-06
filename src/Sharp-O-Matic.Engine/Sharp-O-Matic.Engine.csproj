@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Metadata\Connection\openai.json" />
+    <None Remove="Metadata\Connections\openai.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Metadata\Connection\openai.json" />
+    <EmbeddedResource Include="Metadata\Connections\openai.json" />
   </ItemGroup>
 
   <ItemGroup>

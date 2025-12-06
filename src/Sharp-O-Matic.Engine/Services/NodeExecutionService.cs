@@ -1,11 +1,13 @@
 namespace SharpOMatic.Engine.Services;
 
-public class NodeExecutionService(INodeQueue queue) : BackgroundService
+public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFactory) : BackgroundService
 {
     private readonly SemaphoreSlim _semaphore = new(5);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        await LoadMetadata();
+
         while (!stoppingToken.IsCancellationRequested)
         {
             await _semaphore.WaitAsync(stoppingToken);
@@ -82,6 +84,36 @@ public class NodeExecutionService(INodeQueue queue) : BackgroundService
 
             await runContext.RunUpdated();
         }
+    }
+
+    private async Task LoadMetadata()
+    {
+        using (var scope = scopeFactory.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceNames = assembly.GetManifestResourceNames().Where(name => name.Contains("Metadata.Connections") && name.EndsWith(".json"));
+
+            foreach (var resourceName in resourceNames)
+            {
+                try
+                {
+                    using var stream = assembly.GetManifestResourceStream(resourceName);
+                    if (stream != null)
+                    {
+                        var config = await JsonSerializer.DeserializeAsync<ConnectionConfig>(stream);
+                        if (config != null)
+                        {
+                            await repository.UpsertConnectionConfig(config);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to load connection metadata from {resourceName}: {ex.Message}");
+                }
+            }
+        }        
     }
 
     private static Task<List<NextNodeData>> RunNode(ThreadContext threadContext, NodeEntity node)
