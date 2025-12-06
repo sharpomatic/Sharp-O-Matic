@@ -15,6 +15,7 @@ public interface IRepository
     IQueryable<Trace> GetRunTraces(Guid runId);
     Task UpsertTrace(Trace trace);
 
+    Task<List<ConnectionConfig>> GetConnectionConfigs();
     Task<ConnectionConfig?> GetConnectionConfig(string id);
     Task UpsertConnectionConfig(ConnectionConfig config);
 }

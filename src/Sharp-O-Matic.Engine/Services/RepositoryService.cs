@@ -155,6 +155,23 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
 
     }
 
+    public async Task<List<ConnectionConfig>> GetConnectionConfigs()
+    {
+        var dbContext = dbContextFactory.CreateDbContext();
+
+        var entries = await dbContext.ConnectionMetadata.AsNoTracking().ToListAsync();
+
+        var results = new List<ConnectionConfig>();
+        foreach (var entry in entries)
+        {
+            var config = JsonSerializer.Deserialize<ConnectionConfig>(entry.Config, _options);
+            if (config != null)
+                results.Add(config);
+        }
+
+        return results;
+    }
+
     public async Task UpsertConnectionConfig(ConnectionConfig config)
     {
         using var dbContext = dbContextFactory.CreateDbContext();
