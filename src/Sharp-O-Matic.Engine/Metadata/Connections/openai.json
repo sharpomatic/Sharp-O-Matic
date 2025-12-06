@@ -1,5 +1,5 @@
 {
-  "Id": "openai",
+  "ConfigId": "openai",
   "DisplayName": "OpenAI",
   "Description": "Direct connection to the OpenAI API.",
   "AuthModes": [

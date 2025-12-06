@@ -1,7 +1,7 @@
 {
-  "Id": "azureopenai",
+  "ConfigId": "azureopenai",
   "DisplayName": "Azure OpenAI",
-  "Description": "",
+  "Description": "OpenAI model hosted on Azure",
   "AuthModes": [
     {
       "Id": "apikey",
