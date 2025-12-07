@@ -6,8 +6,11 @@ export interface FieldDescriptorSnapshot {
   description: string;
   type: FieldDescriptorType;
   isRequired: boolean;
-  defaultValue: unknown;
-  enumOptions: string[];
+  defaultValue: any;
+  enumOptions: string[] | null;
+  min: number | null;
+  max: number | null;
+  step: number | null;
 }
 
 export class FieldDescriptor {
@@ -17,8 +20,11 @@ export class FieldDescriptor {
     public readonly description: string,
     public readonly type: FieldDescriptorType,
     public readonly isRequired: boolean,
-    public readonly defaultValue: unknown,
-    public readonly enumOptions: string[],
+    public readonly defaultValue: any,
+    public readonly enumOptions: string[] | null,
+    public readonly min: number | null,
+    public readonly max: number | null,
+    public readonly step: number | null
   ) {}
 
   public static fromSnapshot(snapshot: FieldDescriptorSnapshot): FieldDescriptor {
@@ -29,7 +35,10 @@ export class FieldDescriptor {
       snapshot.type,
       snapshot.isRequired,
       snapshot.defaultValue,
-      [...snapshot.enumOptions],
+      snapshot.enumOptions ? [...snapshot.enumOptions] : null,
+      snapshot.min,
+      snapshot.max,
+      snapshot.step,
     );
   }
 }

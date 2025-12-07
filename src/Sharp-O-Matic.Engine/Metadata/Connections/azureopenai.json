@@ -13,19 +13,20 @@
           "Name": "endpoint",
           "Label": "End Point",
           "Description": "Azure End Point",
-          "Type": 0,
+          "Type": 4,
           "IsRequired": true,
-          "DefaultValue": "https://",
-          "EnumOptions": []
+          "DefaultValue": 42
         },
         {
           "Name": "key",
           "Label": "Key",
           "Description": "End Point API Key",
-          "Type": 1,
+          "Type": 4,
           "IsRequired": true,
-          "DefaultValue": "",
-          "EnumOptions": []
+          "DefaultValue": 8,
+          "Min": 4,
+          "Max": 20,
+          "Step": 2
         }
       ]
     }

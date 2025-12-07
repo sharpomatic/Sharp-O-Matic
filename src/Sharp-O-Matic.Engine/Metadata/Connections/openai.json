@@ -16,7 +16,6 @@
           "Type": 0,
           "IsRequired": true,
           "DefaultValue": "https://api.openai.com/v1",
-          "EnumOptions": []
         },
         {
           "Name": "key",
@@ -24,8 +23,7 @@
           "Description": "OpenAI API Key",
           "Type": 1,
           "IsRequired": true,
-          "DefaultValue": "",
-          "EnumOptions": []
+          "DefaultValue": ""
         },
         {
           "Name": "openai_apikey_organizationid",
@@ -33,8 +31,7 @@
           "Description": "Optional Organization Id",
           "Type": 0,
           "IsRequired": false,
-          "DefaultValue": "",
-          "EnumOptions": []
+          "DefaultValue": ""
         },
         {
           "Name": "openai_apikey_projectId",
@@ -42,8 +39,7 @@
           "Description": "Optional Project Id",
           "Type": 0,
           "IsRequired": false,
-          "DefaultValue": "",
-          "EnumOptions": []
+          "DefaultValue": ""
         }
       ]
     }
