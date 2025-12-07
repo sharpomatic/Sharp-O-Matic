@@ -10,16 +10,16 @@
       "IsDefault": true,
       "Fields": [
         {
-          "Name": "endpoint",
-          "Label": "URL",
-          "Description": "OpenAI API Base End Point",
+          "Name": "apikey_endpoint",
+          "Label": "End Point",
+          "Description": "OpenAI API End Point",
           "Type": 0,
           "IsRequired": true,
           "DefaultValue": "https://api.openai.com/v1",
           "EnumOptions": []
         },
         {
-          "Name": "apikey",
+          "Name": "apikey_key",
           "Label": "Key",
           "Description": "OpenAI API Key",
           "Type": 1,
@@ -28,7 +28,7 @@
           "EnumOptions": []
         },
         {
-          "Name": "organizationid",
+          "Name": "apikey_organizationid",
           "Label": "Organization Id",
           "Description": "Optional Organization Id",
           "Type": 0,
@@ -37,7 +37,7 @@
           "EnumOptions": []
         },
         {
-          "Name": "projectId",
+          "Name": "apikey_projectId",
           "Label": "Project Id",
           "Description": "Optional Project Id",
           "Type": 0,

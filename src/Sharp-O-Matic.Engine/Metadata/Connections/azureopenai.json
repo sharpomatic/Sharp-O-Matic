@@ -10,8 +10,8 @@
       "IsDefault": true,
       "Fields": [
         {
-          "Name": "endpoint",
-          "Label": "URL",
+          "Name": "apikey_endpoint",
+          "Label": "End Point",
           "Description": "Azure End Point",
           "Type": 0,
           "IsRequired": true,
@@ -19,39 +19,13 @@
           "EnumOptions": []
         },
         {
-          "Name": "apikey",
+          "Name": "apikey_key",
           "Label": "Key",
           "Description": "End Point API Key",
           "Type": 1,
           "IsRequired": true,
           "DefaultValue": "",
           "EnumOptions": []
-        }
-      ]
-    },
-    {
-      "Id": "other",
-      "DisplayName": "Other",
-      "Kind": 0,
-      "IsDefault": true,
-      "Fields": [
-        {
-          "Name": "other1",
-          "Label": "URL",
-          "Description": "Azure End Point",
-          "Type": 2,
-          "IsRequired": true,
-          "DefaultValue": "true",
-          "EnumOptions": []
-        },
-        {
-          "Name": "other2",
-          "Label": "Key",
-          "Description": "End Point API Key",
-          "Type": 3,
-          "IsRequired": true,
-          "DefaultValue": "",
-          "EnumOptions": [ "uno", "dos", "tres" ]
         }
       ]
     }
