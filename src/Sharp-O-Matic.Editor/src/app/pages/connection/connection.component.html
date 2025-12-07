@@ -59,9 +59,11 @@
         <input
           [type]="field.type === fieldDescriptorType.Secret ? 'password' : 'text'"
           class="form-control"
+          [class.is-invalid]="isFieldMissing(field)"
           [ngModel]="getFieldValue(field)"
           (ngModelChange)="onFieldValueChange(field, $event)"
           (blur)="onFieldStringBlur(field, $any($event.target).value)"/>
+        <div class="invalid-feedback">This field is required.</div>
         }
 
         @if (field.type === fieldDescriptorType.Boolean) {
@@ -94,10 +96,12 @@
         <input
           type="number"
           class="form-control"
+          [class.is-invalid]="isFieldMissing(field)"
           [attr.step]="field.step ?? (field.type === fieldDescriptorType.Integer ? 1 : 'any')"
           [ngModel]="getFieldNumericValue(field)"
           (ngModelChange)="onFieldNumericChange(field, $event)"
           (blur)="onFieldNumericBlur(field, $any($event.target).value)"/>
+        <div class="invalid-feedback">This field is required.</div>
         }
       </div>
       }

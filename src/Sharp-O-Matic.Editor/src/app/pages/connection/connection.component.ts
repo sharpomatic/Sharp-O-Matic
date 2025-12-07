@@ -77,13 +77,8 @@ export class ConnectionComponent implements OnInit {
   }
 
   public getFieldValue(field: FieldDescriptor): string {
-    const fieldValues = this.connection.fieldValues();
-    if (fieldValues.has(field.name)) {
-      const value = fieldValues.get(field.name);
-      return value ?? '';
-    }
-
-    return field.defaultValue != null ? String(field.defaultValue) : '';
+    const value = this.getResolvedFieldValue(field);
+    return value ?? '';
   }
 
   public onFieldValueChange(field: FieldDescriptor, value: string): void {
@@ -113,13 +108,8 @@ export class ConnectionComponent implements OnInit {
   }
 
   public getFieldNumericValue(field: FieldDescriptor): string {
-    const fieldValues = this.connection.fieldValues();
-    if (fieldValues.has(field.name)) {
-      const value = fieldValues.get(field.name);
-      return value ?? '';
-    }
-
-    return field.defaultValue != null ? String(field.defaultValue) : '';
+    const value = this.getResolvedFieldValue(field);
+    return value ?? '';
   }
 
   public onFieldNumericChange(field: FieldDescriptor, value: string | number): void {
@@ -132,6 +122,15 @@ export class ConnectionComponent implements OnInit {
       }
       return next;
     });
+  }
+
+  public isFieldMissing(field: FieldDescriptor): boolean {
+    if (!field.isRequired) {
+      return false;
+    }
+
+    const value = this.getResolvedFieldValue(field);
+    return value === null || value === '';
   }
 
   public onFieldNumericBlur(field: FieldDescriptor, rawValue: string | null): void {
@@ -169,6 +168,19 @@ export class ConnectionComponent implements OnInit {
       next.set(field.name, finalValue);
       return next;
     });
+  }
+
+  private getResolvedFieldValue(field: FieldDescriptor): string | null {
+    const fieldValues = this.connection.fieldValues();
+    if (fieldValues.has(field.name)) {
+      return fieldValues.get(field.name) ?? null;
+    }
+
+    if (field.defaultValue != null) {
+      return String(field.defaultValue);
+    }
+
+    return null;
   }
 
   public getFieldBooleanValue(field: FieldDescriptor): boolean {
