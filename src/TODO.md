@@ -19,13 +19,14 @@ Model Registry
 	- Define authentication, start with just api key, secret name, (for secrets.json) and then other which means you handle it in overrides
 	- Add test button to check connectivity
 
+Max nodes executed for a workflow to prevent looping forever
+Max execution time for workflow to prevent it running forever
+Max number of runs to keep for a workflow to prevent too much data storage
+
+
 # Integration Overrides
 
-Models
-	- Connector building
-	  Just override the authentication entry
-	  Just override the openaiexecutionsettings
-	  Override it all by you returning the actual connector instance
+Max values for nodes, execution and runs to keep
 	  
 Build
     - Different interfaces for specifying the list of custom serializers
@@ -51,11 +52,16 @@ Database
 	Add indexes on fields that are part of ordering queries
 	Deleting a workflow, deletes the runs and traces for it
 	How to let the user connect to different databases instead of sqlite.
+	Built example connecting to SQL Server instead
 
 
 # Futures
 
 Server
 	Integrate use of OmniSharp for full intellisense
+
+Get the nodes by scanning for an attribute, the no need to hard code the 
+	RunNode(ThreadContext threadContext, NodeEntity node) (NodeExecutionService.cs)
+	return nodeType switch (NodeEntityConverter.cs)
 
 
