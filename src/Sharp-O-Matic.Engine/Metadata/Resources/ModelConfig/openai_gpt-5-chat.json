@@ -1,0 +1,38 @@
+{
+  "ConfigId": "openai_gpt-5-chat",
+  "DisplayName": "gpt-5-chat",
+  "Description": "Chat completion model.",
+  "ConnectionConfigId": "openai",
+  "IsCustom": false,
+  "Capabilities": {
+    "SupportsText": true,
+    "SupportsTemperature": true,
+    "SupportsTopP": true
+  },
+  "ParameterFields": [
+    {
+      "Name": "temperature",
+      "Label": "temperature",
+      "Description": "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+      "Type": 5,
+      "IsRequired": false,
+      "Capability": "SupportsTemperature",
+      "DefaultValue": 1,
+      "Min": 0,
+      "Max": 2,
+      "Step": 0.1
+    },
+    {
+      "Name": "top_p",
+      "Label": "top_p",
+      "Description": "Nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.",
+      "Type": 5,
+      "IsRequired": false,
+      "Capability": "SupportsTopP",
+      "DefaultValue": 1,
+      "Min": 0,
+      "Max": 1,
+      "Step": 0.1
+    }
+  ]
+}

@@ -9,6 +9,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Metadata\Resources\ConnectionConfig\azureopenai.json" />
     <EmbeddedResource Include="Metadata\Resources\ConnectionConfig\openai.json" />
+    <EmbeddedResource Include="Metadata\Resources\ModelConfig\openai_custom.json" />
+    <EmbeddedResource Include="Metadata\Resources\ModelConfig\openai_gpt-5-chat.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Metadata\Resources\ModelConfig\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
