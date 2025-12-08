@@ -3,7 +3,7 @@
   "DisplayName": "custom",
   "Description": "Chat completion model.",
   "ConnectionConfigId": "openai",
-  "IsCustom": false,
+  "IsCustom": true,
   "Capabilities": {
     "SupportsText": true,
     "SupportsTemperature": true,
@@ -13,10 +13,10 @@
     {
       "Name": "temperature",
       "Label": "temperature",
-      "Description": "Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+      "Description": "Zero to 2.",
       "Type": 5,
       "IsRequired": false,
-      "Capability": "SupportsTemperature",
+      "Capability": "supportsTemperature",
       "DefaultValue": 1,
       "Min": 0,
       "Max": 2,
@@ -25,10 +25,10 @@
     {
       "Name": "top_p",
       "Label": "top_p",
-      "Description": "Nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.",
+      "Description": "Zero to 1",
       "Type": 5,
       "IsRequired": false,
-      "Capability": "SupportsTopP",
+      "Capability": "supportsTopP",
       "DefaultValue": 1,
       "Min": 0,
       "Max": 1,
@@ -40,7 +40,7 @@
       "Description": "Test",
       "Type": 0,
       "IsRequired": false,
-      "Capability": "SupportsText"
+      "Capability": "supportsText"
     }
   ]
 }

@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ConnectionSummary } from '../../metadata/definitions/connection summary';
 import { FieldDescriptor } from '../../metadata/definitions/field-descriptor';
 import { Model } from '../../metadata/definitions/model';
-import { ModelCapabilities } from '../../metadata/definitions/model-capabilities';
+import { ModelCapabilities, ModelCapabilitiesSnapshot } from '../../metadata/definitions/model-capabilities';
 import { ModelConfig } from '../../metadata/definitions/model-config';
 import { FieldDescriptorType } from '../../metadata/enumerations/field-descriptor-type';
 import { MetadataService } from '../../services/metadata.service';
@@ -31,6 +31,7 @@ export class ModelComponent implements OnInit {
   public modelConfig: ModelConfig | null = null;
   public readonly modelConfigs = this.metadataService.modelConfigs;
   private readonly connectionConfigId = signal<string | null>(null);
+  private readonly modelVersion = signal(0);
   public readonly availableModelConfigs: Signal<ModelConfig[]>;
   public connectionSummaries: ConnectionSummary[] = [];
   public readonly fieldDescriptorType = FieldDescriptorType;
@@ -45,15 +46,25 @@ export class ModelComponent implements OnInit {
       return this.modelConfigs()
         .filter(cfg => cfg.connectionConfigId === configId)
         .slice()
-        .sort((a, b) => a.displayName.localeCompare(b.displayName));
+        .sort((a, b) => {
+          if (a.isCustom && !b.isCustom) {
+            return 1;
+          }
+          if (!a.isCustom && b.isCustom) {
+            return -1;
+          }
+          return a.displayName.localeCompare(b.displayName);
+        });
     });
 
     effect(() => {
+      this.modelVersion();
       const connectionId = this.model.connectionId();
       this.loadConnectionConfig(connectionId);
     });
 
     effect(() => {
+      this.modelVersion();
       const configId = this.model.configId();
       const configs = this.availableModelConfigs();
       if (configId && configs.length) {
@@ -66,6 +77,7 @@ export class ModelComponent implements OnInit {
     });
 
     effect(() => {
+      this.modelVersion();
       const configs = this.availableModelConfigs();
       const currentConfigId = this.model.configId();
       if (!configs.length) {
@@ -94,6 +106,7 @@ export class ModelComponent implements OnInit {
         if (model) {
           this.model = model;
           this.setModelConfig(model.configId(), false);
+          this.modelVersion.update(v => v + 1);
         }
       });
     }
@@ -108,6 +121,53 @@ export class ModelComponent implements OnInit {
 
   public onModelConfigChange(configId: string): void {
     this.setModelConfig(configId, true);
+  }
+
+  public capabilityEntries(): { key: keyof ModelCapabilitiesSnapshot; label: string; value: boolean }[] {
+    if (!this.modelConfig) {
+      return [];
+    }
+
+    const configCaps = this.modelConfig.capabilities.toSnapshot();
+    const customCaps = this.model.customCapabilities().toSnapshot();
+
+    return Object.entries(configCaps)
+      .filter(([, enabled]) => Boolean(enabled))
+      .map(([key]) => ({
+        key: key as keyof ModelCapabilitiesSnapshot,
+        label: this.formatCapabilityLabel(key),
+        value: Boolean(customCaps[key as keyof ModelCapabilitiesSnapshot]),
+      }));
+  }
+
+  public onCapabilityChange(capability: keyof ModelCapabilitiesSnapshot, enabled: boolean): void {
+    const snapshot = this.model.customCapabilities().toSnapshot();
+    const updated = { ...snapshot, [capability]: enabled } as ModelCapabilitiesSnapshot;
+    this.model.customCapabilities.set(ModelCapabilities.fromSnapshot(updated));
+  }
+
+  public isCapabilityEnabled(capability: string): boolean {
+    if (!this.modelConfig) {
+      return false;
+    }
+    const caps = this.modelConfig.capabilities.toSnapshot();
+    const key = capability as keyof ModelCapabilitiesSnapshot;
+    const record = caps as Record<keyof ModelCapabilitiesSnapshot, boolean | undefined>;
+    return Boolean(record[key]);
+  }
+
+  public isCustomCapabilityEnabled(capability: string): boolean {
+    const caps = this.model.customCapabilities().toSnapshot();
+    const key = capability as keyof ModelCapabilitiesSnapshot;
+    const record = caps as Record<keyof ModelCapabilitiesSnapshot, boolean | undefined>;
+    return Boolean(record[key]);
+  }
+
+  private formatCapabilityLabel(key: string): string {
+    return key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, c => c.toUpperCase())
+      .trim();
   }
 
   public getParameterValue(field: FieldDescriptor): string {

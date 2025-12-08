@@ -55,7 +55,7 @@
         'tiny': field.type === fieldDescriptorType.Integer || field.type === fieldDescriptorType.Double
       }">
         @if (field.type === fieldDescriptorType.String || field.type === fieldDescriptorType.Secret) {
-        <label class="form-label">{{ field.label }} @if (!field.isRequired) {(Optional)} </label>
+        <label class="form-label">{{ field.label }}</label>
         <input
           [type]="field.type === fieldDescriptorType.Secret ? 'password' : 'text'"
           class="form-control"
@@ -74,13 +74,13 @@
             [checked]="getFieldBooleanValue(field)"
             (change)="onFieldBooleanChange(field, $any($event.target).checked)">
           <label class="form-check-label">
-            {{ field.label }} @if (!field.isRequired) {(Optional)}
+            {{ field.label }}
           </label>
         </div>
         }
 
         @if (field.type === fieldDescriptorType.Enum) {
-        <label class="form-label">{{ field.label }} @if (!field.isRequired) {(Optional)} </label>
+        <label class="form-label">{{ field.label }}</label>
         <select
           class="form-select"
           [ngModel]="getFieldValue(field)"
@@ -92,7 +92,7 @@
         }
 
         @if (field.type === fieldDescriptorType.Integer || field.type === fieldDescriptorType.Double) {
-        <label class="form-label">{{ field.label }} @if (!field.isRequired) {(Optional)} </label>
+        <label class="form-label">{{ field.label }}</label>
         <input
           type="number"
           class="form-control"
