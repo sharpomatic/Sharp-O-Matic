@@ -3,22 +3,18 @@
 
 # Minimum Viable Product Features
 
-Add custom display name to the capability names
-
 Scrolling on workflows, connectors, connector, models, model, status pages
 
 Model Call
-	- Specify model from registry
-	- Specify instructions
-	- Specify prompt with argument resolution using path resolution for get
-	- Specify the output path for the result
-	- Output as text or json for structured output
-	  Copy the OpenAI / Gemini method of defining the structued output (defined and advanced schema)
-	- Show the input and output context
+	- Find matching model provider and call it
+	- Resolve path strings in the instructions and prompt
+	- Build out the different gpt-5.1 chat properties
+	- Support tool calling, reuse existing attributes etc?
 
-Model Registry
-	- Define model name
-	- Define authentication, start with just api key, secret name, (for secrets.json) and then other which means you handle it in overrides
+Connection
+	- Add test button to check connectivity
+
+Model
 	- Add test button to check connectivity
 
 Max nodes executed for a workflow to prevent looping forever
