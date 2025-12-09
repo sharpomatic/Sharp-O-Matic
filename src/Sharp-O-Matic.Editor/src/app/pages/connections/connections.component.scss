@@ -4,6 +4,21 @@
   height: 100%;
 }
 
+.connections-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.connections-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  align-content: flex-start;
+}
+
 .icon-sm {
   font-size: 1.5rem;
 }

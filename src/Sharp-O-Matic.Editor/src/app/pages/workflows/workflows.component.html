@@ -1,10 +1,10 @@
-<div class="container-fluid p-0">
+<div class="container-fluid p-0 workflows-page">
   <div class="d-flex justify-content-between align-items-center p-3 pt-2 pb-1 bg-body-secondary">
     <h2 class=""><i class="bi bi-share pe-3 icon-sm"></i>Workflows ({{ workflows.length }})</h2>
     <button class="btn btn-primary" (click)="newWorkflow()">New</button>
   </div>
   <hr class="m-0"/>
-  <div class="d-flex flex-wrap gap-3 p-3">
+  <div class="d-flex flex-wrap gap-3 p-3 workflows-list">
     @for (workflow of workflows; track workflow.id) {
       <div class="card workflow-card">
         <div class="card-header">
