@@ -28,10 +28,10 @@
           </ul>
         </div>
         }
-        <button class="btn btn-primary me-2" [disabled]="!workflowService.workflow().isDirty()"
-          (click)="save()">Save</button>
-        <button class="btn btn-primary" [disabled]="workflowService.workflow().isDirty() || workflowService.isRunning()"
-          (click)="run()">Run</button>
+        <button class="btn btn-primary me-2" [disabled]="!workflowService.workflow().isDirty()" (click)="save()">Save</button>
+        @if (activeTab === 'Design') {          
+        <button class="btn btn-primary" [disabled]="workflowService.workflow().isDirty() || workflowService.isRunning()" (click)="run()">Run</button>
+        }
       </div>
     </div>
 
