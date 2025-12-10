@@ -1,6 +1,6 @@
 ﻿namespace SharpOMatic.Engine.Nodes;
 
-[Node(NodeType.FanIn)]
+[RunNode(NodeType.FanIn)]
 public class FanInNode(ThreadContext threadContext, FanInNodeEntity node) : RunNode<FanInNodeEntity>(threadContext, node)
 {
     protected override async Task<(string, List<NextNodeData>)> RunInternal()

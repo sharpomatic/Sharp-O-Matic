@@ -57,8 +57,5 @@ Database
 Server
 	Integrate use of OmniSharp for full intellisense
 
-Get the nodes by scanning for an attribute, the no need to hard code the 
-	RunNode(ThreadContext threadContext, NodeEntity node) (NodeExecutionService.cs)
-	return nodeType switch (NodeEntityConverter.cs)
 
 

@@ -1,9 +1,16 @@
-﻿using JsonSerializer = System.Text.Json.JsonSerializer;
-
-namespace SharpOMatic.Engine.Entities.Definitions;
+﻿namespace SharpOMatic.Engine.Entities.Definitions;
 
 public class NodeEntityConverter : JsonConverter<NodeEntity>
 {
+    private static readonly Dictionary<NodeType, Type> _nodeEntities;
+
+    static NodeEntityConverter()
+    {
+        _nodeEntities = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(t => typeof(NodeEntity).IsAssignableFrom(t) && !t.IsAbstract && t.GetCustomAttribute<NodeEntityAttribute>() != null)
+            .ToDictionary(t => t.GetCustomAttribute<NodeEntityAttribute>()!.NodeType, t => t);
+    }
+
     public override bool CanConvert(Type typeToConvert) => typeof(NodeEntity).IsAssignableFrom(typeToConvert);
 
     public override NodeEntity Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -38,18 +45,12 @@ public class NodeEntityConverter : JsonConverter<NodeEntity>
         var innerOptions = new JsonSerializerOptions(options);
         innerOptions.Converters.Remove(this);
 
-        return nodeType switch
+        if (_nodeEntities.TryGetValue(nodeType, out var entityType))
         {
-            NodeType.Start => JsonSerializer.Deserialize<StartNodeEntity>(ref reader, innerOptions)!,
-            NodeType.End => JsonSerializer.Deserialize<EndNodeEntity>(ref reader, innerOptions)!,
-            NodeType.Code => JsonSerializer.Deserialize<CodeNodeEntity>(ref reader, innerOptions)!,
-            NodeType.Edit => JsonSerializer.Deserialize<EditNodeEntity>(ref reader, innerOptions)!,
-            NodeType.Switch => JsonSerializer.Deserialize<SwitchNodeEntity>(ref reader, innerOptions)!,
-            NodeType.FanIn => JsonSerializer.Deserialize<FanInNodeEntity>(ref reader, innerOptions)!,
-            NodeType.FanOut => JsonSerializer.Deserialize<FanOutNodeEntity>(ref reader, innerOptions)!,
-            NodeType.ModelCall => JsonSerializer.Deserialize<ModelCallNodeEntity>(ref reader, innerOptions)!,
-            _ => throw new NotSupportedException($"NodeType '{nodeType}' is not supported.")
-        };
+            return (NodeEntity)JsonSerializer.Deserialize(ref reader, entityType, innerOptions)!;
+        }
+
+        throw new NotSupportedException($"NodeType '{nodeType}' is not supported.");
     }
 
     public override void Write(Utf8JsonWriter writer, NodeEntity value, JsonSerializerOptions options)
@@ -58,34 +59,6 @@ public class NodeEntityConverter : JsonConverter<NodeEntity>
         var innerOptions = new JsonSerializerOptions(options);
         innerOptions.Converters.Remove(this);
 
-        switch (value)
-        {
-            case StartNodeEntity start:
-                JsonSerializer.Serialize(writer, start, innerOptions);
-                break;
-            case EndNodeEntity end:
-                JsonSerializer.Serialize(writer, end, innerOptions);
-                break;
-            case CodeNodeEntity code:
-                JsonSerializer.Serialize(writer, code, innerOptions);
-                break;
-            case EditNodeEntity edit:
-                JsonSerializer.Serialize(writer, edit, innerOptions);
-                break;
-            case SwitchNodeEntity switcher:
-                JsonSerializer.Serialize(writer, switcher, innerOptions);
-                break;
-            case FanInNodeEntity fanIn:
-                JsonSerializer.Serialize(writer, fanIn, innerOptions);
-                break;
-            case FanOutNodeEntity fanOut:
-                JsonSerializer.Serialize(writer, fanOut, innerOptions);
-                break;
-            case ModelCallNodeEntity modelCall:
-                JsonSerializer.Serialize(writer, modelCall, innerOptions);
-                break;
-            default:
-                throw new NotSupportedException($"Type '{value.GetType()}' is not supported.");
-        }
+        JsonSerializer.Serialize(writer, value, value.GetType(), innerOptions);
     }
 }

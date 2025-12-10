@@ -8,8 +8,8 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
     static NodeExecutionService()
     {
         _nodeRunners = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => t.GetCustomAttribute<NodeAttribute>() != null)
-            .ToDictionary(t => t.GetCustomAttribute<NodeAttribute>()!.NodeType, t => t);
+            .Where(t => t.GetCustomAttribute<RunNodeAttribute>() != null)
+            .ToDictionary(t => t.GetCustomAttribute<RunNodeAttribute>()!.NodeType, t => t);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

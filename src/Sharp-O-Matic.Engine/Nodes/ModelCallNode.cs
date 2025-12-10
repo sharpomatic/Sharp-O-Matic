@@ -1,6 +1,6 @@
 namespace SharpOMatic.Engine.Nodes;
 
-[Node(NodeType.ModelCall)]
+[RunNode(NodeType.ModelCall)]
 public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node) : RunNode<ModelCallNodeEntity>(threadContext, node)
 {
     protected override Task<(string, List<NextNodeData>)> RunInternal()
