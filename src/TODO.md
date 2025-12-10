@@ -41,11 +41,14 @@ Build
 
 # Implementation Details
 
+Improve sharpomatic setup via a builder.
+
+Add UI editor as exposed via a specified path
+
 Database
 	Add a version field to all serializable data, like workflow, connector, model, run, trace so easier to upgrade in future
 	Add indexes on fields that are part of ordering queries
 	Deleting a workflow, deletes the runs and traces for it
-	How to let the user connect to different databases instead of sqlite.
 	Built example connecting to SQL Server instead
 
 

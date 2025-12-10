@@ -37,4 +37,19 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<NodeExecutionService>();
         return services;
     }
+
+    public static IServiceCollection AddSharpOMaticRepository(
+        this IServiceCollection services,
+        Action<DbContextOptionsBuilder> optionsAction,
+        Action<SharpOMaticDbOptions>? dbOptionsAction = null)
+    {
+        services.AddDbContextFactory<SharpOMaticDbContext>(optionsAction);
+        
+        if (dbOptionsAction != null)
+            services.Configure(dbOptionsAction);
+        else
+            services.Configure<SharpOMaticDbOptions>(o => { });
+
+        return services;
+    }
 }

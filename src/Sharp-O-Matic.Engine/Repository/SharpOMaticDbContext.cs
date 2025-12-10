@@ -10,8 +10,25 @@ public class SharpOMaticDbContext : DbContext
     public DbSet<ModelConfigMetadata> ModelConfigMetadata { get; set; }
     public DbSet<ModelMetadata> ModelMetadata { get; set; }
 
-    public SharpOMaticDbContext(DbContextOptions<SharpOMaticDbContext> options)
+    private readonly SharpOMaticDbOptions _options;
+
+    public SharpOMaticDbContext(DbContextOptions<SharpOMaticDbContext> options, IOptions<SharpOMaticDbOptions> dbOptions)
         : base(options)
     {
+        _options = dbOptions.Value;
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        if (!string.IsNullOrWhiteSpace(_options.DefaultSchema))
+            modelBuilder.HasDefaultSchema(_options.DefaultSchema);
+
+        if (!string.IsNullOrWhiteSpace(_options.TablePrefix))
+        {
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+                entity.SetTableName($"{_options.TablePrefix}{entity.GetTableName()}");
+        }
     }
 }
