@@ -37,7 +37,7 @@ export class ConnectionsComponent {
       ...Connection.defaultSnapshot(),
       configId: '',
       name: 'Untitled',
-      description: 'Connection needs a description.',
+      description: 'Connector needs a description.',
     });
 
     this.serverWorkflow.upsertConnection(newConnection).subscribe(() => {
