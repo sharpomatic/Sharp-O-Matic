@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnDestroy, OnInit, Output, TemplateRef, ViewChild, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild, inject } from '@angular/core';
 import { NodeStatus } from '../../../enumerations/node-status';
 import { RunStatus } from '../../../enumerations/run-status';
 import { WorkflowService } from '../services/workflow.service';
@@ -31,7 +31,8 @@ export class TracebarComponent implements OnInit, OnDestroy {
   public readonly getNodeSymbol = getNodeSymbol;
   public isResizing = false;
   public tabs: TabItem[] = [];
-  public activeTabId = 'input';
+  @Input() public activeTabId = 'input';
+  @Output() public activeTabIdChange = new EventEmitter<string>();
 
   private minWidth = 500;
   private maxWidth = 1200;
@@ -90,6 +91,11 @@ export class TracebarComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.cleanupListeners();
+  }
+
+  public onActiveTabIdChange(tabId: string): void {
+    this.activeTabId = tabId;
+    this.activeTabIdChange.emit(tabId);
   }
 
   public startResize(event: MouseEvent | TouchEvent): void {

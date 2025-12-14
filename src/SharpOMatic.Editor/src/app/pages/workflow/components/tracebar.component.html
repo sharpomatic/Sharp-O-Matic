@@ -15,7 +15,7 @@
   <hr class="header-separator" />
   }
   <div class="tab-shell mt-2">
-    <app-tab [tabs]="tabs" [(activeTabId)]="activeTabId"></app-tab>
+    <app-tab [tabs]="tabs" [activeTabId]="activeTabId" (activeTabIdChange)="onActiveTabIdChange($event)"></app-tab>
   </div>
 
   <ng-template #inputTab>

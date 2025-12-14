@@ -37,6 +37,7 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
 
   public activeTab = 'Design';
   public activeTabId = 'design';
+  public tracebarActiveTabId = 'input';
   public isTracebarClosed = signal(true);
   public tracebarWidth = signal(800);
   public tabs: TabItem[] = [];
@@ -59,8 +60,17 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
   }
 
   run(): void {
+    debugger;
+    const hasRunInputs = this.workflowService.runInputs().entries().length > 0;
+    if (!hasRunInputs) {
+      this.tracebarActiveTabId = 'trace';
+    }
+
     this.workflowService.run().subscribe(() => {
       this.isTracebarClosed.set(false);
+      if (!hasRunInputs) {
+        this.tracebarActiveTabId = 'trace';
+      }
     });
   }
 

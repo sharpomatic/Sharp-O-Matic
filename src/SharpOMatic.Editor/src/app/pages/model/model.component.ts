@@ -302,7 +302,8 @@ export class ModelComponent implements OnInit, CanLeaveWithUnsavedChanges {
       }
 
       if (previousValues.has(field.name)) {
-        next.set(field.name, previousValues.get(field.name) ?? null);
+        const constrained = this.applyFieldConstraints(field, previousValues.get(field.name) ?? null);
+        next.set(field.name, constrained);
       } else if (field.defaultValue === null || field.defaultValue === undefined) {
         next.set(field.name, null);
       } else {
@@ -323,6 +324,36 @@ export class ModelComponent implements OnInit, CanLeaveWithUnsavedChanges {
     }
 
     return null;
+  }
+
+  private applyFieldConstraints(field: FieldDescriptor, value: string | null): string | null {
+    if (value === null) {
+      return null;
+    }
+
+    const isNumericField = field.type === FieldDescriptorType.Integer || field.type === FieldDescriptorType.Double;
+    if (!isNumericField) {
+      return value;
+    }
+
+    let numeric = Number(value);
+    if (!Number.isFinite(numeric)) {
+      return value;
+    }
+
+    if (field.type === FieldDescriptorType.Integer) {
+      numeric = Math.trunc(numeric);
+    }
+
+    if (field.min != null && numeric < field.min) {
+      numeric = field.min;
+    }
+
+    if (field.max != null && numeric > field.max) {
+      numeric = field.max;
+    }
+
+    return numeric.toString();
   }
 
   private loadConnectorConfig(connectorId: string | null): void {

@@ -55,6 +55,7 @@
         [traces]="workflowService.traces"></app-designer>
       @if (!isTracebarClosed()) {
       <app-tracebar class="trace-panel flex-shrink-0" [style.width.px]="tracebarWidth()"
+        [(activeTabId)]="tracebarActiveTabId"
         (tracebarWidthChange)="onTracebarWidthChange($event)"></app-tracebar>
       }
     </div>
