@@ -1,27 +1,29 @@
 <div>
-  <div class="form-line">
-    <label for="select-context" class="form-label field-label">Select Context</label>
-    <div class="flex-fill control-column context">
-      <select class="form-select selectContext"
-              id="select-context"
-              [disabled]="contexts.length === 0"
-              [ngModel]="selectedIndex()"
-              (ngModelChange)="onSelectedIndexChange($event)">
-        @for (context of contexts; track $index; let i = $index) {
-          <option [ngValue]="i">
-            Call {{ i + 1 }}
-          </option>
-        }
-        @if (contexts.length === 0) {
-          <option [ngValue]="-1">(none)</option>
-        }
-      </select>
+  @if (mode === 'full') {
+    <div class="form-line">
+      <label for="select-context" class="form-label field-label">Select Context</label>
+      <div class="flex-fill control-column context">
+        <select class="form-select selectContext"
+                id="select-context"
+                [disabled]="contexts.length === 0"
+                [ngModel]="selectedIndex()"
+                (ngModelChange)="onSelectedIndexChange($event)">
+          @for (context of contexts; track $index; let i = $index) {
+            <option [ngValue]="i">
+              Call {{ i + 1 }}
+            </option>
+          }
+          @if (contexts.length === 0) {
+            <option [ngValue]="-1">(none)</option>
+          }
+        </select>
+      </div>
     </div>
-  </div>
 
-  <hr/>
+    <hr/>
 
-  <label for="select-context" class="form-label">Context Contents</label>  
+    <label for="select-context" class="form-label">Context Contents</label>
+  }
 
   @if (errorMessage()) {
     <div class="text-muted fst-italic">{{ errorMessage() }}</div>

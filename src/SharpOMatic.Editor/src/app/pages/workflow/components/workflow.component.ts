@@ -1,4 +1,4 @@
-import { Component, HostListener, TemplateRef, ViewChild, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, HostListener, TemplateRef, ViewChild, inject, OnInit, signal, computed, effect } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { WorkflowService } from '../services/workflow.service';
 import { DesignerComponent } from '../../../components/designer/components/designer.component';
@@ -11,6 +11,7 @@ import { TracebarComponent } from './tracebar.component';
 import { NodeType } from '../../../entities/enumerations/node-type';
 import { TabComponent, TabItem } from '../../../components/tab/tab.component';
 import { CanLeaveWithUnsavedChanges } from '../../../guards/unsaved-changes.guard';
+import { RunStatus } from '../../../enumerations/run-status';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -52,7 +53,7 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.workflowService.load(id);
-    }
+      }
   }
 
   save(): void {
@@ -60,7 +61,6 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
   }
 
   run(): void {
-    debugger;
     const hasRunInputs = this.workflowService.runInputs().entries().length > 0;
     if (!hasRunInputs) {
       this.tracebarActiveTabId = 'trace';

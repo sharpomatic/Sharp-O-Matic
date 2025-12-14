@@ -10,16 +10,18 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { ContextEntryEntity } from '../../../entities/definitions/context-entry.entity';
 import { MonacoService } from '../../../services/monaco.service';
 import { TabComponent, TabItem } from '../../../components/tab/tab.component';
+import { ContextViewerComponent } from '../../../components/context-viewer/context-viewer.component';
 
 @Component({
   selector: 'app-tracebar',
   standalone: true,
-  imports: [CommonModule, FormsModule, MonacoEditorModule, TabComponent],
+  imports: [CommonModule, FormsModule, MonacoEditorModule, TabComponent, ContextViewerComponent],
   templateUrl: './tracebar.component.html',
   styleUrl: './tracebar.component.scss'
 })
 export class TracebarComponent implements OnInit, OnDestroy {
   @ViewChild('inputTab', { static: true }) inputTab!: TemplateRef<unknown>;
+  @ViewChild('outputTab', { static: true }) outputTab!: TemplateRef<unknown>;
   @ViewChild('traceTab', { static: true }) traceTab!: TemplateRef<unknown>;
   @Output() public tracebarWidthChange = new EventEmitter<number>();
 
@@ -82,6 +84,7 @@ export class TracebarComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.tabs = [
       { id: 'input', title: 'Input', content: this.inputTab },
+      { id: 'output', title: 'Output', content: this.outputTab },
       { id: 'trace', title: 'Trace', content: this.traceTab }
     ];
 
@@ -96,6 +99,14 @@ export class TracebarComponent implements OnInit, OnDestroy {
   public onActiveTabIdChange(tabId: string): void {
     this.activeTabId = tabId;
     this.activeTabIdChange.emit(tabId);
+  }
+
+  public getOutputContexts(): string[] {
+    const output = this.workflowService.runProgress()?.outputContext;
+    if (!output) {
+      return [];
+    }
+    return [output];
   }
 
   public startResize(event: MouseEvent | TouchEvent): void {

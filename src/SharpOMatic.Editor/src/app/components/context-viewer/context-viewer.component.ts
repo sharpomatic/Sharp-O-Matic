@@ -22,6 +22,7 @@ const CONTEXT_LIST = 'ContextList';
 })
 export class ContextViewerComponent implements OnChanges {
   @Input() contexts: string[] = [];
+  @Input() mode: 'full' | 'simple' = 'full';
 
   public selectedIndex = signal(0);
   public contextTree = signal<ContextNode[]>([]);

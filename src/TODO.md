@@ -3,12 +3,12 @@
 
 # Minimum Viable Product Features
 
-Read only properties of mode, like context window, knowledge cutoff, pricing.
+Model
+	-Read only properties of mode, like context window, knowledge cutoff, pricing.
 
 Model Call
-	- Find matching model provider and call it
+	- Define output path, merge if already exists
 	- Resolve path strings in the instructions and prompt
-	- Build out the different gpt-5.1 chat properties
 	- Support tool calling, reuse existing attributes etc?
 	- Support structured output
 
