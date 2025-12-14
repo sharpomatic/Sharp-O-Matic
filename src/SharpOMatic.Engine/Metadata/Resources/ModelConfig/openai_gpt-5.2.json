@@ -3,6 +3,7 @@
   "DisplayName": "gpt-5.2",
   "Description": "Reasoning model.",
   "ConnectorConfigId": "openai",
+  "IsCustom": false,
   "Capabilities": [
     {
       "Name": "SupportsText",
@@ -11,18 +12,40 @@
     {
       "Name": "SupportsMaxOutputTokens",
       "DisplayName": "Supports Max Output Tokens"
+    },
+    {
+      "Name": "SupportsStructuredOutput",
+      "DisplayName": "Structured Output"
     }
   ],
   "ParameterFields": [
     {
       "Name": "max_output_tokens",
       "Label": "Max Output Tokens",
+      "Description": "",
+      "CallDefined": false,
       "Type": 5,
+      "IsRequired": false,
       "Capability": "SupportsMaxOutputTokens",
       "DefaultValue": 128000,
       "Min": 0,
       "Max": 128000,
       "Step": 10000
+    },
+    {
+      "Name": "structured_output",
+      "Label": "Structured Output",
+      "Description": "",
+      "CallDefined": true,
+      "Type": 3,
+      "IsRequired": false,
+      "Capability": "SupportsStructuredOutput",
+      "DefaultValue": "Text",
+      "EnumOptions": [
+        "Text",
+        "Schema",
+        "Configured Type"
+      ]
     }
   ]
 }

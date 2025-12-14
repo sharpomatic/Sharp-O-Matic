@@ -20,26 +20,39 @@
     {
       "Name": "SupportsTopP",
       "DisplayName": "Supports TopP"
+    },
+    {
+      "Name": "SupportsStructuredOutput",
+      "DisplayName": "Structured Output"
     }
   ],
   "ParameterFields": [
     {
       "Name": "modelName",
+      "Description": "",
       "Label": "Model Name",
+      "CallDefined": false,
+      "Type": 0,
       "IsRequired": true
     },
     {
       "Name": "max_output_tokens",
+      "Description": "",
       "Label": "Max Output Tokens",
+      "CallDefined": false,
       "Type": 5,
+      "IsRequired": true,
       "Capability": "SupportsMaxOutputTokens",
       "DefaultValue": 128000,
       "Min": 0
-    }
+    },
     {
       "Name": "temperature",
+      "Description": "",
       "Label": "temperature",
+      "CallDefined": false,
       "Type": 5,
+      "IsRequired": false,
       "Capability": "SupportsTemperature",
       "DefaultValue": 1,
       "Min": 0,
@@ -48,13 +61,31 @@
     },
     {
       "Name": "top_p",
+      "Description": "",
       "Label": "top_p",
+      "CallDefined": false,
+      "IsRequired": false,
       "Type": 5,
       "Capability": "SupportsTopP",
       "DefaultValue": 1,
       "Min": 0,
       "Max": 1,
       "Step": 0.1
+    },
+    {
+      "Name": "structured_output",
+      "Label": "Structured Output",
+      "Description": "",
+      "CallDefined": true,
+      "Type": 3,
+      "IsRequired": false,
+      "Capability": "SupportsStructuredOutput",
+      "DefaultValue": "Text",
+      "EnumOptions": [
+        "Text",
+        "Schema",
+        "Configured Type"
+      ]
     }
   ]
 }

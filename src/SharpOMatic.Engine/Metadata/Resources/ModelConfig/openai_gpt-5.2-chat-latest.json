@@ -3,6 +3,7 @@
   "DisplayName": "gpt-5.2-chat-latest",
   "Description": "Chat completion model.",
   "ConnectorConfigId": "openai",
+  "IsCustom":  false,
   "Capabilities": [
     {
       "Name": "SupportsText",
@@ -21,7 +22,10 @@
     {
       "Name": "max_output_tokens",
       "Label": "Max Output Tokens",
+      "Description": "",
+      "CallDefined": false,
       "Type": 5,
+      "IsRequired": false,
       "Capability": "SupportsMaxOutputTokens",
       "DefaultValue": 16384,
       "Min": 0,
@@ -31,8 +35,10 @@
     {
       "Name": "structured_output",
       "Label": "Structured Output",
+      "Description": "",
       "CallDefined": true,
       "Type": 3,
+      "IsRequired": false,
       "Capability": "SupportsStructuredOutput",
       "DefaultValue": "Text",
       "EnumOptions": [

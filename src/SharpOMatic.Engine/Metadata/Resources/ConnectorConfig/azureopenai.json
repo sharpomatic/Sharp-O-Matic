@@ -13,6 +13,7 @@
           "Name": "string",
           "Label": "string",
           "Description": "string",
+          "CallDefined":  false,
           "Type": 0,
           "IsRequired": true,
           "DefaultValue": "(Default)"
@@ -21,6 +22,7 @@
           "Name": "secret",
           "Label": "secret",
           "Description": "secret",
+          "CallDefined": false,
           "Type": 1,
           "IsRequired": true,
           "DefaultValue": "secret"
@@ -29,6 +31,7 @@
           "Name": "boolean",
           "Label": "boolean",
           "Description": "boolean",
+          "CallDefined": false,
           "Type": 2,
           "IsRequired": true,
           "DefaultValue": true
@@ -37,6 +40,7 @@
           "Name": "enum",
           "Label": "enum",
           "Description": "enum",
+          "CallDefined": false,
           "Type": 3,
           "IsRequired": true,
           "DefaultValue": "dos",
@@ -46,6 +50,7 @@
           "Name": "integer",
           "Label": "integer (1-99) step 3",
           "Description": "integer",
+          "CallDefined": false,
           "Type": 4,
           "IsRequired": true,
           "DefaultValue": 42,
@@ -57,6 +62,7 @@
           "Name": "double",
           "Label": "double",
           "Description": "double (1-99) step 1.5",
+          "CallDefined": false,
           "Type": 5,
           "IsRequired": true,
           "DefaultValue": 3.14,

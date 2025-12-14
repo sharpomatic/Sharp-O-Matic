@@ -12,16 +12,26 @@
         {
           "Name": "apikey",
           "Label": "API key",
+          "Description": "",
+          "CallDefined": false,
           "Type": 1,
-          "IsRequired": true,
+          "IsRequired": true
         },
         {
           "Name": "organizationid",
-          "Label": "Organization Id"
+          "Label": "Organization Id",
+          "Description": "",
+          "CallDefined": false,
+          "Type": 0,
+          "IsRequired": false
         },
         {
           "Name": "projectId",
-          "Label": "Project Id"
+          "Label": "Project Id",
+          "Description": "",
+          "CallDefined": false,
+          "Type": 0,
+          "IsRequired": false
         }
       ]
     }
