@@ -23,9 +23,16 @@ public class FanInNode(ThreadContext threadContext, FanInNodeEntity node) : RunN
         lock (ThreadContext.Parent)
         {
             if (ThreadContext.Parent.FanInMergedContext is null)
-                ThreadContext.Parent.FanInMergedContext = ThreadContext.NodeContext;
-            else
-                ThreadContext.RunContext.MergeContexts(ThreadContext.Parent.FanInMergedContext, ThreadContext.NodeContext);
+            {
+                var json = RunContext.TypedSerialization(ThreadContext.Parent.NodeContext);
+                ThreadContext.Parent.FanInMergedContext = RunContext.TypedDeserialization(json);
+            }
+
+            if (ThreadContext.NodeContext.TryGetValue("output", out var outputValue))
+            {
+                var tempContext = new ContextObject { { "output", outputValue } };
+                ThreadContext.RunContext.MergeContexts(ThreadContext.Parent.FanInMergedContext, tempContext);
+            }
 
             ThreadContext.Parent.FanInArrived++;
             if (ThreadContext.Parent.FanInArrived < ThreadContext.Parent.FanOutCount)

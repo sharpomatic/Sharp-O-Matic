@@ -3,12 +3,12 @@
 
 # Minimum Viable Product Features
 
+
 Model
 	-Read only properties of mode, like context window, knowledge cutoff, pricing.
 
 Model Call
-	- Define output path, merge if already exists
-	- Resolve path strings in the instructions and prompt
+	- Define output paths with defaults
 	- Support tool calling, reuse existing attributes etc?
 	- Support structured output
 

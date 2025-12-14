@@ -80,4 +80,21 @@ public static class ContextHelpers
 
         return entryValue;
     }
+
+    public static string SubstituteValues(string input, ContextObject context)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            return input;
+
+        return System.Text.RegularExpressions.Regex.Replace(input, @"\{\{\s*(.*?)\s*\}\}", match =>
+        {
+            var path = match.Groups[1].Value;
+            if (ContextPathResolver.TryGetValue(context, path, false, false, out var value))
+            {
+                return value?.ToString() ?? string.Empty;
+            }
+
+            return string.Empty;
+        });
+    }
 }

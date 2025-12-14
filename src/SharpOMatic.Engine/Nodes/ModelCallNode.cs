@@ -63,8 +63,11 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
         OpenAIClient client = new OpenAIClient(apiKey);
         var chatCompletionClient = client.GetChatClient(modelName);
 
-        AIAgent agent = chatCompletionClient.CreateAIAgent(instructions: Node.Instructions);
-        var response = await agent.RunAsync(Node.Prompt, options: new ChatClientAgentRunOptions(chatOptions));
+        var instructions = ContextHelpers.SubstituteValues(Node.Instructions, ThreadContext.NodeContext);
+        var prompt = ContextHelpers.SubstituteValues(Node.Prompt, ThreadContext.NodeContext);
+
+        AIAgent agent = chatCompletionClient.CreateAIAgent(instructions: instructions);
+        var response = await agent.RunAsync(prompt, options: new ChatClientAgentRunOptions(chatOptions));
         ThreadContext.NodeContext.Set("output.text", response.Text);
 
         return ("Model call executed", new List<NextNodeData> { new(ThreadContext, RunContext.ResolveSingleOutput(Node)) });
