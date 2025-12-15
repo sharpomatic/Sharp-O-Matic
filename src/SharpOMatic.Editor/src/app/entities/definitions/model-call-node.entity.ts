@@ -9,6 +9,7 @@ export interface ModelCallNodeSnapshot extends NodeSnapshot {
   prompt: string;
   textOutputPath: string;
   imageOutputPath: string;
+  parameterValues: Record<string, string | null>;
 }
 
 export class ModelCallNodeEntity extends NodeEntity<ModelCallNodeSnapshot> {
@@ -17,6 +18,7 @@ export class ModelCallNodeEntity extends NodeEntity<ModelCallNodeSnapshot> {
   public prompt: WritableSignal<string>;
   public textOutputPath: WritableSignal<string>;
   public imageOutputPath: WritableSignal<string>;
+  public parameterValues: WritableSignal<Record<string, string | null>>;
 
   constructor(snapshot: ModelCallNodeSnapshot) {
     super(snapshot);
@@ -26,6 +28,7 @@ export class ModelCallNodeEntity extends NodeEntity<ModelCallNodeSnapshot> {
     this.prompt = signal(snapshot.prompt ?? '');
     this.textOutputPath = signal(snapshot.textOutputPath ?? '');
     this.imageOutputPath = signal(snapshot.imageOutputPath ?? '');
+    this.parameterValues = signal({ ...(snapshot.parameterValues ?? {}) });
 
     const baseIsDirty = this.isDirty;
     this.isDirty = computed(() => {
@@ -38,13 +41,15 @@ export class ModelCallNodeEntity extends NodeEntity<ModelCallNodeSnapshot> {
       const currentPrompt = this.prompt();
       const currentTextOutputPath = this.textOutputPath();
       const currentImageOutputPath = this.imageOutputPath();
+      const currentParameterValues = this.parameterValues();
 
       return currentIsDirty ||
         currentModelId !== snapshot.modelId ||
         currentInstructions !== snapshot.instructions ||
         currentPrompt !== snapshot.prompt ||
         currentTextOutputPath !== snapshot.textOutputPath ||
-        currentImageOutputPath !== snapshot.imageOutputPath;
+        currentImageOutputPath !== snapshot.imageOutputPath ||
+        !ModelCallNodeEntity.areParameterValuesEqual(currentParameterValues, snapshot.parameterValues);
     });
   }
 
@@ -56,6 +61,7 @@ export class ModelCallNodeEntity extends NodeEntity<ModelCallNodeSnapshot> {
       prompt: this.prompt(),
       textOutputPath: this.textOutputPath(),
       imageOutputPath: this.imageOutputPath(),
+      parameterValues: this.parameterValues(),
     };
   }
 
@@ -75,6 +81,7 @@ export class ModelCallNodeEntity extends NodeEntity<ModelCallNodeSnapshot> {
       prompt: '',
       textOutputPath: 'output.text',
       imageOutputPath: 'output.image',
+      parameterValues: {},
     };
   }
 
@@ -84,5 +91,19 @@ export class ModelCallNodeEntity extends NodeEntity<ModelCallNodeSnapshot> {
       top,
       left,
     });
+  }
+
+  private static areParameterValuesEqual(
+    current: Record<string, string | null>,
+    snapshot: Record<string, string | null>,
+  ): boolean {
+    const currentEntries = Object.entries(current ?? {});
+    const snapshotEntries = Object.entries(snapshot ?? {});
+
+    if (currentEntries.length !== snapshotEntries.length) {
+      return false;
+    }
+
+    return currentEntries.every(([key, value]) => (snapshot ?? {})[key] === value);
   }
 }

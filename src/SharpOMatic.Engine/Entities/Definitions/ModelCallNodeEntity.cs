@@ -8,4 +8,5 @@ public class ModelCallNodeEntity : NodeEntity
     public required string Prompt { get; set; }
     public required string TextOutputPath { get; set; }
     public required string ImageOutputPath { get; set; }
+    public required Dictionary<string, string?> ParameterValues { get; set; }
 }

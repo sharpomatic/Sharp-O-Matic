@@ -29,15 +29,17 @@
   min-height: 0;
 }
 
+.tab-shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
 .form-line {
   display: flex;
   align-items: center;
   gap: 1rem;
   width: 100%;
-}
-
-.form-line.align-top {
-  align-items: flex-start;
 }
 
 .field-label {
@@ -57,23 +59,34 @@
   width: 100%;
 }
 
-.title {
-  max-width: 650px;
+.form-line .form-check {
+  padding-left: 0;
+}
+
+.form-line .form-check-input {
+  margin-left: 0;
+}
+
+.icon-sm {
+  font-size: 1.5rem;
+}
+
+.tiny {
+  max-width: 200px;
   width: 100%;
 }
 
-.tab-shell {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-}
-
 .short {
-  max-width: 650px;
+  max-width: 350px;
   width: 100%;
 }
 
 .long {
+  max-width: 500px;
+  width: 100%;
+}
+
+.extra-long {
   max-width: 800px;
   width: 100%;
 }
