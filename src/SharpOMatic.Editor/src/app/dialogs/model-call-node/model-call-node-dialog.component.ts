@@ -68,7 +68,6 @@ export class ModelCallNodeDialogComponent implements OnInit {
     this.node = data.node;
     this.inputTraces = (data.nodeTraces ?? []).map(trace => trace.inputContext).filter((context): context is string => context != null);
     this.outputTraces = (data.nodeTraces ?? []).map(trace => trace.outputContext).filter((context): context is string => context != null);
-    console.log(`constructor ${JSON.stringify(this.node.parameterValues())}`);
   }
 
   ngOnInit(): void {
@@ -190,7 +189,6 @@ export class ModelCallNodeDialogComponent implements OnInit {
 
   public onParameterValuesChange(values: Record<string, string | null>): void {
     this.node.parameterValues.set(values);
-    console.log(`onParameterValuesChange ${JSON.stringify(this.node.parameterValues())}`);
   }
 
   public get structuredOutputMode(): string {
@@ -207,7 +205,6 @@ export class ModelCallNodeDialogComponent implements OnInit {
       ...v,
       structured_output_schema: value ?? '',
     }));
-    console.log(`onStructuredSchemaChange ${JSON.stringify(this.node.parameterValues())}`);
   }
 
   private syncCallParameterValues(): void {
@@ -218,7 +215,6 @@ export class ModelCallNodeDialogComponent implements OnInit {
     const currentValues = this.node.parameterValues();
     const nextValues = this.buildParameterValuesForConfig(this.modelConfig, currentValues);
     this.node.parameterValues.set(nextValues);
-    console.log(`syncCallParameterValues ${JSON.stringify(this.node.parameterValues())}`);
   }
 
   private buildParameterValuesForConfig(
