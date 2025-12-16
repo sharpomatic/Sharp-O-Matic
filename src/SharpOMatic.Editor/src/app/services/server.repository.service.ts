@@ -201,6 +201,26 @@ export class ServerRepositoryService {
     );
   }
 
+  public getTypeSchemaNames(): Observable<string[]> {
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.get<string[]>(`${apiUrl}/api/typeschema`).pipe(
+      catchError((error) => {
+        this.notifyError('Loading type schema names', error);
+        return of([]);
+      })
+    );
+  }
+
+  public getTypeSchema(typeName: string): Observable<string | null> {
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.get<string>(`${apiUrl}/api/typeschema/${typeName}`).pipe(
+      catchError((error) => {
+        this.notifyError('Loading type schema', error);
+        return of(null);
+      })
+    );
+  }
+
   private notifyError(operation: string, error: unknown): void {
     const detail = this.toastService.extractErrorDetail(error);
     const message = detail ? `${operation} failed: ${detail}` : `${operation} failed.`;

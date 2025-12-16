@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace SharpOMatic.Server.Controllers;
 
 [ApiController]
