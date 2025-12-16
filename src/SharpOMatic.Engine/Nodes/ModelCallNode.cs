@@ -88,9 +88,13 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
 
                 if (string.IsNullOrWhiteSpace(schemaName))
                     schemaName = null;
+                else
+                    schemaName = schemaName.Trim();
 
                 if (string.IsNullOrWhiteSpace(schemaDescription))
                     schemaDescription = null;
+                else
+                    schemaDescription = schemaDescription.Trim();
 
                 JsonElement element = JsonSerializer.Deserialize<JsonElement>(outputSchema);
                 chatOptions.ResponseFormat = ChatResponseFormat.ForJsonSchema(element, schemaName: schemaName, schemaDescription: schemaDescription);
