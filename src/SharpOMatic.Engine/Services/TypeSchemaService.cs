@@ -16,7 +16,7 @@ public class TypeSchemaService(IEnumerable<Type> types) : ITypeSchemaService
             throw new ArgumentException($"Type '{typeName}' not found.", nameof(typeName));
         }
 
-        var schemaElement = SharpOMaticJsonUtilities.CreateJsonSchema(type);
-        return JsonSerializer.Serialize(schemaElement);
+        var schema = AIJsonUtilities.CreateJsonSchema(type);
+        return JsonSerializer.Serialize(schema);
     }
 }

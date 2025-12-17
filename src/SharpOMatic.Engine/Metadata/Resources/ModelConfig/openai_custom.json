@@ -83,6 +83,7 @@
       "DefaultValue": "Text",
       "EnumOptions": [
         "Text",
+        "Json",
         "Schema",
         "Configured Type"
       ]

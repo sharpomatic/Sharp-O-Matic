@@ -23,8 +23,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSharpOMaticEngine(this IServiceCollection services)
     {
         services.AddSingleton<ICodeCheck, CodeCheckService>();
-        services.AddTransient<IRepository, RepositoryService>();
-        services.AddTransient<IEngine, EngineService>();
+        services.AddSingleton<IRepository, RepositoryService>();
+        services.AddSingleton<IEngine, EngineService>();
         services.AddSingleton<INodeQueue, NodeQueueService>();
         services.AddHostedService<NodeExecutionService>();
         return services;

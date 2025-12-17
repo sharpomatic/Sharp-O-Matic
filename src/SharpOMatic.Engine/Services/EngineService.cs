@@ -3,6 +3,7 @@
 public class EngineService(IRepository Repository,
                            INodeQueue Queue,
                            INotification Notifications,
+                           ITypeSchemaService TypeSchemaService,
                            IJsonConverterService? JsonConverterService = null) : IEngine
 {
 
@@ -42,7 +43,7 @@ public class EngineService(IRepository Repository,
             InputContext = JsonSerializer.Serialize(nodeContext, new JsonSerializerOptions().BuildOptions(converters))
         };
 
-        var runContext = new RunContext(Repository, Notifications, converters, workflow, run);
+        var runContext = new RunContext(Repository, Notifications, TypeSchemaService, converters, workflow, run);
         var threadContext = new ThreadContext(runContext, nodeContext);
 
         await runContext.RunUpdated();

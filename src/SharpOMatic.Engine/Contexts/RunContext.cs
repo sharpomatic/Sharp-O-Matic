@@ -1,4 +1,6 @@
-﻿namespace SharpOMatic.Engine.Contexts;
+﻿using SharpOMatic.Engine.Services;
+
+namespace SharpOMatic.Engine.Contexts;
 
 public class RunContext
 {
@@ -12,18 +14,21 @@ public class RunContext
     public IRepository Repository { get; init; }
     public INotification Notifications { get; init; }
     public IEnumerable<JsonConverter> JsonConverters { get; init; }
+    public ITypeSchemaService TypeSchemaService { get; init; }
     public WorkflowEntity Workflow { get; init; }
     public Run Run { get; init; }
     public int RunningThreadCount => _threadCount;
 
     public RunContext(IRepository repository, 
                       INotification notifications,
+                      ITypeSchemaService typeSchemaService,
                       IEnumerable<JsonConverter> jsonConverters,
                       WorkflowEntity workflow, 
                       Run run)
     {
         Repository = repository;
         Notifications = notifications;
+        TypeSchemaService = typeSchemaService;
         JsonConverters = jsonConverters;
         Workflow = workflow;
         Run = run;

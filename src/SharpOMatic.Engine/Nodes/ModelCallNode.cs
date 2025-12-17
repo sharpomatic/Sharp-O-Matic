@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Xml.Linq;
 namespace SharpOMatic.Engine.Nodes;
 
 [RunNode(NodeType.ModelCall)]
@@ -76,31 +77,51 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
         }
 
         if (modelConfig.Capabilities.Any(c => c.Name == "SupportsStructuredOutput") &&
-            Node.ParameterValues.TryGetValue("structured_output", out var outputFormat))
-
+            Node.ParameterValues.TryGetValue("structured_output", out var outputFormat) &&
+            !string.IsNullOrWhiteSpace(outputFormat))
         {
-            if (outputFormat == "Schema" &&
-                Node.ParameterValues.TryGetValue("structured_output_schema", out var outputSchema) &&
-                !string.IsNullOrWhiteSpace(outputSchema))
+            if (outputFormat == "Text")
+                chatOptions.ResponseFormat = ChatResponseFormat.Text;
+            else if (outputFormat == "Json")
+                chatOptions.ResponseFormat = ChatResponseFormat.Json;
+            else if (outputFormat == "Schema")
             {
-                Node.ParameterValues.TryGetValue("structured_output_schema_name", out var schemaName);
-                Node.ParameterValues.TryGetValue("structured_output_schema_description", out var schemaDescription);
+                if (Node.ParameterValues.TryGetValue("structured_output_schema", out var outputSchema) &&
+                    !string.IsNullOrWhiteSpace(outputSchema))
+                {
+                    Node.ParameterValues.TryGetValue("structured_output_schema_name", out var schemaName);
+                    Node.ParameterValues.TryGetValue("structured_output_schema_description", out var schemaDescription);
 
-                if (string.IsNullOrWhiteSpace(schemaName))
-                    schemaName = null;
-                else
-                    schemaName = schemaName.Trim();
+                    if (string.IsNullOrWhiteSpace(schemaName))
+                        schemaName = null;
+                    else
+                        schemaName = schemaName.Trim();
 
-                if (string.IsNullOrWhiteSpace(schemaDescription))
-                    schemaDescription = null;
-                else
-                    schemaDescription = schemaDescription.Trim();
+                    if (string.IsNullOrWhiteSpace(schemaDescription))
+                        schemaDescription = null;
+                    else
+                        schemaDescription = schemaDescription.Trim();
 
-                JsonElement element = JsonSerializer.Deserialize<JsonElement>(outputSchema);
-                chatOptions.ResponseFormat = ChatResponseFormat.ForJsonSchema(element, schemaName: schemaName, schemaDescription: schemaDescription);
+                    var element = JsonSerializer.Deserialize<JsonElement>(outputSchema);
+                    chatOptions.ResponseFormat = ChatResponseFormat.ForJsonSchema(element, schemaName: schemaName, schemaDescription: schemaDescription);
+                }
             }
-        }
+            else if (outputFormat == "Configured Type")
+            {
+                if (Node.ParameterValues.TryGetValue("structured_output_configured_type", out var configuredType) &&
+                    !string.IsNullOrWhiteSpace(configuredType))
+                {
+                    Node.ParameterValues.TryGetValue("structured_output_schema_name", out var schemaName);
+                    Node.ParameterValues.TryGetValue("structured_output_schema_description", out var schemaDescription);
 
+                    var outputSchema = RunContext.TypeSchemaService.GetSchema(configuredType);
+                    var element = JsonSerializer.Deserialize<JsonElement>(outputSchema);
+                    chatOptions.ResponseFormat = ChatResponseFormat.ForJsonSchema(element, schemaName: schemaName, schemaDescription: schemaDescription);
+                }
+            }
+            else
+                throw new SharpOMaticException($"Unrecognized structured output setting of '{outputFormat}'");
+        }
         OpenAIClient client = new OpenAIClient(apiKey);
         var chatCompletionClient = client.GetChatClient(modelName);
 

@@ -10,8 +10,7 @@ Designer
 
 Model Call
 	- Support tool calling, reuse existing attributes etc?
-	- Support structured output
-		'Types'
+	- Reasoning effort
 
 Connection
 	- Add test button to check connectivity

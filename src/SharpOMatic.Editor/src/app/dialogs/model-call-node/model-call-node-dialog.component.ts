@@ -46,6 +46,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
   public selectedModelId: string | null = null;
   public showTextFields = false;
   public structuredSchemaEditorOptions = MonacoService.editorOptionsJson;
+  public typeSchemaNames: string[] = [];
   public get capabilityContext(): DynamicFieldsCapabilityContext | null {
     if (!this.modelConfig) {
       return null;
@@ -61,6 +62,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
   private loadedModel: Model | null = null;
   public modelConfig: ModelConfig | null = null;
   private modelConfigsCache: ModelConfig[] = [];
+  private typeSchemaNamesLoaded = false;
 
   private readonly serverRepository = inject(ServerRepositoryService);
 
@@ -73,6 +75,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
   ngOnInit(): void {
     this.refreshTabs();
     this.loadAvailableModels();
+    this.ensureTypeSchemaNamesLoaded();
   }
 
   onClose(): void {
@@ -189,6 +192,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
 
   public onParameterValuesChange(values: Record<string, string | null>): void {
     this.node.parameterValues.set(values);
+    this.ensureTypeSchemaNamesLoaded();
   }
 
   public get structuredOutputMode(): string {
@@ -198,6 +202,10 @@ export class ModelCallNodeDialogComponent implements OnInit {
 
   public get isSchemaMode(): boolean {
     return this.structuredOutputMode === 'Schema';
+  }
+
+  public get isConfiguredTypeMode(): boolean {
+    return this.structuredOutputMode === 'Configured Type';
   }
 
   public onStructuredSchemaChange(value: string): void {
@@ -221,6 +229,13 @@ export class ModelCallNodeDialogComponent implements OnInit {
     }));
   }
 
+  public onStructuredSchemaTypeChange(value: string | null): void {
+    this.node.parameterValues.update(v => ({
+      ...v,
+      structured_output_configured_type: value ?? '',
+    }));
+  }
+
   private syncCallParameterValues(): void {
     if (!this.modelConfig) {
       return;
@@ -229,6 +244,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
     const currentValues = this.node.parameterValues();
     const nextValues = this.buildParameterValuesForConfig(this.modelConfig, currentValues);
     this.node.parameterValues.set(nextValues);
+    this.ensureTypeSchemaNamesLoaded();
   }
 
   private buildParameterValuesForConfig(
@@ -307,6 +323,21 @@ export class ModelCallNodeDialogComponent implements OnInit {
     }
 
     return this.loadedModel?.customCapabilities().has(capabilityName) ?? false;
+  }
+
+  private ensureTypeSchemaNamesLoaded(): void {
+    if (!this.isConfiguredTypeMode) {
+      return;
+    }
+
+    if (this.typeSchemaNamesLoaded) {
+      return;
+    }
+
+    this.typeSchemaNamesLoaded = true;
+    this.serverRepository.getTypeSchemaNames().subscribe(names => {
+      this.typeSchemaNames = names ?? [];
+    });
   }
 
   private refreshTabs(): void {
