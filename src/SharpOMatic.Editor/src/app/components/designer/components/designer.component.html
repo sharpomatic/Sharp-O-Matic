@@ -6,6 +6,17 @@
   (wheel)="onSurfaceWheel($event)"
   (mouseleave)="onSurfaceLeave()"
   (contextmenu)="onSurfaceContextMenu($event)">
+  <div class="designer-controls" (mousedown)="$event.stopPropagation()" (wheel)="$event.stopPropagation(); $event.preventDefault()">
+    <button type="button" class="btn" aria-label="Reset view" (click)="resetPanOffset()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>
+    <button type="button" class="btn" aria-label="Zoom in" (click)="zoomIn()">
+      <i class="bi bi-plus-lg"></i>
+    </button>
+    <button type="button" class="btn" aria-label="Zoom out" (click)="zoomOut()">
+      <i class="bi bi-dash-lg"></i>
+    </button>
+  </div>
   @if (selectionRect(); as rect) {
   <div class="selection-rect" 
     [style.left.px]="rect.left" 

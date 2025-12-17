@@ -13,6 +13,31 @@
   }
 }
 
+.designer-controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10000;
+
+  .btn {
+    width: 38px;
+    height: 38px;
+    padding: 6px;
+    color: #fff;
+    background-color: rgba(52, 58, 64, 0.85);
+    border: 1px solid #6c757d;
+    line-height: 1;
+  }
+
+  .btn:hover {
+    background-color: rgba(73, 80, 87, 0.95);
+    border-color: #adb5bd;
+  }
+}
+
 .selection-rect {
   position: absolute;
   border: 1px dashed #fff;

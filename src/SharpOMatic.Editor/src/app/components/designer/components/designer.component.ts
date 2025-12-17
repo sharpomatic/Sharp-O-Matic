@@ -435,7 +435,7 @@ export class DesignerComponent {
   }
 
   public resetPanOffset(): void {
-    this.setPanOffset({ x: 0, y: 0 });
+    this.resetView();
   }
 
   onSurfaceWheel(event: WheelEvent): void {
@@ -443,7 +443,8 @@ export class DesignerComponent {
     event.stopPropagation();
 
     const anchorView = this.getMouseViewPoint(event);
-    this.adjustZoom(event.deltaY, anchorView);
+    const zoomFactor = event.deltaY < 0 ? 1.1 : 0.9;
+    this.applyZoom(zoomFactor, anchorView);
   }
 
   onSurfaceLeave(): void {
@@ -456,26 +457,6 @@ export class DesignerComponent {
   private setPanOffset(offset: Point): void {
     const clamped = this.clampPanOffset(offset);
     this.panOffset.set(clamped);
-  }
-
-  private adjustZoom(deltaY: number, anchorViewPoint: Point): void {
-    const currentZoom = this.zoom();
-    const worldPoint = this.viewToWorld(anchorViewPoint);
-    const zoomFactor = deltaY < 0 ? 1.1 : 0.9;
-    const newZoom = this.clampZoom(currentZoom * zoomFactor);
-
-    if (newZoom === currentZoom) {
-      return;
-    }
-
-    this.zoom.set(newZoom);
-
-    const newPan: Point = {
-      x: anchorViewPoint.x - worldPoint.x * newZoom,
-      y: anchorViewPoint.y - worldPoint.y * newZoom,
-    };
-
-    this.setPanOffset(newPan);
   }
 
   private clampZoom(value: number): number {
@@ -499,5 +480,42 @@ export class DesignerComponent {
       x: Math.min(Math.max(offset.x, -maxLeft * zoom), 3000),
       y: Math.min(Math.max(offset.y, -maxTop * zoom), 3000),
     };
+  }
+
+  public zoomIn(): void {
+    this.applyZoom(1.1, this.getSurfaceCenterViewPoint());
+  }
+
+  public zoomOut(): void {
+    this.applyZoom(0.9, this.getSurfaceCenterViewPoint());
+  }
+
+  public resetView(): void {
+    this.zoom.set(1);
+    this.setPanOffset({ x: 0, y: 0 });
+  }
+
+  private applyZoom(factor: number, anchorViewPoint: Point): void {
+    const currentZoom = this.zoom();
+    const worldPoint = this.viewToWorld(anchorViewPoint);
+    const newZoom = this.clampZoom(currentZoom * factor);
+
+    if (newZoom === currentZoom) {
+      return;
+    }
+
+    this.zoom.set(newZoom);
+
+    const newPan: Point = {
+      x: anchorViewPoint.x - worldPoint.x * newZoom,
+      y: anchorViewPoint.y - worldPoint.y * newZoom,
+    };
+
+    this.setPanOffset(newPan);
+  }
+
+  private getSurfaceCenterViewPoint(): Point {
+    const surfaceRect = this.designerSurface.nativeElement.getBoundingClientRect();
+    return { x: surfaceRect.width / 2, y: surfaceRect.height / 2 };
   }
 }
