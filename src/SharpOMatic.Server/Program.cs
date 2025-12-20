@@ -11,6 +11,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<INotification, NotificationService>();
+builder.Services.AddSingleton<IClockService, ClockService>();
 builder.Services.AddSharpOMaticEngine();
 builder.Services.AddSharpOMaticTypes(typeof(TriviaResponse), typeof(StringList));
 builder.Services.AddSharpOMaticToolMethods(Tools.GetGreeting, Tools.GetTime);

@@ -1,18 +1,18 @@
 namespace SharpOMatic.Engine.Services;
 
-public class ToolMethodRegistry(IEnumerable<MethodInfo> methods) : IToolMethodRegistry
+public class ToolMethodRegistry(IEnumerable<Delegate> methods) : IToolMethodRegistry
 {
-    private readonly List<MethodInfo> _methods = methods.ToList();
+    private readonly List<Delegate> _methods = methods.ToList();
 
-    public IReadOnlyList<MethodInfo> GetMethods() => _methods.AsReadOnly();
+    public IReadOnlyList<Delegate> GetMethods() => _methods.AsReadOnly();
 
-    public IReadOnlyList<string> GetMethodDisplayNames()
+    public IReadOnlyList<string> GetToolDisplayNames()
     {
-        return [.. _methods.Select(m => m.Name).OrderBy(m => m)];
+        return [.. _methods.Select(m => m.Method.Name).OrderBy(m => m)];
     }
 
-    public MethodInfo? GetMethodFromDisplayName(string displayName)
+    public Delegate? GetToolFromDisplayName(string displayName)
     {
-        return _methods.FirstOrDefault(m => m.Name == displayName);
+        return _methods.FirstOrDefault(m => m.Method.Name == displayName);
     }
 }

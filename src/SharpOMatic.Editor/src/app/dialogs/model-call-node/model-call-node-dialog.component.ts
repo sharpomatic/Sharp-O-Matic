@@ -49,6 +49,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
   public showTextFields = false;
   public structuredSchemaEditorOptions = MonacoService.editorOptionsJson;
   public typeSchemaNames: string[] = [];
+  public toolDisplayNames: string[] = [];
   public get capabilityContext(): DynamicFieldsCapabilityContext | null {
     if (!this.modelConfig) {
       return null;
@@ -65,6 +66,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
   public modelConfig: ModelConfig | null = null;
   private modelConfigsCache: ModelConfig[] = [];
   private typeSchemaNamesLoaded = false;
+  private toolDisplayNamesLoaded = false;
 
   private readonly serverRepository = inject(ServerRepositoryService);
 
@@ -174,6 +176,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
   public onParameterValuesChange(values: Record<string, string | null>): void {
     this.node.parameterValues.set(values);
     this.ensureTypeSchemaNamesLoaded();
+    this.ensureToolDisplayNamesLoaded();
   }
 
   public get structuredOutputMode(): string {
@@ -332,6 +335,52 @@ export class ModelCallNodeDialogComponent implements OnInit {
     });
   }
 
+  private ensureToolDisplayNamesLoaded(): void {
+    if (!this.supportsToolCalling) {
+      return;
+    }
+
+    if (this.toolDisplayNamesLoaded) {
+      return;
+    }
+
+    this.toolDisplayNamesLoaded = true;
+    this.serverRepository.getToolDisplayNames().subscribe(names => {
+      this.toolDisplayNames = names ?? [];
+    });
+  }
+
+  public isToolSelected(toolName: string): boolean {
+    return this.getSelectedTools().has(toolName);
+  }
+
+  public onToolSelectionChange(toolName: string, selected: boolean): void {
+    const selectedTools = this.getSelectedTools();
+    if (selected) {
+      selectedTools.add(toolName);
+    } else {
+      selectedTools.delete(toolName);
+    }
+
+    const ordered = this.toolDisplayNames.filter(name => selectedTools.has(name));
+    const value = ordered.join(',');
+
+    this.node.parameterValues.update(v => ({
+      ...v,
+      selected_tools: value,
+    }));
+  }
+
+  public toolId(toolName: string): string {
+    return `tool-${toolName.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+  }
+
+  private getSelectedTools(): Set<string> {
+    const raw = this.node.parameterValues()['selected_tools'] ?? '';
+    const parts = raw.split(',').map(p => p.trim()).filter(p => p.length > 0);
+    return new Set(parts);
+  }
+
   private refreshTabs(): void {
     const newTabs: TabItem[] = [
       { id: 'details', title: 'Details', content: this.detailsTab },
@@ -342,6 +391,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
     }
 
     if (this.supportsToolCalling) {
+      this.ensureToolDisplayNamesLoaded();
       newTabs.push({ id: 'tool-calling', title: 'Tool Calling', content: this.toolCallingTab });
     }
 

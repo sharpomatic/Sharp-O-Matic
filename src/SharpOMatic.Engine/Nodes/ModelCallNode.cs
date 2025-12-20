@@ -1,6 +1,5 @@
 #pragma warning disable OPENAI001
 
-using OpenAI.Responses;
 namespace SharpOMatic.Engine.Nodes;
 
 [RunNode(NodeType.ModelCall)]
@@ -123,6 +122,9 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
                 if (Node.ParameterValues.TryGetValue("structured_output_configured_type", out var configuredType) &&
                     !string.IsNullOrWhiteSpace(configuredType))
                 {
+                    if (RunContext.TypeSchemaService is null)
+                        throw new SharpOMaticException($"ITypeSchemaService not registered in dependency injection.");
+
                     Node.ParameterValues.TryGetValue("structured_output_schema_name", out var schemaName);
                     Node.ParameterValues.TryGetValue("structured_output_schema_description", out var schemaDescription);
 
@@ -135,19 +137,43 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
                 throw new SharpOMaticException($"Unrecognized structured output setting of '{outputFormat}'");
         }
 
+        if (modelConfig.Capabilities.Any(c => c.Name == "SupportsToolCalling") &&
+            Node.ParameterValues.TryGetValue("selected_tools", out var outputSelected) &&
+            !string.IsNullOrWhiteSpace(outputSelected))
+        {
+            if (RunContext.ToolMethodRegistry is null)
+                throw new SharpOMaticException($"IToolMethodRegistry not registered in dependency injection.");
+
+            var toolNames = outputSelected.Split(',');
+            List<AITool> tools = [];
+            foreach (var toolName in toolNames)
+            {
+                var toolDelegate = RunContext.ToolMethodRegistry.GetToolFromDisplayName(toolName.Trim());
+                if (toolDelegate is null)
+                    throw new SharpOMaticException($"Tool '{toolName.Trim()}' is not registered.");
+
+                tools.Add(AIFunctionFactory.Create(toolDelegate));
+            }
+
+            if (tools.Count > 0)
+                chatOptions.Tools = tools;
+        }
+
+  
+
         OpenAIClient client = new OpenAIClient(apiKey);       
         var agentClient = client.GetOpenAIResponseClient(modelName);
 
         var instructions = ContextHelpers.SubstituteValues(Node.Instructions, ThreadContext.NodeContext);
         var prompt = ContextHelpers.SubstituteValues(Node.Prompt, ThreadContext.NodeContext);
 
-        AIAgent agent = agentClient.CreateAIAgent(instructions: instructions);
+        AIAgent agent = agentClient.CreateAIAgent(instructions: instructions, services: RunContext.ServiceScope.ServiceProvider);
         var response = await agent.RunAsync(prompt, options: new ChatClientAgentRunOptions(chatOptions));
         
         var tempContext = new ContextObject();
         var textPath = !string.IsNullOrWhiteSpace(Node.TextOutputPath) ? Node.TextOutputPath : "output.text";
         tempContext.Set(textPath, response.Text);
-        ThreadContext.RunContext.MergeContexts(ThreadContext.NodeContext, tempContext);
+        RunContext.MergeContexts(ThreadContext.NodeContext, tempContext);
 
         return ("Model call executed", new List<NextNodeData> { new(ThreadContext, RunContext.ResolveSingleOutput(Node)) });
     }

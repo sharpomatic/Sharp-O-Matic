@@ -221,6 +221,16 @@ export class ServerRepositoryService {
     );
   }
 
+  public getToolDisplayNames(): Observable<string[]> {
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.get<string[]>(`${apiUrl}/api/tool`).pipe(
+      catchError((error) => {
+        this.notifyError('Loading tool display names', error);
+        return of([]);
+      })
+    );
+  }
+
   private notifyError(operation: string, error: unknown): void {
     const detail = this.toastService.extractErrorDetail(error);
     const message = detail ? `${operation} failed: ${detail}` : `${operation} failed.`;

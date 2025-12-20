@@ -72,6 +72,7 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
                     runContext.Run.OutputContext = runContext.TypedSerialization(threadContext.NodeContext);
 
                 await runContext.RunUpdated();
+                runContext.ServiceScope.Dispose();
             }
             else
             {
@@ -91,6 +92,7 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
                 runContext.Run.OutputContext = runContext.TypedSerialization(threadContext.NodeContext);
 
             await runContext.RunUpdated();
+            runContext.ServiceScope.Dispose();
         }
     }
 

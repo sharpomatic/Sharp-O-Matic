@@ -9,6 +9,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 global using OpenAI;
+global using OpenAI.Responses;
 global using SharpOMatic.Engine.Contexts;
 global using SharpOMatic.Engine.DataTransferObjects;
 global using SharpOMatic.Engine.Entities.Definitions;

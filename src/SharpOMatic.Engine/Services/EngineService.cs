@@ -1,13 +1,10 @@
 ﻿namespace SharpOMatic.Engine.Services;
 
-public class EngineService(IRepository Repository,
+public class EngineService(IServiceProvider ServiceProvider,
                            INodeQueue Queue,
-                           INotification Notifications,
-                           ITypeSchemaService TypeSchemaService,
+                           IRepository Repository,
                            IJsonConverterService? JsonConverterService = null) : IEngine
 {
-
-
     public async Task<Guid> RunWorkflow(Guid workflowId, ContextObject? nodeContext = null, ContextEntryListEntity? inputEntries = null)
     {
         nodeContext ??= [];
@@ -43,7 +40,7 @@ public class EngineService(IRepository Repository,
             InputContext = JsonSerializer.Serialize(nodeContext, new JsonSerializerOptions().BuildOptions(converters))
         };
 
-        var runContext = new RunContext(Repository, Notifications, TypeSchemaService, converters, workflow, run);
+        var runContext = new RunContext(ServiceProvider.CreateScope(), converters, workflow, run);
         var threadContext = new ThreadContext(runContext, nodeContext);
 
         await runContext.RunUpdated();

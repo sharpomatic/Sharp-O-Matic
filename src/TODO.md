@@ -4,7 +4,7 @@
 # Minimum Viable Product Features
 
 Model Call
-	- Support tool calling, reuse existing attributes etc?
+	- Split into textin and textout capabilities
 	- Support MCP Servers
 	- Images
 
