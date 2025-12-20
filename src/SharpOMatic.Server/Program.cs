@@ -13,6 +13,7 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<INotification, NotificationService>();
 builder.Services.AddSharpOMaticEngine();
 builder.Services.AddSharpOMaticTypes(typeof(TriviaResponse), typeof(StringList));
+builder.Services.AddSharpOMaticToolMethods(Tools.GetGreeting, Tools.GetTime);
 builder.Services.AddSharpOMaticRepository((options) =>
 {
     var folder = Environment.SpecialFolder.LocalApplicationData;

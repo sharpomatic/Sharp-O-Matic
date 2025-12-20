@@ -18,6 +18,10 @@
       "DisplayName": "Supports Max Output Tokens"
     },
     {
+      "Name": "SupportsToolCalling",
+      "DisplayName": "Supports Tool Calling"
+    },
+    {
       "Name": "SupportsStructuredOutput",
       "DisplayName": "Supports Structured Output"
     }

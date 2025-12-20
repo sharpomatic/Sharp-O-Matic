@@ -26,6 +26,10 @@
       "DisplayName": "Supports TopP"
     },
     {
+      "Name": "SupportsToolCalling",
+      "DisplayName": "Supports Tool Calling"
+    },
+    {
       "Name": "SupportsStructuredOutput",
       "DisplayName": "Supports Structured Output"
     }

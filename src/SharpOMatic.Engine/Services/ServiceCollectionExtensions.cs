@@ -20,6 +20,16 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSharpOMaticTypes(this IServiceCollection services, params Type[] types)
         => services.AddSharpOMaticTypes((IEnumerable<Type>)types);
 
+    public static IServiceCollection AddSharpOMaticToolMethods(this IServiceCollection services, IEnumerable<Delegate> methods)
+    {
+        var methodInfos = methods.Select(m => m.Method);
+        services.AddSingleton<IToolMethodRegistry>(new ToolMethodRegistry(methodInfos));
+        return services;
+    }
+
+    public static IServiceCollection AddSharpOMaticToolMethods(this IServiceCollection services, params Delegate[] methods)
+        => services.AddSharpOMaticToolMethods((IEnumerable<Delegate>)methods);
+
     public static IServiceCollection AddSharpOMaticEngine(this IServiceCollection services)
     {
         services.AddSingleton<ICodeCheck, CodeCheckService>();
