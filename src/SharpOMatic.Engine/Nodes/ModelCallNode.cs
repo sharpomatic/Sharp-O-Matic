@@ -130,13 +130,13 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
                 if (Node.ParameterValues.TryGetValue("structured_output_configured_type", out var configuredType) &&
                     !string.IsNullOrWhiteSpace(configuredType))
                 {
-                    if (RunContext.SchemaTypeService is null)
-                        throw new SharpOMaticException($"ISchemaTypeService not registered in dependency injection.");
-
                     Node.ParameterValues.TryGetValue("structured_output_schema_name", out var schemaName);
                     Node.ParameterValues.TryGetValue("structured_output_schema_description", out var schemaDescription);
 
                     var outputSchema = RunContext.SchemaTypeService.GetSchema(configuredType);
+                    if (string.IsNullOrWhiteSpace(outputSchema))
+                        throw new SharpOMaticException($"Configured type '{configuredType}' not found, check it is specified in AddSchemaTypes call.");
+
                     var element = JsonSerializer.Deserialize<JsonElement>(outputSchema);
                     chatOptions.ResponseFormat = ChatResponseFormat.ForJsonSchema(element, schemaName: schemaName, schemaDescription: schemaDescription);
                     jsonOutput = true;
@@ -152,9 +152,6 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
             Node.ParameterValues.TryGetValue("selected_tools", out var outputSelected) &&
             !string.IsNullOrWhiteSpace(outputSelected))
         {
-            if (RunContext.ToolMethodRegistry is null)
-                throw new SharpOMaticException($"IToolMethodRegistry not registered in dependency injection.");
-
             agentServiceProvider = new OverlayServiceProvider(agentServiceProvider, ThreadContext.NodeContext);
 
             var toolNames = outputSelected.Split(',');
@@ -163,7 +160,7 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
             {
                 var toolDelegate = RunContext.ToolMethodRegistry.GetToolFromDisplayName(toolName.Trim());
                 if (toolDelegate is null)
-                    throw new SharpOMaticException($"Tool '{toolName.Trim()}' is not registered.");
+                    throw new SharpOMaticException($"Tool '{toolName.Trim()}' not found, check it is specified in AddToolMethods call.");
 
                 tools.Add(AIFunctionFactory.Create(toolDelegate));
             }

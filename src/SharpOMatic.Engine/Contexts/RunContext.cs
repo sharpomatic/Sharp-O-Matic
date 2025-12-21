@@ -12,8 +12,8 @@ public class RunContext
     public IServiceScope ServiceScope { get; init; }
     public IRepository Repository { get; init; }
     public INotification Notifications { get; init; }
-    public IToolMethodRegistry? ToolMethodRegistry { get; init; }
-    public ISchemaTypeService? SchemaTypeService { get; init; }
+    public IToolMethodRegistry ToolMethodRegistry { get; init; }
+    public ISchemaTypeService SchemaTypeService { get; init; }
     public IEnumerable<JsonConverter> JsonConverters { get; init; }
     public WorkflowEntity Workflow { get; init; }
     public Run Run { get; init; }
@@ -27,8 +27,8 @@ public class RunContext
         ServiceScope = serviceScope;
         Repository = serviceScope.ServiceProvider.GetRequiredService<IRepository>();
         Notifications = serviceScope.ServiceProvider.GetRequiredService<INotification>();
-        ToolMethodRegistry = serviceScope.ServiceProvider.GetService<IToolMethodRegistry>();
-        SchemaTypeService = serviceScope.ServiceProvider.GetService<ISchemaTypeService>();
+        ToolMethodRegistry = serviceScope.ServiceProvider.GetRequiredService<IToolMethodRegistry>();
+        SchemaTypeService = serviceScope.ServiceProvider.GetRequiredService<ISchemaTypeService>();
         JsonConverters = jsonConverters;
         Workflow = workflow;
         Run = run;
