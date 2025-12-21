@@ -94,6 +94,7 @@ export abstract class NodeEntity<T extends NodeSnapshot> extends Entity<T> {
     return {
       nodeType: this.nodeType(),
       id: this.id,
+      version: this.version,
       title: this.title(),
       top: this.top(),
       left: this.left(),

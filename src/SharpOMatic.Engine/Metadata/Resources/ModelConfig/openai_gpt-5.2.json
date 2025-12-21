@@ -1,4 +1,5 @@
 {
+  "Version": 1,
   "ConfigId": "openai_gpt-5.2",
   "DisplayName": "gpt-5.2",
   "Description": "Reasoning model.",

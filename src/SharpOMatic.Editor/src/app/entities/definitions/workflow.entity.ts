@@ -70,6 +70,7 @@ export class WorkflowEntity extends Entity<WorkflowSnapshot> {
   public override toSnapshot(): WorkflowSnapshot {
     return {
       id: this.id,
+      version: this.version,
       name: this.name(),
       description: this.description(),
       nodes: this.nodes().map(node => node.toSnapshot()),

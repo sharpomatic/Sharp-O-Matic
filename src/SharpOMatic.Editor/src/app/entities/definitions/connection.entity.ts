@@ -32,6 +32,7 @@ export class ConnectionEntity extends Entity<ConnectionSnapshot> {
   public override toSnapshot(): ConnectionSnapshot {
     return {
       id: this.id,
+      version: this.version,
       from: this.from(),
       to: this.to(),
     };

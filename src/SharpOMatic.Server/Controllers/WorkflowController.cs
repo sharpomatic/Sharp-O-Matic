@@ -17,6 +17,7 @@ public class WorkflowController : ControllerBase
                 orderby w.Named
                 select new WorkflowEditSummary()
                 {
+                    Version = w.Version,
                     Id = w.WorkflowId,
                     Name = w.Named,
                     Description = w.Description,

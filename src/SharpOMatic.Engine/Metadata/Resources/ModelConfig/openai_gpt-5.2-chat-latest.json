@@ -1,9 +1,10 @@
 {
+  "Version": 1,
   "ConfigId": "openai_gpt-5.2-chat-latest",
   "DisplayName": "gpt-5.2-chat-latest",
   "Description": "Chat completion model.",
   "ConnectorConfigId": "openai",
-  "IsCustom":  false,
+  "IsCustom": false,
   "Capabilities": [
     {
       "Name": "SupportsTextIn",

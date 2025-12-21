@@ -89,6 +89,7 @@ export class ContextEntryListEntity extends Entity<ContextEntryListSnapshot> {
   public override toSnapshot(): ContextEntryListSnapshot {
     return {
       id: this.id,
+      version: this.version,
       entries: this.entries().map(entry => entry.toSnapshot()),
     };
   }

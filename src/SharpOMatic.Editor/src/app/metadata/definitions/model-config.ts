@@ -3,6 +3,7 @@ import { FieldDescriptor, FieldDescriptorSnapshot } from './field-descriptor';
 
 export interface ModelConfigSnapshot {
   configId: string;
+  version: number;
   displayName: string;
   description: string;
   connectorConfigId: string;
@@ -14,6 +15,7 @@ export interface ModelConfigSnapshot {
 export class ModelConfig {
   constructor(
     public readonly configId: string,
+    public readonly version: number,
     public readonly displayName: string,
     public readonly description: string,
     public readonly connectorConfigId: string,
@@ -25,6 +27,7 @@ export class ModelConfig {
   public static fromSnapshot(snapshot: ModelConfigSnapshot): ModelConfig {
     return new ModelConfig(
       snapshot.configId,
+      snapshot.version,
       snapshot.displayName,
       snapshot.description,
       snapshot.connectorConfigId,

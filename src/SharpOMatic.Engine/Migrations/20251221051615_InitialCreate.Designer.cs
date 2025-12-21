@@ -11,7 +11,7 @@ using SharpOMatic.Engine.Repository;
 namespace SharpOMatic.Engine.Migrations
 {
     [DbContext(typeof(SharpOMaticDbContext))]
-    [Migration("20251213125854_InitialCreate")]
+    [Migration("20251221051615_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -28,6 +28,9 @@ namespace SharpOMatic.Engine.Migrations
                     b.Property<string>("Config")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ConfigId");
 
@@ -52,6 +55,9 @@ namespace SharpOMatic.Engine.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("ConnectorId");
 
                     b.ToTable("ConnectorMetadata");
@@ -65,6 +71,9 @@ namespace SharpOMatic.Engine.Migrations
                     b.Property<string>("Config")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ConfigId");
 
@@ -88,6 +97,9 @@ namespace SharpOMatic.Engine.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ModelId");
 
@@ -210,6 +222,9 @@ namespace SharpOMatic.Engine.Migrations
                     b.Property<string>("Nodes")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("WorkflowId");
 

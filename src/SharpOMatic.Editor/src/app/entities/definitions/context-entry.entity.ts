@@ -54,6 +54,7 @@ export class ContextEntryEntity extends Entity<ContextEntrySnapshot> {
   public override toSnapshot(): ContextEntrySnapshot {
     return {
       id: this.id,
+      version: this.version,
       purpose: this.purpose(),
       inputPath: this.inputPath(),
       outputPath: this.outputPath(),
@@ -69,7 +70,7 @@ export class ContextEntryEntity extends Entity<ContextEntrySnapshot> {
 
   public static override defaultSnapshot(): ContextEntrySnapshot {
     return {
-      id: crypto.randomUUID(),
+      ...Entity.defaultSnapshot(),
       purpose: ContextEntryPurpose.Input,
       inputPath: '',
       outputPath: '',

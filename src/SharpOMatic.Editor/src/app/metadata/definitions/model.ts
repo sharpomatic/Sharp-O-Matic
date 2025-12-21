@@ -2,6 +2,7 @@ import { Signal, WritableSignal, computed, signal } from '@angular/core';
 
 export interface ModelSnapshot {
   modelId: string;
+  version: number;
   name: string;
   description: string;
   connectorId: string | null;
@@ -11,7 +12,10 @@ export interface ModelSnapshot {
 }
 
 export class Model {
+  private static readonly DEFAULT_VERSION = 1;
+
   public readonly modelId: string;
+  public readonly version: number;
   public name: WritableSignal<string>;
   public description: WritableSignal<string>;
   public connectorId: WritableSignal<string | null>;
@@ -30,6 +34,7 @@ export class Model {
 
   constructor(snapshot: ModelSnapshot) {
     this.modelId = snapshot.modelId;
+    this.version = snapshot.version;
     this.initialName = snapshot.name;
     this.initialDescription = snapshot.description;
     this.initialConnectorId = snapshot.connectorId ?? null;
@@ -76,6 +81,7 @@ export class Model {
   public toSnapshot(): ModelSnapshot {
     return {
       modelId: this.modelId,
+      version: this.version,
       name: this.name(),
       description: this.description(),
       connectorId: this.connectorId() ?? null,
@@ -92,6 +98,7 @@ export class Model {
   public static defaultSnapshot(): ModelSnapshot {
     return {
       modelId: crypto.randomUUID(),
+      version: Model.DEFAULT_VERSION,
       name: '',
       description: '',
       connectorId: null,

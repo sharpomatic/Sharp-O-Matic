@@ -32,6 +32,7 @@ export class WorkflowSummaryEntity extends Entity<WorkflowSummarySnapshot> {
   public override toSnapshot(): WorkflowSummarySnapshot {
     return {
       id: this.id,
+      version: this.version,
       name: this.name(),
       description: this.description(),
     };

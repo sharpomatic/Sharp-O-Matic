@@ -45,6 +45,7 @@ export class ConnectorEntity extends Entity<ConnectorSnapshot> {
   public override toSnapshot(): ConnectorSnapshot {
     return {
       id: this.id,
+      version: this.version,
       name: this.name(),
       boxOffset: this.boxOffset(),
       labelOffsetV: this.labelOffsetV(),

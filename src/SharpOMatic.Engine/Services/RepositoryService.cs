@@ -33,6 +33,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
             ? throw new SharpOMaticException($"Workflow '{workflowId}' cannot be found.")
             : new WorkflowEntity()
             {
+                Version = workflow.Version,
                 Id = workflow.WorkflowId,
                 Name = workflow.Named,
                 Description = workflow.Description,
@@ -53,6 +54,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
         {
             entry = new Workflow()
             {
+                Version = workflow.Version,
                 WorkflowId = workflow.Id,
                 Named = "",
                 Description = "",
@@ -201,6 +203,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
         {
             metadata = new ConnectorConfigMetadata()
             {
+                Version = config.Version,
                 ConfigId = config.ConfigId,
                 Config = ""
             };
@@ -268,6 +271,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
             entry = new ConnectorMetadata()
             {
                 ConnectorId = connector.ConnectorId,
+                Version = connector.Version,
                 Name = "",
                 Description = "",
                 Config = ""
@@ -368,6 +372,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
         {
             metadata = new ModelConfigMetadata()
             {
+                Version = config.Version,
                 ConfigId = config.ConfigId,
                 Config = ""
             };
@@ -432,6 +437,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
             entry = new ModelMetadata()
             {
                 ModelId = model.ModelId,
+                Version = model.Version,
                 Name = "",
                 Description = "",
                 Config = ""

@@ -3,31 +3,13 @@
 
 # Minimum Viable Product Features
 
-Model Call
-	- Split into textin and textout capabilities
-	- Support MCP Servers
-
-Connection
-	- Add test button to check connectivity
-
-Model
-	- Add test button to check connectivity
-
 Max nodes executed for a workflow to prevent looping forever
-Max execution time for workflow to prevent it running forever
 Max number of runs to keep for a workflow to prevent too much data storage
-
-Designer, right mouse down to drag surface, maybe zoom/unzoom
 
 # Integration Overrides
 
 Max values for nodes, execution and runs to keep
 	  
-Build
-    - Different interfaces for specifying the list of custom serializers
-	  1 to find them in the assemblies automatically
-	  Another that asks you to list them by type
-
 # Process
 
 - GitHub account
@@ -52,8 +34,17 @@ Database
 
 # Futures
 
+Ask for user input
+
+ChatKit output integration
+
+Models
+	Support MCP Servers
+
 Server
 	Integrate use of OmniSharp for full intellisense
+
+
 
 
 

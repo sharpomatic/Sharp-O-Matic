@@ -2,6 +2,7 @@
 
 public class Connector : ConnectorSummary
 {
+    public required int Version { get; set; }
     public required string ConfigId { get; set; }
     public required string AuthenticationModeId { get; set; }
     public required Dictionary<string, string?> FieldValues { get; set; }

@@ -2,6 +2,7 @@
 
 public class Model : ModelSummary
 {
+    public required int Version { get; set; }
     public required string ConfigId { get; set; }
     public required Guid? ConnectorId { get; set; }
     public required List<string> CustomCapabilities { get; set; }

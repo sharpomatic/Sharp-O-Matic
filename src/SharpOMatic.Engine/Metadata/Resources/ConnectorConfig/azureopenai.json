@@ -1,4 +1,5 @@
 {
+  "Version": 1,
   "ConfigId": "azureopenai",
   "DisplayName": "Azure OpenAI",
   "Description": "Connector to OpenAI hosted on Azure",
@@ -13,7 +14,7 @@
           "Name": "string",
           "Label": "string",
           "Description": "string",
-          "CallDefined":  false,
+          "CallDefined": false,
           "Type": 0,
           "IsRequired": true,
           "DefaultValue": "(Default)"

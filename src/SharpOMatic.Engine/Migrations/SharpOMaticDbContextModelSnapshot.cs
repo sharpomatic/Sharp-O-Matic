@@ -26,6 +26,9 @@ namespace SharpOMatic.Engine.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("ConfigId");
 
                     b.ToTable("ConnectorConfigMetadata");
@@ -49,6 +52,9 @@ namespace SharpOMatic.Engine.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("ConnectorId");
 
                     b.ToTable("ConnectorMetadata");
@@ -62,6 +68,9 @@ namespace SharpOMatic.Engine.Migrations
                     b.Property<string>("Config")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ConfigId");
 
@@ -85,6 +94,9 @@ namespace SharpOMatic.Engine.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ModelId");
 
@@ -207,6 +219,9 @@ namespace SharpOMatic.Engine.Migrations
                     b.Property<string>("Nodes")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("WorkflowId");
 

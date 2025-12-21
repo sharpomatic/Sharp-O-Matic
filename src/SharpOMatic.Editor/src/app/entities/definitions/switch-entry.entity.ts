@@ -32,6 +32,7 @@ export class SwitchEntryEntity extends Entity<SwitchEntrySnapshot> {
   public override toSnapshot(): SwitchEntrySnapshot {
     return {
       id: this.id,
+      version: this.version,
       name: this.name(),
       code: this.code(),
     };
@@ -43,7 +44,7 @@ export class SwitchEntryEntity extends Entity<SwitchEntrySnapshot> {
 
   public static override defaultSnapshot(): SwitchEntrySnapshot {
     return {
-      id: crypto.randomUUID(),
+      ...Entity.defaultSnapshot(),
       name: '',
       code: '',
     };

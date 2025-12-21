@@ -16,6 +16,7 @@ namespace SharpOMatic.Engine.Migrations
                 columns: table => new
                 {
                     ConfigId = table.Column<string>(type: "TEXT", nullable: false),
+                    Version = table.Column<int>(type: "INTEGER", nullable: false),
                     Config = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -28,6 +29,7 @@ namespace SharpOMatic.Engine.Migrations
                 columns: table => new
                 {
                     ConnectorId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Version = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Config = table.Column<string>(type: "TEXT", nullable: false)
@@ -42,6 +44,7 @@ namespace SharpOMatic.Engine.Migrations
                 columns: table => new
                 {
                     ConfigId = table.Column<string>(type: "TEXT", nullable: false),
+                    Version = table.Column<int>(type: "INTEGER", nullable: false),
                     Config = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -54,6 +57,7 @@ namespace SharpOMatic.Engine.Migrations
                 columns: table => new
                 {
                     ModelId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Version = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Config = table.Column<string>(type: "TEXT", nullable: false)
@@ -114,6 +118,7 @@ namespace SharpOMatic.Engine.Migrations
                 columns: table => new
                 {
                     WorkflowId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Version = table.Column<int>(type: "INTEGER", nullable: false),
                     Named = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Nodes = table.Column<string>(type: "TEXT", nullable: false),
