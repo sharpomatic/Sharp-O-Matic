@@ -46,7 +46,8 @@ export class ModelCallNodeDialogComponent implements OnInit {
   public activeTabId = 'details';
   public availableModels: ModelSummary[] = [];
   public selectedModelId: string | null = null;
-  public showTextFields = false;
+  public showTextInFields = false;
+  public showTextOutFields = false;
   public structuredSchemaEditorOptions = MonacoService.editorOptionsJson;
   public typeSchemaNames: string[] = [];
   public toolDisplayNames: string[] = [];
@@ -90,7 +91,8 @@ export class ModelCallNodeDialogComponent implements OnInit {
     this.selectedModelId = modelId;
     this.loadedModel = null;
     this.modelConfig = null;
-    this.showTextFields = false;
+    this.showTextInFields = false;
+    this.showTextOutFields = false;
 
     if (!modelId) {
       this.node.modelId.set('');
@@ -122,7 +124,8 @@ export class ModelCallNodeDialogComponent implements OnInit {
     this.selectedModelId = null;
     this.loadedModel = null;
     this.modelConfig = null;
-    this.showTextFields = false;
+    this.showTextInFields = false;
+    this.showTextOutFields = false;
     this.node.modelId.set('');
     this.refreshTabs();
   }
@@ -130,7 +133,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
   private loadModel(modelId: string): void {
     this.serverRepository.getModel(modelId).subscribe(model => {
       this.loadedModel = model;
-      this.showTextFields = false;
+      this.showTextInFields = false;
 
       if (!model) {
         this.refreshTabs();
@@ -162,7 +165,8 @@ export class ModelCallNodeDialogComponent implements OnInit {
   }
 
   private updateTextFieldVisibility(): void {
-    this.showTextFields = this.supportsText;
+    this.showTextInFields = this.supportsTextIn;
+    this.showTextOutFields = this.supportsTextOut;
   }
 
   public isCapabilityEnabled(capability: string): boolean {
@@ -291,16 +295,20 @@ export class ModelCallNodeDialogComponent implements OnInit {
     return numeric.toString();
   }
 
-  public get supportsStructuredOutput(): boolean {
-    return this.hasCapability('SupportsStructuredOutput');
+  public get supportsTextIn(): boolean {
+    return this.hasCapability('SupportsText');
   }
 
-  public get supportsText(): boolean {
-    return this.hasCapability('SupportsText');
+  public get supportsTextOut(): boolean {
+    return this.hasCapability('SupportsTextOut');
   }
 
   public get supportsToolCalling(): boolean {
     return this.hasCapability('SupportsToolCalling');
+  }
+
+  public get supportsStructuredOutput(): boolean {
+    return this.hasCapability('SupportsStructuredOutput');
   }
 
   private hasCapability(capabilityName: string): boolean {
@@ -386,7 +394,7 @@ export class ModelCallNodeDialogComponent implements OnInit {
       { id: 'details', title: 'Details', content: this.detailsTab },
     ];
 
-    if (this.supportsText) {
+    if (this.supportsTextIn || this.supportsTextOut) {
       newTabs.push({ id: 'text', title: 'Text', content: this.textTab });
     }
 

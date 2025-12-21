@@ -41,7 +41,7 @@
           [fields]="modelConfig?.parameterFields ?? []"
           [values]="node.parameterValues()"
           [capabilityContext]="capabilityContext"
-          [ignoredCapabilities]="['SupportsStructuredOutput', 'SupportsToolCalling', 'SupportsText']"
+          [ignoredCapabilities]="['SupportsTextIn', 'SupportsTextOut', 'SupportsToolCalling', 'SupportsStructuredOutput']"
           [includeNonCallDefined]="false"
           (valuesChange)="onParameterValuesChange($event)">
         </app-dynamic-fields>
@@ -49,19 +49,7 @@
     </ng-template>
     <ng-template #textTab>
       <div class="bg-body-tertiary p-3">
-        @if (showTextFields) {
-          <div class="mb-3 form-line">
-            <label for="model-call-text-output" class="form-label field-label">Text Output Path</label>
-            <div class="flex-fill control-column short">
-              <input
-                type="text"
-                class="form-control w-100"
-                id="model-call-text-output"
-                [ngModel]="node.textOutputPath()"
-                (ngModelChange)="node.textOutputPath.set($event)" />
-            </div>
-          </div>
-
+        @if (showTextInFields) {
           <div class="mb-3 form-line">
             <label for="model-call-instructions" class="form-label field-label align-top">Instructions</label>
             <div class="flex-fill control-column extra-long">
@@ -77,13 +65,27 @@
           </div>
         }
 
+        @if (showTextOutFields) {
+          <div class="mb-3 form-line">
+            <label for="model-call-text-output" class="form-label field-label">Text Output Path</label>
+            <div class="flex-fill control-column short">
+              <input
+                type="text"
+                class="form-control w-100"
+                id="model-call-text-output"
+                [ngModel]="node.textOutputPath()"
+                (ngModelChange)="node.textOutputPath.set($event)" />
+            </div>
+          </div>
+        }
+
         <app-dynamic-fields
           [fields]="modelConfig?.parameterFields ?? []"
           [values]="node.parameterValues()"
           [capabilityContext]="capabilityContext"
           [includeCallDefined]="true"
           [includeNonCallDefined]="false"
-          [allowedCapabilities]="['SupportsText']"
+          [allowedCapabilities]="['SupportsTextIn', 'SupportsTextOut']"
           (valuesChange)="onParameterValuesChange($event)">
         </app-dynamic-fields>
       </div>

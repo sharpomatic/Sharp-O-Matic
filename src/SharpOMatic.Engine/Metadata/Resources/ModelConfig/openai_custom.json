@@ -6,8 +6,12 @@
   "IsCustom": true,
   "Capabilities": [
     {
-      "Name": "SupportsText",
-      "DisplayName": "Supports Text"
+      "Name": "SupportsTextIn",
+      "DisplayName": "Supports Text Input"
+    },
+    {
+      "Name": "SupportsTextOut",
+      "DisplayName": "Supports Text Output"
     },
     {
       "Name": "SupportsMaxOutputTokens",
@@ -47,7 +51,7 @@
       "Name": "max_output_tokens",
       "Description": "",
       "Label": "Max Output Tokens",
-      "CallDefined": false,
+      "CallDefined": true,
       "Type": 5,
       "IsRequired": true,
       "Capability": "SupportsMaxOutputTokens",
