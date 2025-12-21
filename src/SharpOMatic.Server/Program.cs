@@ -23,8 +23,9 @@ builder.Services.AddSharpOMatic()
         optionBuilder.UseSqlite($"Data Source={dbPath}");
     }, (dbOptions) =>
     {
-        //dbOptions.TablePrefix = "Sample";
-        //dbOptions.DefaultSchema = "SharpOMatic";
+        // dbOptions.TablePrefix = "Sample";
+        // dbOptions.DefaultSchema = "SharpOMatic";
+        // dbOptions.CommandTimeout = 120;
     });
 
 var app = builder.Build();
