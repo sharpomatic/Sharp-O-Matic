@@ -168,6 +168,9 @@ namespace SharpOMatic.Engine.Migrations
                     b.Property<int>("SettingType")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("UserEditable")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool?>("ValueBoolean")
                         .HasColumnType("INTEGER");
 

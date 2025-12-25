@@ -4,6 +4,7 @@ export interface Setting {
   settingId: string;
   name: string;
   displayName: string;
+  userEditable: boolean;
   settingType: SettingType;
   valueString?: string | null;
   valueBoolean?: boolean | null;

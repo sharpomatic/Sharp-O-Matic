@@ -11,7 +11,7 @@ using SharpOMatic.Engine.Repository;
 namespace SharpOMatic.Engine.Migrations
 {
     [DbContext(typeof(SharpOMaticDbContext))]
-    [Migration("20251225112701_InitialCreate")]
+    [Migration("20251225120049_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -169,6 +169,9 @@ namespace SharpOMatic.Engine.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SettingType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("UserEditable")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool?>("ValueBoolean")

@@ -7,6 +7,7 @@ public class Setting
     public required string Name { get; set; }
     public required string DisplayName { get; set; }
     public required SettingType SettingType { get; set; }
+    public required bool UserEditable { get; set; }
     public string? ValueString { get; set; }
     public bool? ValueBoolean { get; set; }
     public int? ValueInteger { get; set; }

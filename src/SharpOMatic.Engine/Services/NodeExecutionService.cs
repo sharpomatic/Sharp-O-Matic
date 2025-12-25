@@ -153,6 +153,7 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
                 SettingId = Guid.NewGuid(),
                 Name = "Version",
                 DisplayName = "Version",
+                UserEditable = false,
                 SettingType = SettingType.Integer,
                 ValueInteger = 1
             });
@@ -162,6 +163,7 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
                 SettingId = Guid.NewGuid(),
                 Name = "MaxRuns",
                 DisplayName = "Max Runs",
+                UserEditable = true,
                 SettingType = SettingType.Integer,
                 ValueInteger = 50
             });
@@ -170,6 +172,7 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
             {
                 SettingId = Guid.NewGuid(),
                 Name = "MaxRunNodes",
+                UserEditable = true,
                 DisplayName = "Max Run Nodes",
                 SettingType = SettingType.Integer,
                 ValueInteger = 500
