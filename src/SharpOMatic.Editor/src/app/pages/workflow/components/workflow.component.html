@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between align-items-center p-3 pt-2 pb-0">
       <h2 class=""><i class="bi bi-share pe-3 icon-sm"></i>{{ workflowService.workflow().name() }}</h2>
       <div class="d-flex">
-        @if (activeTab === 'Design') {
+        @if (activeTabId === 'design') {
         <div class="dropdown" dropdown>
           <button class="btn btn-primary dropdown-toggle me-2" type="button" id="add-node-dropdown"
             data-bs-toggle="dropdown" aria-expanded="false" dropdownToggle>Add</button>
@@ -29,7 +29,7 @@
         </div>
         }
         <button class="btn btn-primary me-2" [disabled]="!workflowService.workflow().isDirty()" (click)="save()">Save</button>
-        @if (activeTab === 'Design') {          
+        @if (activeTabId === 'design') {          
         <button class="btn btn-primary" [disabled]="workflowService.workflow().isDirty() || workflowService.isRunning()" (click)="run()">Run</button>
         }
       </div>

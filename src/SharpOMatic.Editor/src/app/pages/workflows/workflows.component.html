@@ -12,7 +12,7 @@
         </div>
         <div class="card-body">
           <p class="card-text">{{ workflow.description() }}</p>
-          <button class="btn btn-primary" [routerLink]="['/workflows', workflow.id]">Open</button>
+          <button class="btn btn-primary" [routerLink]="['/workflows', workflow.id]" [queryParams]="{ tab: 'design' }">Open</button>
           <button class="btn btn-primary ms-2" (click)="deleteWorkflow(workflow)">Delete</button>
         </div>
       </div>

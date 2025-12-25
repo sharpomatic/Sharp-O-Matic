@@ -1,5 +1,5 @@
 import { Component, HostListener, TemplateRef, ViewChild, inject, OnInit, signal, computed, effect } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowService } from '../services/workflow.service';
 import { DesignerComponent } from '../../../components/designer/components/designer.component';
 import { DesignerUpdateService } from '../../../components/designer/services/designer-update.service';
@@ -34,12 +34,15 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
   @ViewChild('runsTab', { static: true }) runsTab!: TemplateRef<unknown>;
 
   public readonly route = inject(ActivatedRoute);
+  public readonly router = inject(Router);
   public readonly updateService = inject(DesignerUpdateService);
   public readonly workflowService = inject(WorkflowService);
   public readonly modalService = inject(BsModalService);
 
-  public activeTab = 'Design';
-  public activeTabId = 'design';
+  private readonly tabIds = new Set(['details', 'design', 'runs']);
+  private readonly defaultTabId = 'design';
+
+  public activeTabId = this.defaultTabId;
   public tracebarActiveTabId = 'input';
   public isTracebarClosed = signal(true);
   public tracebarWidth = signal(800);
@@ -49,15 +52,23 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
 
   ngOnInit(): void {
     this.tabs = [
-      { id: 'design', title: 'Design', content: this.designTab },
       { id: 'details', title: 'Details', content: this.detailsTab },
+      { id: 'design', title: 'Design', content: this.designTab },
       { id: 'runs', title: 'Runs', content: this.runsTab }
     ];
+
+    this.activeTabId = this.resolveTabId(this.route.snapshot.queryParamMap.get('tab'));
+    this.route.queryParamMap.subscribe(params => {
+      const nextTabId = this.resolveTabId(params.get('tab'));
+      if (nextTabId !== this.activeTabId) {
+        this.activeTabId = nextTabId;
+      }
+    });
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.workflowService.load(id);
-      }
+    }
   }
 
   save(): void {
@@ -83,7 +94,7 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
   }
 
   onActiveTabChange(tab: TabItem): void {
-    this.activeTab = tab.title;
+    this.updateTabRoute(tab.id);
   }
 
   onAddStartNode(event: Event): void {
@@ -124,6 +135,31 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  private resolveTabId(tabId: string | null): string {
+    if (tabId && this.tabIds.has(tabId)) {
+      return tabId;
+    }
+
+    return this.defaultTabId;
+  }
+
+  private updateTabRoute(tabId: string): void {
+    if (!this.tabIds.has(tabId)) {
+      return;
+    }
+
+    const currentTabId = this.route.snapshot.queryParamMap.get('tab');
+    if (currentTabId === tabId) {
+      return;
+    }
+
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: tabId },
+      queryParamsHandling: 'merge'
+    });
   }
 
   @HostListener('window:beforeunload', ['$event'])
