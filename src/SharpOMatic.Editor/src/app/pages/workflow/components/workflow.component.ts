@@ -12,6 +12,7 @@ import { NodeType } from '../../../entities/enumerations/node-type';
 import { TabComponent, TabItem } from '../../../components/tab/tab.component';
 import { CanLeaveWithUnsavedChanges } from '../../../guards/unsaved-changes.guard';
 import { RunStatus } from '../../../enumerations/run-status';
+import { RunProgressModel } from '../interfaces/run-progress-model';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -30,6 +31,7 @@ import { Observable } from 'rxjs';
 export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
   @ViewChild('designTab', { static: true }) designTab!: TemplateRef<unknown>;
   @ViewChild('detailsTab', { static: true }) detailsTab!: TemplateRef<unknown>;
+  @ViewChild('runsTab', { static: true }) runsTab!: TemplateRef<unknown>;
 
   public readonly route = inject(ActivatedRoute);
   public readonly updateService = inject(DesignerUpdateService);
@@ -43,11 +45,13 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
   public tracebarWidth = signal(800);
   public tabs: TabItem[] = [];
   public readonly hasStartNode = computed(() => this.workflowService.workflow().nodes().some(node => node.nodeType() === NodeType.Start));
+  public readonly RunStatus = RunStatus;
 
   ngOnInit(): void {
     this.tabs = [
       { id: 'design', title: 'Design', content: this.designTab },
-      { id: 'details', title: 'Details', content: this.detailsTab }
+      { id: 'details', title: 'Details', content: this.detailsTab },
+      { id: 'runs', title: 'Runs', content: this.runsTab }
     ];
 
     const id = this.route.snapshot.paramMap.get('id');
@@ -102,6 +106,24 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
 
   saveChanges(): Observable<void> {
     return this.workflowService.save();
+  }
+
+  public getRunDuration(run: RunProgressModel): string {
+    if (!run.started || !run.stopped) {
+      return '';
+    }
+
+    const startedMs = Date.parse(run.started);
+    const stoppedMs = Date.parse(run.stopped);
+    if (!Number.isFinite(startedMs) || !Number.isFinite(stoppedMs) || stoppedMs < startedMs) {
+      return '';
+    }
+
+    const totalSeconds = Math.floor((stoppedMs - startedMs) / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
 
   @HostListener('window:beforeunload', ['$event'])

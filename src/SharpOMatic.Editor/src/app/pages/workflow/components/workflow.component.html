@@ -79,4 +79,45 @@
       </div>
     </div>
   </ng-template>
+
+  <ng-template #runsTab>
+    <div class="p-3 bg-body-tertiary h-100 d-flex flex-column runs-tab">
+      <div class="table-responsive runs-table">
+        <table class="table table-sm table-striped table-hover align-middle">
+          <thead>
+            <tr>
+              <th scope="col" class="col-created">Created</th>
+              <th scope="col" class="col-status">Status</th>
+              <th scope="col" class="col-duration">Duration</th>
+              <th scope="col">Error</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (workflowService.runs().length === 0) {
+              <tr>
+                <td colspan="4" class="text-muted">No runs yet.</td>
+              </tr>
+            } @else {
+              @for (run of workflowService.runs(); track run.runId) {
+                <tr>
+                  <td class="col-created">{{ run.created ? (run.created | date:'yyyy-MM-dd HH:mm:ss') : '-' }}</td>
+                  <td class="col-status">
+                    <span class="run-text" 
+                      [class.created]="run.runStatus === RunStatus.Created"
+                      [class.running]="run.runStatus === RunStatus.Running"
+                      [class.success]="run.runStatus === RunStatus.Success"
+                      [class.failed]="run.runStatus === RunStatus.Failed">
+                      {{ run.message }}
+                    </span>
+                  </td>
+                  <td>{{ getRunDuration(run) }}</td>
+                  <td>{{ run.error || '' }}</td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-template>
 </div>

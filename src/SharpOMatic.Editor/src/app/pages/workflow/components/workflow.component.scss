@@ -61,3 +61,50 @@
 .dropdown-icon {
   margin-right: 12px;
 }
+
+.runs-tab {
+  min-height: 0;
+}
+
+.runs-table {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.col-created {
+  width: 180px;
+}
+
+.col-status {
+  width: 110px;
+}
+
+.col-duration {
+  width: 100px;
+}
+
+.run-text {
+  padding: 2px 6px;
+  border-radius: 4px;
+
+  &.created {
+    color: black;
+    background-color: white;
+  }
+
+  &.running {
+    color: black;
+    background-color: #FF8654
+  }
+
+  &.success {
+    color: white;
+    background-color: #198754;
+  }
+
+  &.failed {
+    color: white;
+    background-color: #FF5454
+  }
+}

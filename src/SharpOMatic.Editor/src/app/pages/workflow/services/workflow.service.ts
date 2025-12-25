@@ -23,6 +23,7 @@ export class WorkflowService implements OnDestroy  {
   public workflow: WritableSignal<WorkflowEntity>;
   public runProgress: WritableSignal<RunProgressModel | undefined>;
   public traces: WritableSignal<TraceProgressModel[]>;
+  public runs: WritableSignal<RunProgressModel[]>;
   public isRunning: WritableSignal<boolean>;
   public runInputs: WritableSignal<ContextEntryListEntity>;
   private lastStartInputsSnapshot?: ContextEntryListSnapshot;
@@ -35,6 +36,7 @@ export class WorkflowService implements OnDestroy  {
     this.workflow = signal(new WorkflowEntity(WorkflowEntity.defaultSnapshot()));
     this.runProgress = signal(undefined);
     this.traces = signal([]);
+    this.runs = signal([]);
     this.isRunning = signal(false);
     this.runInputs = signal(ContextEntryListEntity.fromSnapshot(ContextEntryListEntity.defaultSnapshot()));
 
@@ -66,6 +68,7 @@ export class WorkflowService implements OnDestroy  {
       this.runProgress.set(undefined);
       this.updateRunInputsFromWorkflow();
       this.workflow().markClean();
+      this.loadRecentRuns(id);
       this.serverWorkflowService.getLatestWorkflowRun(id).subscribe(run => {
         if (run) {
           this.runProgress.set(run);
@@ -136,6 +139,7 @@ export class WorkflowService implements OnDestroy  {
           const workflowName = workflow.name();
           const successMessage = `${workflowName} completed successfully.`;
           this.toastService.success(successMessage);
+          this.loadRecentRuns(workflow.id);
           break;
         }
         case RunStatus.Failed: {
@@ -145,6 +149,7 @@ export class WorkflowService implements OnDestroy  {
           const errorMessage = (data.error ?? '').trim();
           const failureMessage = errorMessage ? `${workflowName} failed: ${errorMessage}` : `${workflowName} failed.`;
           this.toastService.error(failureMessage);
+          this.loadRecentRuns(workflow.id);
           break;
         }
       }
@@ -227,6 +232,12 @@ export class WorkflowService implements OnDestroy  {
       if (entry.entryType() === previousEntry.entryType()) {
         entry.entryValue.set(previousEntry.entryValue());
       }
+    });
+  }
+
+  private loadRecentRuns(workflowId: string): void {
+    this.serverWorkflowService.getLatestWorkflowRuns(workflowId, 20).subscribe(runs => {
+      this.runs.set(runs ?? []);
     });
   }
 
