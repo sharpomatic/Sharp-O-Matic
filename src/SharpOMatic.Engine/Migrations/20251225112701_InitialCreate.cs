@@ -73,6 +73,7 @@ namespace SharpOMatic.Engine.Migrations
                 {
                     SettingId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
+                    DisplayName = table.Column<string>(type: "TEXT", nullable: false),
                     SettingType = table.Column<int>(type: "INTEGER", nullable: false),
                     ValueString = table.Column<string>(type: "TEXT", nullable: true),
                     ValueBoolean = table.Column<bool>(type: "INTEGER", nullable: true),

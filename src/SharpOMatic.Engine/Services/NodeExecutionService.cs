@@ -116,28 +116,26 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
 
     private async Task LoadMetadata<T>(string resourceFilter, Func<IRepository, T, Task> upsertAction)
     {
-        using (var scope = scopeFactory.CreateScope())
-        {
-            var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceNames = assembly.GetManifestResourceNames().Where(name => name.Contains(resourceFilter) && name.EndsWith(".json"));
+        using var scope = scopeFactory.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceNames = assembly.GetManifestResourceNames().Where(name => name.Contains(resourceFilter) && name.EndsWith(".json"));
 
-            foreach (var resourceName in resourceNames)
+        foreach (var resourceName in resourceNames)
+        {
+            try
             {
-                try
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream != null)
                 {
-                    using var stream = assembly.GetManifestResourceStream(resourceName);
-                    if (stream != null)
-                    {
-                        var config = await JsonSerializer.DeserializeAsync<T>(stream);
-                        if (config != null)
-                            await upsertAction(repository, config);
-                    }
+                    var config = await JsonSerializer.DeserializeAsync<T>(stream);
+                    if (config != null)
+                        await upsertAction(repository, config);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Failed to load metadata from {resourceName}: {ex.Message}");
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load metadata from {resourceName}: {ex.Message}");
             }
         }
     }
@@ -146,6 +144,37 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
     {
         using var scope = scopeFactory.CreateScope();
         var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
+        var versionSetting = await repository.GetSettings().FirstOrDefaultAsync(s => s.Name == "Version");
+
+        if (versionSetting is null)
+        {
+            await repository.UpsertSetting(new Setting()
+            {
+                SettingId = Guid.NewGuid(),
+                Name = "Version",
+                DisplayName = "Version",
+                SettingType = SettingType.Integer,
+                ValueInteger = 1
+            });
+
+            await repository.UpsertSetting(new Setting()
+            {
+                SettingId = Guid.NewGuid(),
+                Name = "MaxRuns",
+                DisplayName = "Max Runs",
+                SettingType = SettingType.Integer,
+                ValueInteger = 50
+            });
+
+            await repository.UpsertSetting(new Setting()
+            {
+                SettingId = Guid.NewGuid(),
+                Name = "MaxRunNodes",
+                DisplayName = "Max Run Nodes",
+                SettingType = SettingType.Integer,
+                ValueInteger = 500
+            });
+        }
     }
 
 }
