@@ -8,13 +8,12 @@ import { ContextEntryListEntity, ContextEntryListSnapshot } from '../../entities
 import { ContextEntryEntity } from '../../entities/definitions/context-entry.entity';
 import { ContextEntryType } from '../../entities/enumerations/context-entry-type';
 import { RunStatus } from '../../enumerations/run-status';
-import { NodeStatus } from '../../enumerations/node-status';
-import { getNodeSymbol } from '../../entities/enumerations/node-type';
 import { RunProgressModel } from '../../pages/workflow/interfaces/run-progress-model';
 import { TraceProgressModel } from '../../pages/workflow/interfaces/trace-progress-model';
 import { DIALOG_DATA } from '../services/dialog.service';
 import { ServerRepositoryService } from '../../services/server.repository.service';
 import { MonacoService } from '../../services/monaco.service';
+import { TraceViewerComponent } from '../../components/trace-viewer/trace-viewer.component';
 
 interface RunPropertyRow {
   label: string;
@@ -32,7 +31,8 @@ interface RunPropertyRow {
     FormsModule,
     MonacoEditorModule,
     TabComponent,
-    ContextViewerComponent
+    ContextViewerComponent,
+    TraceViewerComponent
   ],
   templateUrl: './run-viewer-dialog.component.html',
   styleUrls: ['./run-viewer-dialog.component.scss']
@@ -53,9 +53,7 @@ export class RunViewerDialogComponent implements OnInit {
   public traces: TraceProgressModel[] = [];
   public isLoadingTraces = true;
   public readonly RunStatus = RunStatus;
-  public readonly NodeStatus = NodeStatus;
   public readonly contextEntryType = ContextEntryType;
-  public readonly getNodeSymbol = getNodeSymbol;
 
   private readonly serverRepository = inject(ServerRepositoryService);
   private readonly jsonViewerOptions = { ...MonacoService.editorOptionsJson, readOnly: true };

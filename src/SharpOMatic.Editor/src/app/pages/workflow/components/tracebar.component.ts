@@ -1,21 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild, computed, inject } from '@angular/core';
-import { NodeStatus } from '../../../enumerations/node-status';
 import { RunStatus } from '../../../enumerations/run-status';
 import { WorkflowService } from '../services/workflow.service';
 import { ContextEntryType } from '../../../entities/enumerations/context-entry-type';
-import { getNodeSymbol } from '../../../entities/enumerations/node-type';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { ContextEntryEntity } from '../../../entities/definitions/context-entry.entity';
 import { MonacoService } from '../../../services/monaco.service';
 import { TabComponent, TabItem } from '../../../components/tab/tab.component';
 import { ContextViewerComponent } from '../../../components/context-viewer/context-viewer.component';
+import { TraceViewerComponent } from '../../../components/trace-viewer/trace-viewer.component';
 
 @Component({
   selector: 'app-tracebar',
   standalone: true,
-  imports: [CommonModule, FormsModule, MonacoEditorModule, TabComponent, ContextViewerComponent],
+  imports: [CommonModule, FormsModule, MonacoEditorModule, TabComponent, ContextViewerComponent, TraceViewerComponent],
   templateUrl: './tracebar.component.html',
   styleUrl: './tracebar.component.scss'
 })
@@ -29,8 +28,6 @@ export class TracebarComponent implements OnInit, OnDestroy {
   public readonly contextEntryType = ContextEntryType;
   public readonly contextEntryTypeKeys = Object.keys(ContextEntryType).filter(k => isNaN(Number(k)));
   public readonly RunStatus = RunStatus;
-  public readonly NodeStatus = NodeStatus;
-  public readonly getNodeSymbol = getNodeSymbol;
   public isResizing = false;
   public tabs: TabItem[] = [];
   @Input() public activeTabId = 'input';

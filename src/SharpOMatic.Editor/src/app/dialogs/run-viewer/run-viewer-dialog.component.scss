@@ -115,45 +115,6 @@
   padding: 10px;
 }
 
-.trace-line {
-  margin: 4px;
-}
-
-.trace-symbol {
-  padding: 1px 6px;
-  font-size: 17px;
-}
-
-.trace-title {
-  padding: 1px 6px;
-  display: inline-block;
-  width: 100px;
-}
-
-.trace-message {
-  display: inline-block;
-}
-
-.trace-text {
-  padding: 2px 6px;
-  border-radius: 4px;
-
-  &.running {
-    color: black;
-    background-color: #FF8654;
-  }
-
-  &.success {
-    color: white;
-    background-color: #198754;
-  }
-
-  &.failed {
-    color: white;
-    background-color: #FF5454;
-  }
-}
-
 .run-inputs {
   overflow-y: auto;
   padding-right: 8px;
@@ -162,10 +123,6 @@
 .run-input-row input[readonly],
 .run-input-row textarea[readonly] {
   background-color: var(--bs-tertiary-bg);
-}
-
-.input-empty-state {
-  padding: 12px;
 }
 
 .editPath {
