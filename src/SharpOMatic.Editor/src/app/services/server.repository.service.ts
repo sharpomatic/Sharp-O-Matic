@@ -85,6 +85,16 @@ export class ServerRepositoryService {
     );
   }
 
+  public getLatestWorkflowRuns(id: string, count: number): Observable<RunProgressModel[] | null> {
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.get<RunProgressModel[]>(`${apiUrl}/api/run/latestforworkflow/${id}/${count}`).pipe(
+      catchError((error) => {
+        this.notifyError('Loading latest workflow runs', error);
+        return of(null);
+      })
+    );
+  }
+
   public getRunTraces(id: string): Observable<TraceProgressModel[] | null> {
     const apiUrl = this.settingsService.apiUrl();
     return this.http.get<TraceProgressModel[]>(`${apiUrl}/api/trace/forrun/${id}`).pipe(
