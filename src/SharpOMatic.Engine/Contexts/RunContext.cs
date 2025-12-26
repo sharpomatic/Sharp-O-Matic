@@ -6,8 +6,10 @@ public class RunContext
     private readonly Dictionary<Guid, NodeEntity> _inputConnectorToNode = [];
     private readonly Dictionary<Guid, ConnectionEntity> _fromToConnection = [];
 
-    private int _threadCount = 1;
     private int _threadId = 1;
+    private int _threadCount = 1;
+    private int _nodesRun = 0;
+    private int _runNodeLimit = 0;
 
     public IServiceScope ServiceScope { get; init; }
     public IRepository Repository { get; init; }
@@ -18,11 +20,14 @@ public class RunContext
     public WorkflowEntity Workflow { get; init; }
     public Run Run { get; init; }
     public int RunningThreadCount => _threadCount;
+    public int NodesRun => _nodesRun;
+    public int RunNodeLimit => _runNodeLimit;
 
     public RunContext(IServiceScope serviceScope,
                       IEnumerable<JsonConverter> jsonConverters,
                       WorkflowEntity workflow, 
-                      Run run)
+                      Run run,
+                      int runNodeLimit)
     {
         ServiceScope = serviceScope;
         Repository = serviceScope.ServiceProvider.GetRequiredService<IRepository>();
@@ -32,6 +37,7 @@ public class RunContext
         JsonConverters = jsonConverters;
         Workflow = workflow;
         Run = run;
+        _runNodeLimit = runNodeLimit;
 
         foreach (var node in workflow.Nodes)
         {
@@ -53,6 +59,16 @@ public class RunContext
     public int GetNextThreadId()
     {
         return Interlocked.Increment(ref _threadId);
+    }
+
+    public int IncrementNodesRun()
+    {
+        return Interlocked.Increment(ref _nodesRun);
+    }
+
+    public bool TryMarkNodeRunLimit()
+    {
+        return Interlocked.Exchange(ref _runNodeLimit, 1) == 0;
     }
 
     public async Task RunUpdated()

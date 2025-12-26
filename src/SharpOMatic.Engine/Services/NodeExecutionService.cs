@@ -2,6 +2,9 @@ namespace SharpOMatic.Engine.Services;
 
 public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFactory) : BackgroundService
 {
+    public const int DEFAULT_RUN_HISTORY_LIMIT = 50;
+    public const int DEFAULT_NODE_RUN_LIMIT = 500;
+
     private static readonly Dictionary<NodeType, Type> _nodeRunners;
     private readonly SemaphoreSlim _semaphore = new(5);
 
@@ -61,9 +64,18 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
         try
         {
             var nextNodes = await RunNode(threadContext, node);
+            if (runContext.Run.RunStatus == RunStatus.Failed)
+                return;
+
+            var executedCount = runContext.IncrementNodesRun();
+            if (runContext.RunNodeLimit > 0 && executedCount >= runContext.RunNodeLimit)
+                throw new SharpOMaticException($"Hit run node limit of {runContext.RunNodeLimit}");
 
             if (runContext.UpdateThreadCount(nextNodes.Count - 1) == 0)
             {
+                if (runContext.Run.RunStatus == RunStatus.Failed)
+                    return;
+
                 runContext.Run.RunStatus = RunStatus.Success;
                 runContext.Run.Message = "Success";
                 runContext.Run.Stopped = DateTime.Now;
@@ -161,21 +173,21 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
             await repository.UpsertSetting(new Setting()
             {
                 SettingId = Guid.NewGuid(),
-                Name = "MaxRuns",
-                DisplayName = "Max Runs",
+                Name = "RunHistoryLimit",
+                DisplayName = "Run History Limit",
                 UserEditable = true,
                 SettingType = SettingType.Integer,
-                ValueInteger = 50
+                ValueInteger = DEFAULT_RUN_HISTORY_LIMIT
             });
 
             await repository.UpsertSetting(new Setting()
             {
                 SettingId = Guid.NewGuid(),
-                Name = "MaxRunNodes",
+                Name = "RunNodeLimit",
                 UserEditable = true,
-                DisplayName = "Max Run Nodes",
+                DisplayName = "Run Node Limit",
                 SettingType = SettingType.Integer,
-                ValueInteger = 500
+                ValueInteger = DEFAULT_NODE_RUN_LIMIT
             });
         }
     }

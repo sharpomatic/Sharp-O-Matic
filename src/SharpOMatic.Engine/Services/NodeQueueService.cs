@@ -1,8 +1,11 @@
+using System.Collections.Concurrent;
+
 namespace SharpOMatic.Engine.Services;
 
 public class NodeQueueService : INodeQueue
 {
     private readonly Channel<(ThreadContext threadContext, NodeEntity node)> _queue;
+    private readonly ConcurrentDictionary<Guid, byte> _blockedRuns = new();
 
     public NodeQueueService()
     {
@@ -14,8 +17,23 @@ public class NodeQueueService : INodeQueue
         _queue.Writer.TryWrite((threadContext, node));
     }
 
-    public ValueTask<(ThreadContext threadContext, NodeEntity node)> DequeueAsync(CancellationToken cancellationToken)
+    public async ValueTask<(ThreadContext threadContext, NodeEntity node)> DequeueAsync(CancellationToken cancellationToken)
     {
-        return _queue.Reader.ReadAsync(cancellationToken);
+        while (true)
+        {
+            var item = await _queue.Reader.ReadAsync(cancellationToken);
+            if (!_blockedRuns.ContainsKey(item.threadContext.RunContext.Run.RunId))
+            {
+                if (_queue.Reader.Count == 0)
+                    _blockedRuns.Clear();
+
+                return item;
+            }
+        }
+    }
+
+    public void RemoveRunNodes(Guid runId)
+    {
+        _blockedRuns.TryAdd(runId, 0);
     }
 }
