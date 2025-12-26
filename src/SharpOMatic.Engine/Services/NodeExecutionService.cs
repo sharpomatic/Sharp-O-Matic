@@ -87,6 +87,7 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
                     runContext.Run.OutputContext = runContext.TypedSerialization(threadContext.NodeContext);
 
                 await runContext.RunUpdated();
+                await PruneRunHistory(runContext);
                 runContext.ServiceScope.Dispose();
             }
             else
@@ -107,6 +108,7 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
                 runContext.Run.OutputContext = runContext.TypedSerialization(threadContext.NodeContext);
 
             await runContext.RunUpdated();
+            await PruneRunHistory(runContext);
             runContext.ServiceScope.Dispose();
         }
     }
@@ -120,6 +122,26 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
         }
 
         throw new SharpOMaticException($"Unrecognized node type '{node.NodeType}'");
+    }
+
+    private async Task PruneRunHistory(RunContext runContext)
+    {
+        try
+        {
+            var runHistoryLimitSetting = await runContext.Repository.GetSettings()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Name == "RunHistoryLimit");
+
+            var runHistoryLimit = runHistoryLimitSetting?.ValueInteger ?? DEFAULT_RUN_HISTORY_LIMIT;
+            if (runHistoryLimit < 0)
+                runHistoryLimit = 0;
+
+            await runContext.Repository.PruneWorkflowRuns(runContext.Run.WorkflowId, runHistoryLimit);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to prune run history for workflow '{runContext.Run.WorkflowId}': {ex.Message}");
+        }
     }
 
     private async Task LoadMetadata()

@@ -16,6 +16,7 @@ public interface IRepository
     IQueryable<Run> GetRuns();
     IQueryable<Run> GetWorkflowRuns(Guid workflowId);
     Task UpsertRun(Run run);
+    Task PruneWorkflowRuns(Guid workflowId, int keepLatest);
 
     // ------------------------------------------------
     // Trace Operations

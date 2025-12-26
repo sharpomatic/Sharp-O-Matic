@@ -123,6 +123,24 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task PruneWorkflowRuns(Guid workflowId, int keepLatest)
+    {
+        if (keepLatest < 0)
+            keepLatest = 0;
+
+        using var dbContext = dbContextFactory.CreateDbContext();
+
+        var runIdsToDelete = dbContext.Runs
+            .Where(r => r.WorkflowId == workflowId)
+            .OrderByDescending(r => r.Created)
+            .Skip(keepLatest)
+            .Select(r => r.RunId);
+
+        await dbContext.Runs
+            .Where(r => runIdsToDelete.Contains(r.RunId))
+            .ExecuteDeleteAsync();
+    }
+
 
     // ------------------------------------------------
     // Trace Operations

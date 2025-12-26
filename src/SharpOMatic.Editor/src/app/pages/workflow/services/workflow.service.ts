@@ -154,7 +154,6 @@ export class WorkflowService implements OnDestroy  {
           const workflowName = workflow.name();
           const successMessage = `${workflowName} completed successfully.`;
           this.toastService.success(successMessage);
-          this.loadRunsPageForWorkflow(workflow.id, 1);
           break;
         }
         case RunStatus.Failed: {
@@ -164,7 +163,6 @@ export class WorkflowService implements OnDestroy  {
           const errorMessage = (data.error ?? '').trim();
           const failureMessage = errorMessage ? `${workflowName} failed: ${errorMessage}` : `${workflowName} failed.`;
           this.toastService.error(failureMessage);
-          this.loadRunsPageForWorkflow(workflow.id, 1);
           break;
         }
       }

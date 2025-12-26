@@ -89,6 +89,7 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
       const nextTabId = this.resolveTabId(params.get('tab'));
       if (nextTabId !== this.activeTabId) {
         this.activeTabId = nextTabId;
+        this.reloadRunsForTab(nextTabId);
       }
     });
 
@@ -122,6 +123,7 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
 
   onActiveTabChange(tab: TabItem): void {
     this.updateTabRoute(tab.id);
+    this.reloadRunsForTab(tab.id);
   }
 
   onRunRowDoubleClick(run: RunProgressModel): void {
@@ -215,6 +217,14 @@ export class WorkflowComponent implements OnInit, CanLeaveWithUnsavedChanges {
       queryParams: { tab: tabId },
       queryParamsHandling: 'merge'
     });
+  }
+
+  private reloadRunsForTab(tabId: string): void {
+    if (tabId !== 'runs') {
+      return;
+    }
+
+    this.workflowService.loadRunsPage(this.workflowService.runsPage());
   }
 
   @HostListener('window:beforeunload', ['$event'])
