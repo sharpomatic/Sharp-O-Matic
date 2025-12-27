@@ -23,6 +23,20 @@ public static class Tools
     }
 }
 
+public class ServerHelper
+{
+    private readonly int _num;
+
+    public ServerHelper(int num)
+    {
+        _num = num;
+    }
+
+    public int Doubled()
+    {
+        return _num * 2;
+    }
+}
 
 public interface IClockService
 {

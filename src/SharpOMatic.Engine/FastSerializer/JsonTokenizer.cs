@@ -122,7 +122,7 @@ public ref struct FastJsonTokenizer
             {
                 case FullTokenKind.IllegalCharacter:
                     _tokenIndex = _index - 1;
-                    throw SyntaxException.IllegalCharacterCode(Location, _c);
+                    throw FastSerializationException.IllegalCharacterCode(Location, _c);
                 case FullTokenKind.Skip:
                     break;
                 case FullTokenKind.NewLine:
@@ -151,7 +151,7 @@ public ref struct FastJsonTokenizer
                     return true;
                 default:
                     _tokenIndex = _index - 1;
-                    throw SyntaxException.UnrecognizedCharacterCode(Location, _c);
+                    throw FastSerializationException.UnrecognizedCharacterCode(Location, _c);
             }
         }
 
@@ -208,7 +208,7 @@ public ref struct FastJsonTokenizer
                     break;
                 }
                 else
-                    throw SyntaxException.UnrecognizedKeyword(Location, TokenValue);
+                    throw FastSerializationException.UnrecognizedKeyword(Location, TokenValue);
             case 5:
                 if ((_text[_tokenIndex + 0] == 'f') && (_text[_tokenIndex + 1] == 'a') && (_text[_tokenIndex + 2] == 'l') &&
                     (_text[_tokenIndex + 3] == 's') && (_text[_tokenIndex + 4] == 'e'))
@@ -217,9 +217,9 @@ public ref struct FastJsonTokenizer
                     break;
                 }
                 else
-                    throw SyntaxException.UnrecognizedKeyword(Location, TokenValue);
+                    throw FastSerializationException.UnrecognizedKeyword(Location, TokenValue);
             default:
-                throw SyntaxException.UnrecognizedKeyword(Location, TokenValue);
+                throw FastSerializationException.UnrecognizedKeyword(Location, TokenValue);
         }
     }
 
@@ -230,11 +230,11 @@ public ref struct FastJsonTokenizer
         if (_c == '-')
         {
             if (_index == _length)
-                throw SyntaxException.UnexpectedEndOfFile(Location);
+                throw FastSerializationException.UnexpectedEndOfFile(Location);
 
             _c = _text[_index];
             if (s_mapKind[_c] != FullTokenKind.Digit)
-                throw SyntaxException.MinusMustBeFollowedByDigit(Location);
+                throw FastSerializationException.MinusMustBeFollowedByDigit(Location);
 
             _index++;
         }
@@ -256,11 +256,11 @@ public ref struct FastJsonTokenizer
         if (_c == '.')
         {
             if (++_index == _length)
-                throw SyntaxException.UnexpectedEndOfFile(Location);
+                throw FastSerializationException.UnexpectedEndOfFile(Location);
 
             _c = _text[_index];
             if (s_mapKind[_c] != FullTokenKind.Digit)
-                throw SyntaxException.PointMustBeFollowedByDigit(Location);
+                throw FastSerializationException.PointMustBeFollowedByDigit(Location);
 
             _index++;
             while ((_index < _length) && (s_mapKind[_text[_index]] == FullTokenKind.Digit))
@@ -281,7 +281,7 @@ public ref struct FastJsonTokenizer
         else
         {
             if (s_mapKind[_text[_index]] == FullTokenKind.Letter)
-                throw SyntaxException.IntCannotBeFollowed(Location, s_mapKind[_c].ToString());
+                throw FastSerializationException.IntCannotBeFollowed(Location, s_mapKind[_c].ToString());
 
             _tokenKind = FullTokenKind.IntValue;
         }
@@ -291,13 +291,13 @@ public ref struct FastJsonTokenizer
     private void ScanFloatExponent()
     {
         if (++_index == _length)
-            throw SyntaxException.UnexpectedEndOfFile(Location);
+            throw FastSerializationException.UnexpectedEndOfFile(Location);
 
         _c = _text[_index++];
         if ((s_mapKind[_c] == FullTokenKind.Minus) || (s_mapKind[_c] == FullTokenKind.Plus))
         {
             if (_index == _length)
-                throw SyntaxException.UnexpectedEndOfFile(Location);
+                throw FastSerializationException.UnexpectedEndOfFile(Location);
 
             _c = _text[_index++];
         }
@@ -305,7 +305,7 @@ public ref struct FastJsonTokenizer
         if (s_mapKind[_c] != FullTokenKind.Digit)
         {
             _index--;
-            throw SyntaxException.ExponentMustHaveDigit(Location);
+            throw FastSerializationException.ExponentMustHaveDigit(Location);
         }
 
         while (_index < _length && s_mapKind[_text[_index]] == FullTokenKind.Digit)
@@ -321,7 +321,7 @@ public ref struct FastJsonTokenizer
         {
             case FullTokenKind.Dot:
             case FullTokenKind.Letter:
-                throw SyntaxException.FloatCannotBeFollowed(Location, s_mapKind[_text[_index]].ToString());
+                throw FastSerializationException.FloatCannotBeFollowed(Location, s_mapKind[_text[_index]].ToString());
         }
 
         _tokenKind = FullTokenKind.FloatValue;
@@ -350,7 +350,7 @@ public ref struct FastJsonTokenizer
             else if (_c == '\\')
             {
                 if (++_index == _length)
-                    throw SyntaxException.UnexpectedEndOfFile(Location);
+                    throw FastSerializationException.UnexpectedEndOfFile(Location);
 
                 _c = _text[_index];
                 var k = s_escKind[_c];
@@ -374,13 +374,13 @@ public ref struct FastJsonTokenizer
                     case EscapeKind.u:
                         _index++;
                         if (_index == _length)
-                            throw SyntaxException.UnexpectedEndOfFile(Location);
+                            throw FastSerializationException.UnexpectedEndOfFile(Location);
 
                         _c = _text[_index];
                         if ((_index + 3) >= _length)
                         {
                             _index = _length;
-                            throw SyntaxException.UnexpectedEndOfFile(Location);
+                            throw FastSerializationException.UnexpectedEndOfFile(Location);
                         }
 
                         var hexToken1 = s_hexKind[_text[_index++]];
@@ -391,7 +391,7 @@ public ref struct FastJsonTokenizer
                             (hexToken3 != FullTokenKind.Hexadecimal) || (hexToken4 != FullTokenKind.Hexadecimal))
                         {
                             _index++;
-                            throw SyntaxException.EscapeOnlyUsingHex(Location);
+                            throw FastSerializationException.EscapeOnlyUsingHex(Location);
                         }
 
                         // Copy waiting characters, except the previous '\uXXXX'
@@ -406,14 +406,14 @@ public ref struct FastJsonTokenizer
                         copyIndex = _index + 1;
                         break;
                     default:
-                        throw SyntaxException.EscapeMustBeOneOf(Location);
+                        throw FastSerializationException.EscapeMustBeOneOf(Location);
                 }
             }
 
             _index++;
         }
 
-        throw SyntaxException.UnexpectedEndOfFile(Location);
+        throw FastSerializationException.UnexpectedEndOfFile(Location);
     }
 
     private enum FullTokenKind : byte

@@ -26,7 +26,7 @@ public ref struct FastJsonDeserializer(ReadOnlySpan<char> json)
             FastJsonTokenKind.FloatValue => double.Parse(_tokenizer.TokenValue),
             FastJsonTokenKind.LeftSquareBracket => ParseArray(),
             FastJsonTokenKind.LeftCurlyBracket => ParseObject(),
-            _ => throw SyntaxException.TokenNotAllowedHere(_tokenizer.Location, _tokenizer.TokenKind.ToString())
+            _ => throw FastSerializationException.TokenNotAllowedHere(_tokenizer.Location, _tokenizer.TokenKind.ToString())
         };
     }
 
@@ -76,26 +76,26 @@ public ref struct FastJsonDeserializer(ReadOnlySpan<char> json)
     private void MandatoryNext()
     {
         if (_tokenizer.TokenKind == FastJsonTokenKind.EndOfText || !_tokenizer.Next())
-            throw SyntaxException.UnexpectedEndOfFile(_tokenizer.Location);
+            throw FastSerializationException.UnexpectedEndOfFile(_tokenizer.Location);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private readonly void MandatoryToken(FastJsonTokenKind token)
     {
         if (_tokenizer.TokenKind == FastJsonTokenKind.EndOfText)
-            throw SyntaxException.UnexpectedEndOfFile(_tokenizer.Location);
+            throw FastSerializationException.UnexpectedEndOfFile(_tokenizer.Location);
 
         if (_tokenizer.TokenKind != token)
-            throw SyntaxException.ExpectedTokenNotFound(_tokenizer.Location, token.ToString(), _tokenizer.TokenKind.ToString());
+            throw FastSerializationException.ExpectedTokenNotFound(_tokenizer.Location, token.ToString(), _tokenizer.TokenKind.ToString());
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void MandatoryNextToken(FastJsonTokenKind token)
     {
         if (_tokenizer.TokenKind == FastJsonTokenKind.EndOfText || !_tokenizer.Next())
-            throw SyntaxException.UnexpectedEndOfFile(_tokenizer.Location);
+            throw FastSerializationException.UnexpectedEndOfFile(_tokenizer.Location);
 
         if (_tokenizer.TokenKind != token)
-            throw SyntaxException.ExpectedTokenNotFound(_tokenizer.Location, token.ToString(), _tokenizer.TokenKind.ToString());
+            throw FastSerializationException.ExpectedTokenNotFound(_tokenizer.Location, token.ToString(), _tokenizer.TokenKind.ToString());
     }
 }

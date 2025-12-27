@@ -2,7 +2,7 @@
 
 public static class ContextHelpers
 {
-    public static async Task<object?> EvaluateContextEntryValue(ContextObject context, ContextEntryEntity entry)
+    public static async Task<object?> ResolveContextEntryValue(ContextObject context, ContextEntryEntity entry)
     {
         object? entryValue = entry.EntryValue;
 

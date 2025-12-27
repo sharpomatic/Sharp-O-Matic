@@ -16,7 +16,7 @@ public class EngineService(INodeQueue Queue,
 
             foreach (var entry in inputEntries!.Entries)
             {
-                var entryValue = await ContextHelpers.EvaluateContextEntryValue(nodeContext, entry);
+                var entryValue = await ContextHelpers.ResolveContextEntryValue(nodeContext, entry);
                 if (!nodeContext.TrySet(entry.InputPath, entryValue))
                     throw new SharpOMaticException($"Input entry '{entry.InputPath}' could not be assigned the value.");
             }

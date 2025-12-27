@@ -1,3 +1,5 @@
+# Allow user to specify extra namespaces and assemblies via the extension collection
+
 # Node Traces
 
 - LLM streaming to get intermediate outputs
