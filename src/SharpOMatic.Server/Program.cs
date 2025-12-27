@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseUrls("http://localhost:9001");
 builder.Services.AddCors();
+builder.Services.AddControllers();
 builder.Services.AddSharpOMaticEditor();
 builder.Services.AddSharpOMaticEngine()
     .AddSchemaTypes(typeof(TriviaSchema))
@@ -26,6 +27,7 @@ var app = builder.Build();
 app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseDefaultFiles();
 app.UseStaticFiles();
+app.MapControllers();
 app.MapSharpOMaticEditor("/editor");
 app.Run();
 

@@ -3,8 +3,6 @@
 New interface for notifying completion (failure) of a run.
 - Should return a context with output values for
 
-Add sync and Task methods for running a workflow.
-
 ## Override Secrets
 
 Interface allowing the code to modify the parameterValues for a connection / model before use.

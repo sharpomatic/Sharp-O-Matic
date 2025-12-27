@@ -1,3 +1,5 @@
+using SharpOMatic.Engine.Contexts;
+
 namespace SharpOMatic.Engine.Services;
 
 public class NodeExecutionService(INodeQueueService queue, 
@@ -73,17 +75,7 @@ public class NodeExecutionService(INodeQueueService queue,
                 if (runContext.Run.RunStatus == RunStatus.Failed)
                     return;
 
-                runContext.Run.RunStatus = RunStatus.Success;
-                runContext.Run.Message = "Success";
-                runContext.Run.Stopped = DateTime.Now;
-
-                // If no EndNode was encountered then use the output of the last run node
-                if (runContext.Run.OutputContext is null)
-                    runContext.Run.OutputContext = runContext.TypedSerialization(threadContext.NodeContext);
-
-                await runContext.RunUpdated();
-                await PruneRunHistory(runContext);
-                runContext.ServiceScope.Dispose();
+                await RunCompleted(threadContext, RunStatus.Success, "Success");
             }
             else
             {
@@ -93,19 +85,30 @@ public class NodeExecutionService(INodeQueueService queue,
         }
         catch (Exception ex)
         {
-            runContext.Run.RunStatus = RunStatus.Failed;
-            runContext.Run.Message = "Failed";
-            runContext.Run.Error = ex.Message;
-            runContext.Run.Stopped = DateTime.Now;
-
-            // If no EndNode was encountered then use the output of the last run node
-            if (runContext.Run.OutputContext is null)
-                runContext.Run.OutputContext = runContext.TypedSerialization(threadContext.NodeContext);
-
-            await runContext.RunUpdated();
-            await PruneRunHistory(runContext);
-            runContext.ServiceScope.Dispose();
+            await RunCompleted(threadContext, RunStatus.Failed, "Failed", ex.Message);
         }
+    }
+
+    private async Task RunCompleted(ThreadContext threadContext, RunStatus runStatus, string message, string? error = "")
+    {
+        var runContext = threadContext.RunContext;
+
+        runContext.Run.RunStatus = runStatus;
+        runContext.Run.Message = message;
+        runContext.Run.Error = error;
+        runContext.Run.Stopped = DateTime.Now;
+
+        // If no EndNode was encountered then use the output of the last run node
+        if (threadContext.RunContext.Run.OutputContext is null)
+            runContext.Run.OutputContext = runContext.TypedSerialization(threadContext.NodeContext);
+
+        await runContext.RunUpdated();
+
+        if (runContext.CompletionSource is not null)
+            runContext.CompletionSource.SetResult(runContext.Run);
+
+        await PruneRunHistory(runContext);
+        runContext.ServiceScope.Dispose();
     }
 
     private Task<List<NextNodeData>> RunNode(ThreadContext threadContext, NodeEntity node)

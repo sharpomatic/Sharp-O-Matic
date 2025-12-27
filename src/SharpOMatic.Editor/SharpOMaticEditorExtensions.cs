@@ -9,7 +9,7 @@ public static class SharpOMaticEditorExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddControllers()
-            .AddApplicationPart(typeof(SharpOMaticEditorExtensions).Assembly)
+            .AddApplicationPart(typeof(SharpOMaticEditorExtensions).Assembly) // TODO what is this?
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;

@@ -50,7 +50,7 @@ public class RunContext
         Workflow = workflow;
         Run = run;
         _runNodeLimit = runNodeLimit;
-        CompletionSource = CompletionSource;
+        CompletionSource = completionSource;
 
         foreach (var node in workflow.Nodes)
         {

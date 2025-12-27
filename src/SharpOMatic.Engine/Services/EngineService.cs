@@ -8,6 +8,23 @@ public class EngineService(INodeQueueService QueueService,
                            IScriptOptionsService ScriptOptionsService,
                            IJsonConverterService JsonConverterService) : IEngineService
 {
+    public async Task<Guid> TryGetWorkflowId(string workflowName)
+    {
+        if (string.IsNullOrWhiteSpace(workflowName))
+            throw new SharpOMaticException("Workflow name cannot be empty or whitespace.");
+
+        var summaries = await RepositoryService.GetWorkflowEditSummaries();
+        var matches = summaries.Where(w => w.Name == workflowName).Take(2).ToList();
+
+        if (matches.Count == 0)
+            throw new SharpOMaticException("There is no matching workflow for this name.");
+
+        if (matches.Count > 1)
+            throw new SharpOMaticException("There is more than one matching workflow for this name.");
+
+        return matches[0].Id;
+    }
+
     public async Task<Guid> RunWorkflowAndNotify(Guid workflowId, ContextObject? nodeContext = null, ContextEntryListEntity? inputEntries = null)
     {
         var runContext = await CreateRunContextAndQueue(workflowId, nodeContext, inputEntries, null);
@@ -28,6 +45,7 @@ public class EngineService(INodeQueueService QueueService,
     {
         return RunWorkflowAndWait(workflowId, context, inputEntries).GetAwaiter().GetResult();
     }
+
 
     private async Task<RunContext> CreateRunContextAndQueue(
         Guid workflowId,

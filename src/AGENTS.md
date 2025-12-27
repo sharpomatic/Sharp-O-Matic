@@ -9,10 +9,10 @@ The backend is .NET/C#-based and consists of Engine, Server, and Test projects.
     It points to the project files for the Engine, Server, and Test projects.
     It does not include the Editor, which is built and run separately.
 
-- `SharpOMatic.Engine/` is a .NET 10 class library with the core implementation for the backend.
-- `SharpOMatic.Server/` is a .NET 10 ASP.NET Core API + SignalR hub; static files are served here.
-- `SharpOMatic.Editor/` is an Angular and TypeScript frontend that communicates with a server backend.
-- `SharpOMatic.Test/` is the xUnit test project targeting the Engine.
+- `SharpOMatic.FrontEnd/` is an Angular and TypeScript frontend that communicates with a server backend.
+- `SharpOMatic.Editor/` is a .NET 10 class library that packages the output of the FrontEnd along with controllers and signalR for use by a ASP.NET project.
+- `SharpOMatic.Engine/` is a .NET 10 class library with the core implementation of workflows for the backend.
+- `SharpOMatic.Server/` is a .NET 10 ASP.NET project used to test that the Engine and Editor work together correctly when added as project references.
 
 ### Project Structure Engine
 
@@ -85,63 +85,50 @@ The backend is .NET/C#-based and consists of Engine, Server, and Test projects.
 - Notes: The backend uses the Roslyn compiler services to validate and run C# code snippets. The ability to run C# code entered by the user is
   crucial for giving the user flexibility when building a workflow.
 
-### Project Structure Editor
+### Project Structure FrontEnd
 
-- `SharpOMatic.Editor/src/app`
+- `SharpOMatic.FrontEnd/src/app`
     Root Angular application structure, containing the feature folders and app bootstrapping assets that wire routing, configuration, and shared state together.
 
-- `SharpOMatic.Editor/src/app/components`
+- `SharpOMatic.FrontEnd/src/app/components`
     Reusable UI components (designer, context viewer, tabs, dynamic fields, etc.).
     These components are embedded within other components such as dialogs and pages.
 
-- `SharpOMatic.Editor/src/app/data-transfer-objects`
+- `SharpOMatic.FrontEnd/src/app/data-transfer-objects`
     Client-side DTO shapes for API payloads such as code-check requests/results, mirroring the backend's DTO contracts.
 
-- `SharpOMatic.Editor/src/app/dialogs`
+- `SharpOMatic.FrontEnd/src/app/dialogs`
     Modal dialog components for editing nodes, confirming actions, and showing informative or blocking messages in the editor.
     Most of the dialogs are shown when a user double-clicks a workflow node so they can edit the properties of that node.
 
-- `SharpOMatic.Editor/src/app/entities`
+- `SharpOMatic.FrontEnd/src/app/entities`
     Client-side entity models that mirror the engine's workflow entities, plus helpers like factories for creating node instances.
 
-- `SharpOMatic.Editor/src/app/enumerations`
+- `SharpOMatic.FrontEnd/src/app/enumerations`
     UI enums for node/run status and other state flags used across components, services, and templates.
 
-- `SharpOMatic.Editor/src/app/guards`
+- `SharpOMatic.FrontEnd/src/app/guards`
     Route guards that protect navigation (for example, warning about unsaved changes) and enforce editor flow rules.
     When the user navigates away from a page that has been changed, it gives the user a chance to save or cancel the navigation.
 
-- `SharpOMatic.Editor/src/app/metadata`
+- `SharpOMatic.FrontEnd/src/app/metadata`
     Metadata definitions and enums for connector/model configuration so the editor can render dynamic fields and validation.
     Using field configuration from metadata is essential for making it fast and easy to define the fields presented to a user.
 
-- `SharpOMatic.Editor/src/app/pages`
+- `SharpOMatic.FrontEnd/src/app/pages`
     Routed pages for core editor experiences like workflows, workflow editing, connectors, models, and settings, with page-scoped services where needed.
     The UI sidebar lists the pages, and clicking one navigates to that page.
 
-- `SharpOMatic.Editor/src/app/services`
+- `SharpOMatic.FrontEnd/src/app/services`
     Angular services for API access, SignalR communication, metadata loading, Monaco integration, settings persistence, and toasts.
 
 - Notes: The user interface uses the Monaco editor that is also used in Visual Studio Code to display and allow editing
   of JSON and C# code snippets. This provides a good experience for the user. It calls the backend to validate the C# snippets.
 
-## Build, Test, and Development Commands
-- `dotnet build SharpOMatic.sln` builds all .NET projects.
-- `dotnet run --project SharpOMatic.Server/SharpOMatic.Server.csproj` runs the API at `http://localhost:9001`.
-- `dotnet test SharpOMatic.Test/SharpOMatic.Engine.Test.csproj` runs engine unit tests (Coverlet collector).
-- `cd SharpOMatic.Editor; npm install` installs UI dependencies when first setting up.
-- `cd SharpOMatic.Editor; npm run start` runs the Angular dev server; `npm run build` builds for production; `npm test` runs Karma/Jasmine.
-- `dotnet tool install --global dotnet-ef` once, then `dotnet ef migrations add <Name>` for EF migrations (run from `SharpOMatic.Engine/`).
-
 ## Coding Style & Naming Conventions
 - C#: 4-space indentation; nullable is enabled; follow .NET conventions (PascalCase types/methods/properties, camelCase locals/parameters, `I` prefix for interfaces).
-- Angular/TypeScript: 2-space indentation and single quotes for `.ts` per `SharpOMatic.Editor/.editorconfig`; HTML is formatted via Prettier.
+- Angular/TypeScript: 2-space indentation and single quotes for `.ts` per `SharpOMatic.FrontEnd/.editorconfig`; HTML is formatted via Prettier.
 - File naming: Angular uses kebab-case (`my-widget.component.ts`); tests use `*.spec.ts`; C# tests typically end with `*UnitTest(s).cs`.
-
-## Testing Guidelines
-- Backend tests use xUnit in `SharpOMatic.Test/` and target the engine library.
-- Frontend tests use Karma/Jasmine and live alongside components as `.spec.ts`.
-- Add unit tests for new engine logic and for UI flows that affect editor behavior.
 
 ## Commit & Pull Request Guidelines
 - Recent commits are short, descriptive, and prefix-free; keep messages to a single line (e.g., "OpenAI parameters").
