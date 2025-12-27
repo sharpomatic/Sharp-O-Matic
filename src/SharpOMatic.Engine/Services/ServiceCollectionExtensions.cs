@@ -2,13 +2,9 @@ namespace SharpOMatic.Engine.Services;
 
 public static class ServiceCollectionExtensions
 {
-    public static SharpOMaticBuilder AddSharpOMaticEngine(this IServiceCollection services, Action<SharpOMaticOptions>? optionsAction = null)
+    public static SharpOMaticBuilder AddSharpOMaticEngine(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
-
-        services.AddOptions<SharpOMaticOptions>();
-        if (optionsAction is not null)
-            services.Configure(optionsAction);
 
         // Add mandatory services
         services.TryAddSingleton<ICodeCheck, CodeCheckService>();

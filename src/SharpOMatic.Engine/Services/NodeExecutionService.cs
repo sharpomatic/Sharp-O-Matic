@@ -1,6 +1,8 @@
 namespace SharpOMatic.Engine.Services;
 
-public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFactory, IRunNodeFactory runNodeFactory) : BackgroundService
+public class NodeExecutionService(INodeQueue queue, 
+                                  IServiceScopeFactory scopeFactory, 
+                                  IRunNodeFactory runNodeFactory) : BackgroundService
 {
     public const int DEFAULT_RUN_HISTORY_LIMIT = 50;
     public const int DEFAULT_NODE_RUN_LIMIT = 500;
@@ -9,6 +11,7 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        await ApplyMigrations();
         await CheckSettings();
         await LoadMetadata();
 
@@ -129,35 +132,16 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
         }
     }
 
-    private async Task LoadMetadata()
-    {
-        await LoadMetadata<ConnectorConfig>("Metadata.Resources.ConnectorConfig", (repo, config) => repo.UpsertConnectorConfig(config));
-        await LoadMetadata<ModelConfig>("Metadata.Resources.ModelConfig", (repo, config) => repo.UpsertModelConfig(config));
-    }
-
-    private async Task LoadMetadata<T>(string resourceFilter, Func<IRepository, T, Task> upsertAction)
+    private async Task ApplyMigrations()
     {
         using var scope = scopeFactory.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
-        var assembly = Assembly.GetExecutingAssembly();
-        var resourceNames = assembly.GetManifestResourceNames().Where(name => name.Contains(resourceFilter) && name.EndsWith(".json"));
+        var dbOptions = scope.ServiceProvider.GetRequiredService<IOptions<SharpOMaticDbOptions>>();
 
-        foreach (var resourceName in resourceNames)
+        if ((dbOptions.Value.ApplyMigrationsOnStartup is null) || dbOptions.Value.ApplyMigrationsOnStartup.Value)
         {
-            try
-            {
-                using var stream = assembly.GetManifestResourceStream(resourceName);
-                if (stream != null)
-                {
-                    var config = await JsonSerializer.DeserializeAsync<T>(stream);
-                    if (config != null)
-                        await upsertAction(repository, config);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to load metadata from {resourceName}: {ex.Message}");
-            }
+            var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<SharpOMaticDbContext>>();
+            await using var dbContext = await contextFactory.CreateDbContextAsync();
+            await dbContext.Database.MigrateAsync();
         }
     }
 
@@ -201,4 +185,35 @@ public class NodeExecutionService(INodeQueue queue, IServiceScopeFactory scopeFa
         }
     }
 
+    private async Task LoadMetadata()
+    {
+        await LoadMetadata<ConnectorConfig>("Metadata.Resources.ConnectorConfig", (repo, config) => repo.UpsertConnectorConfig(config));
+        await LoadMetadata<ModelConfig>("Metadata.Resources.ModelConfig", (repo, config) => repo.UpsertModelConfig(config));
+    }
+
+    private async Task LoadMetadata<T>(string resourceFilter, Func<IRepository, T, Task> upsertAction)
+    {
+        using var scope = scopeFactory.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceNames = assembly.GetManifestResourceNames().Where(name => name.Contains(resourceFilter) && name.EndsWith(".json"));
+
+        foreach (var resourceName in resourceNames)
+        {
+            try
+            {
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream != null)
+                {
+                    var config = await JsonSerializer.DeserializeAsync<T>(stream);
+                    if (config != null)
+                        await upsertAction(repository, config);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load metadata from {resourceName}: {ex.Message}");
+            }
+        }
+    }
 }

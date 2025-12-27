@@ -75,7 +75,6 @@ public sealed class SharpOMaticBuilder
 
         Services.AddDbContextFactory<SharpOMaticDbContext>(optionsAction);
         Services.AddOptions<SharpOMaticDbOptions>();
-
         if (dbOptionsAction is not null)
             Services.Configure(dbOptionsAction);
 
