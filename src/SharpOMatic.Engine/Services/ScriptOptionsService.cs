@@ -5,14 +5,28 @@ public class ScriptOptionsService : IScriptOptionsService
     private static readonly string[] s_defaultImports =
     [
         "System",
+        "System.Collections",
+        "System.Collections.Generic",
+        "System.Linq",
+        "System.Text.Json",
+        "System.Net.Http",
+        "System.IO",
         "System.Threading.Tasks",
+        "Microsoft.Extensions.AI",
         "SharpOMatic.Engine.Contexts"
     ];
 
     private static readonly Assembly[] s_defaultAssemblies =
     [
         typeof(Task).Assembly,
-        typeof(ContextObject).Assembly
+        typeof(Enumerable).Assembly,
+        typeof(List<>).Assembly,
+        typeof(ArrayList).Assembly,
+        typeof(JsonSerializer).Assembly,
+        typeof(HttpClient).Assembly,
+        typeof(File).Assembly,
+        typeof(ContextObject).Assembly,
+        typeof(ChatMessage).Assembly,
     ];
 
     private readonly IReadOnlyCollection<Assembly> _assemblies;
