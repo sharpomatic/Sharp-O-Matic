@@ -29,11 +29,6 @@ public class RunContext
     public TaskCompletionSource<Run>? CompletionSource { get; init; }
 
     public RunContext(IServiceScope serviceScope,
-                      IRepositoryService repositoryService,
-                      IProgressService progressService,
-                      IToolMethodRegistry toolMethodRegistry,
-                      ISchemaTypeRegistry schemaTypeRegistry,
-                      IScriptOptionsService scriptOptionsService,
                       IEnumerable<JsonConverter> jsonConverters,
                       WorkflowEntity workflow,
                       Run run,
@@ -41,11 +36,11 @@ public class RunContext
                       TaskCompletionSource<Run>? completionSource)
     {
         ServiceScope = serviceScope;
-        RepositoryService = repositoryService;
-        ProgressService = progressService;
-        ToolMethodRegistry = toolMethodRegistry;
-        SchemaTypeRegistry = schemaTypeRegistry;
-        ScriptOptionsService = scriptOptionsService;
+        RepositoryService = serviceScope.ServiceProvider.GetRequiredService<IRepositoryService>();
+        ProgressService = serviceScope.ServiceProvider.GetRequiredService<IProgressService>();
+        ToolMethodRegistry = serviceScope.ServiceProvider.GetRequiredService<IToolMethodRegistry>();
+        SchemaTypeRegistry = serviceScope.ServiceProvider.GetRequiredService<ISchemaTypeRegistry>();
+        ScriptOptionsService = serviceScope.ServiceProvider.GetRequiredService<IScriptOptionsService>();
         JsonConverters = jsonConverters;
         Workflow = workflow;
         Run = run;

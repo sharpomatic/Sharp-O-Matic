@@ -45,7 +45,18 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
         if (selectedAuthenticationModel.Id != "apikey")
             throw new SharpOMaticException("Only connector apikey authentication is currently supported");
 
-        if (!connector.FieldValues.TryGetValue("apikey", out var apiKey))
+        // Copy only the relevant connector fields into a new dictionary
+        Dictionary<string, string?> connectionFields = [];
+        foreach(var field in selectedAuthenticationModel.Fields)
+            if (connector.FieldValues.TryGetValue(field.Name, out var fieldValue))
+                connectionFields.Add(field.Name, fieldValue);
+
+        // Allow the user notifications to customize the field values
+        var notifications = ThreadContext.RunContext.ServiceScope.ServiceProvider.GetServices<IEngineNotification>();
+        foreach (var notification in notifications)
+            notification.ConnectionOverride(ThreadContext.RunContext.Run.RunId, ThreadContext.RunContext.Run.WorkflowId, connectionFields);
+
+        if (!connectionFields.TryGetValue("apikey", out var apiKey))
             throw new SharpOMaticException("Connector api key not specified.");
 
         if (!HasCapability("SupportsTextIn"))

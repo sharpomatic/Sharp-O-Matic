@@ -93,9 +93,7 @@ public class EngineService(INodeQueueService QueueService,
         var threadContext = new ThreadContext(runContext, nodeContext);
 
         await runContext.RunUpdated();
-
         QueueService.Enqueue(threadContext, currentNodes[0]);
-
         return runContext;
     }
 }

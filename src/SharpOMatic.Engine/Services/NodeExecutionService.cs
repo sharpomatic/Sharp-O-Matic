@@ -108,6 +108,19 @@ public class NodeExecutionService(INodeQueueService queue,
             runContext.CompletionSource.SetResult(runContext.Run);
 
         await PruneRunHistory(runContext);
+
+        var notifications = runContext.ServiceScope.ServiceProvider.GetServices<IEngineNotification>();
+        foreach (var notification in notifications)
+        {
+            // Notify in separate task in case called instance perform a long running action
+            _ = Task.Run(async () =>
+            {
+                await notification.RunCompleted(runContext.Run.RunId, runContext.Run.WorkflowId, runContext.Run.RunStatus,
+                                                runContext.Run.OutputContext, runContext.Run.Error);
+
+            });
+        }
+
         runContext.ServiceScope.Dispose();
     }
 

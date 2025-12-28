@@ -70,6 +70,13 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: auto;
+}
+
+.runs-table .table {
+  table-layout: fixed;
+  min-width: 800px;
+  width: 100%;
 }
 
 .runs-pagination {
@@ -93,15 +100,26 @@
 }
 
 .col-created {
-  width: 180px;
+  width: 160px;
+  min-width: 160px;
+  max-width: 160px;
 }
 
 .col-status {
-  width: 110px;
+  width: 90px;
+  min-width: 90px;
+  max-width: 90px;  
 }
 
 .col-duration {
-  width: 100px;
+  width: 110px;
+  min-width: 110px;
+  max-width: 110px;  
+}
+
+.col-error {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .run-text {

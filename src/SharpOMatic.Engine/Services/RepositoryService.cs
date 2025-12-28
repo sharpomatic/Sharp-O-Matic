@@ -359,13 +359,15 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
                     foreach (var authModes in config.AuthModes)
                     {
                         foreach (var field in authModes.Fields)
-                            if ((field.Type == FieldDescriptorType.Secret) && 
+                        {
+                            if ((field.Type == FieldDescriptorType.Secret) &&
                                 connector.FieldValues.ContainsKey(field.Name) &&
                                 entryConfig.FieldValues.ContainsKey(field.Name) &&
-                                (connector.FieldValues[field.Name] != SECRET_OBFUSCATION))
+                                (connector.FieldValues[field.Name] == SECRET_OBFUSCATION))
                             {
                                 connector.FieldValues[field.Name] = entryConfig.FieldValues[field.Name];
                             }
+                        }
                     }
                 }
             }

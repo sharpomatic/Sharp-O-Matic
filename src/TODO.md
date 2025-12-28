@@ -1,12 +1,8 @@
-## Using worklows
+## Images
 
-New interface for notifying completion (failure) of a run.
-- Should return a context with output values for
-
-## Override Secrets
-
-Interface allowing the code to modify the parameterValues for a connection / model before use.
-This allows code to get API keys or other secrets and provide them.
+Supports In and Out Images
+Images Tab
+Images Output Path
 
 ## LLM's
 
@@ -37,6 +33,9 @@ GitHub build pipeline to build/package and publish to nuget the two packages
 ## Security
 
 How does the user add extra security that impacts the controllers that the hosting adds?
+
+
+
 
 
 # Futures

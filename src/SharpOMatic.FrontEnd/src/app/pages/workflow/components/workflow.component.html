@@ -107,7 +107,7 @@
                 </button>
               </th>
               <th scope="col" class="col-duration">Duration</th>
-              <th scope="col">Error</th>
+              <th scope="col" class="col-error">Error</th>
             </tr>
           </thead>
           <tbody>
@@ -123,8 +123,8 @@
                     {{ run.message }}
                   </span>
                 </td>
-                <td>{{ getRunDuration(run) }}</td>
-                <td>{{ run.error || '' }}</td>
+                <td class="col-duration">{{ getRunDuration(run) }}</td>
+                <td class="col-error">{{ run.error || '' }}</td>
               </tr>
             }
           </tbody>
