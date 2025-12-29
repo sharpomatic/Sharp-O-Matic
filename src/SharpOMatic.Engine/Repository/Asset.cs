@@ -2,6 +2,7 @@ namespace SharpOMatic.Engine.Repository;
 
 [Index(nameof(Scope), nameof(Created))]
 [Index(nameof(RunId))]
+[Index(nameof(Name))]
 public class Asset
 {
     [Key]

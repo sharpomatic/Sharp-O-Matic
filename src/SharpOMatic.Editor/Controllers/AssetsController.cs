@@ -7,6 +7,7 @@ public class AssetsController(IRepositoryService repositoryService, IAssetStore 
     [HttpGet]
     public async Task<List<AssetSummary>> GetAssets(
         [FromQuery] AssetScope scope = AssetScope.Library,
+        [FromQuery] string? search = null,
         [FromQuery] AssetSortField sortBy = AssetSortField.Name,
         [FromQuery] SortDirection sortDirection = SortDirection.Descending,
         [FromQuery] int skip = 0,
@@ -18,17 +19,21 @@ public class AssetsController(IRepositoryService repositoryService, IAssetStore 
         if (take < 0)
             take = 0;
 
-        var assets = await repositoryService.GetAssetsByScope(scope, sortBy, sortDirection, skip, take);
+        var normalizedSearch = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+        var assets = await repositoryService.GetAssetsByScope(scope, normalizedSearch, sortBy, sortDirection, skip, take);
         return [.. assets.Select(ToSummary)];
     }
 
     [HttpGet("count")]
-    public async Task<ActionResult<int>> GetAssetCount([FromQuery] AssetScope scope = AssetScope.Library)
+    public async Task<ActionResult<int>> GetAssetCount(
+        [FromQuery] AssetScope scope = AssetScope.Library,
+        [FromQuery] string? search = null)
     {
         if (!Enum.IsDefined(typeof(AssetScope), scope))
             return BadRequest("Scope is invalid.");
 
-        return await repositoryService.GetAssetCount(scope);
+        var normalizedSearch = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+        return await repositoryService.GetAssetCount(scope, normalizedSearch);
     }
 
     [HttpGet("{id}")]

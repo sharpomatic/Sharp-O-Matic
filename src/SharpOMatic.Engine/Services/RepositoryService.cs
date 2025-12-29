@@ -599,21 +599,34 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
         return asset;
     }
 
-    public async Task<int> GetAssetCount(AssetScope scope)
-    {
-        using var dbContext = dbContextFactory.CreateDbContext();
-
-        return await dbContext.Assets.AsNoTracking()
-            .Where(a => a.Scope == scope)
-            .CountAsync();
-    }
-
-    public async Task<List<Asset>> GetAssetsByScope(AssetScope scope, AssetSortField sortBy, SortDirection sortDirection, int skip, int take)
+    public async Task<int> GetAssetCount(AssetScope scope, string? search)
     {
         using var dbContext = dbContextFactory.CreateDbContext();
 
         var assets = dbContext.Assets.AsNoTracking()
             .Where(a => a.Scope == scope);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var normalizedSearch = search.Trim();
+            assets = assets.Where(a => a.Name.Contains(normalizedSearch));
+        }
+
+        return await assets.CountAsync();
+    }
+
+    public async Task<List<Asset>> GetAssetsByScope(AssetScope scope, string? search, AssetSortField sortBy, SortDirection sortDirection, int skip, int take)
+    {
+        using var dbContext = dbContextFactory.CreateDbContext();
+
+        var assets = dbContext.Assets.AsNoTracking()
+            .Where(a => a.Scope == scope);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var normalizedSearch = search.Trim();
+            assets = assets.Where(a => a.Name.Contains(normalizedSearch));
+        }
 
         var sortedAssets = GetSortedAssets(assets, sortBy, sortDirection);
 
@@ -639,6 +652,9 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
             AssetSortField.Size => sortDirection == SortDirection.Ascending
                 ? assets.OrderBy(a => a.SizeBytes).ThenByDescending(a => a.Created)
                 : assets.OrderByDescending(a => a.SizeBytes).ThenByDescending(a => a.Created),
+            AssetSortField.Created => sortDirection == SortDirection.Ascending
+                ? assets.OrderBy(a => a.Created).ThenBy(a => a.Name)
+                : assets.OrderByDescending(a => a.Created).ThenBy(a => a.Name),
             _ => sortDirection == SortDirection.Ascending
                 ? assets.OrderBy(a => a.Name).ThenByDescending(a => a.Created)
                 : assets.OrderByDescending(a => a.Name).ThenByDescending(a => a.Created),

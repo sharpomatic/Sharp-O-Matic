@@ -282,15 +282,19 @@ export class ServerRepositoryService {
     skip = 0,
     take = 0,
     sortBy = AssetSortField.Name,
-    sortDirection = SortDirection.Descending
+    sortDirection = SortDirection.Descending,
+    search = ''
   ): Observable<AssetSummary[]> {
     const apiUrl = this.settingsService.apiUrl();
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('scope', scope)
       .set('skip', skip)
       .set('take', take)
       .set('sortBy', sortBy)
       .set('sortDirection', sortDirection);
+    if (search.trim().length > 0) {
+      params = params.set('search', search.trim());
+    }
     return this.http.get<AssetSummary[]>(`${apiUrl}/api/assets`, { params }).pipe(
       catchError((error) => {
         this.notifyError('Loading assets', error);
@@ -299,9 +303,12 @@ export class ServerRepositoryService {
     );
   }
 
-  public getAssetsCount(scope: AssetScope = AssetScope.Library): Observable<number> {
+  public getAssetsCount(scope: AssetScope = AssetScope.Library, search = ''): Observable<number> {
     const apiUrl = this.settingsService.apiUrl();
-    const params = new HttpParams().set('scope', scope);
+    let params = new HttpParams().set('scope', scope);
+    if (search.trim().length > 0) {
+      params = params.set('search', search.trim());
+    }
     return this.http.get<number>(`${apiUrl}/api/assets/count`, { params }).pipe(
       catchError((error) => {
         this.notifyError('Loading asset count', error);

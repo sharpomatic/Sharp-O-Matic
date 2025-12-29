@@ -35,6 +35,8 @@ export class AssetsComponent {
   public readonly SortDirection = SortDirection;
   public assetsSortField: AssetSortField = AssetSortField.Name;
   public assetsSortDirection: SortDirection = SortDirection.Descending;
+  public searchText = '';
+  private searchDebounceId: ReturnType<typeof setTimeout> | undefined;
 
   ngOnInit(): void {
     this.refreshAssets();
@@ -144,9 +146,35 @@ export class AssetsComponent {
     this.refreshAssets();
   }
 
+  onSearchChange(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    this.searchText = input?.value ?? '';
+    this.scheduleSearch();
+  }
+
+  applySearch(): void {
+    if (this.searchDebounceId) {
+      clearTimeout(this.searchDebounceId);
+      this.searchDebounceId = undefined;
+    }
+
+    this.assetsPage = 1;
+    this.refreshAssets();
+  }
+
+  clearSearch(): void {
+    if (!this.searchText) {
+      return;
+    }
+
+    this.searchText = '';
+    this.applySearch();
+  }
+
   private refreshAssets(): void {
     this.isLoading = true;
-    this.serverRepository.getAssetsCount(AssetScope.Library).subscribe(total => {
+    const search = this.searchText.trim();
+    this.serverRepository.getAssetsCount(AssetScope.Library, search).subscribe(total => {
       this.assetsTotal = total;
       const totalPages = this.assetsPageCount();
       const nextPage = totalPages === 0 ? 1 : Math.min(this.assetsPage, totalPages);
@@ -157,16 +185,26 @@ export class AssetsComponent {
   private loadAssetsPage(page: number): void {
     this.isLoading = true;
     const skip = (page - 1) * this.assetsPageSize;
+    const search = this.searchText.trim();
     this.serverRepository.getAssets(
       AssetScope.Library,
       skip,
       this.assetsPageSize,
       this.assetsSortField,
-      this.assetsSortDirection
+      this.assetsSortDirection,
+      search
     ).subscribe(assets => {
       this.assets = assets;
       this.assetsPage = page;
       this.isLoading = false;
     });
+  }
+
+  private scheduleSearch(): void {
+    if (this.searchDebounceId) {
+      clearTimeout(this.searchDebounceId);
+    }
+
+    this.searchDebounceId = setTimeout(() => this.applySearch(), 250);
   }
 }

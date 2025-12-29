@@ -16,6 +16,14 @@
   min-height: 0;
 }
 
+.assets-toolbar {
+  flex: 0 0 auto;
+}
+
+.assets-search {
+  max-width: 360px;
+}
+
 .assets-table {
   flex: 1 1 auto;
   min-height: 0;

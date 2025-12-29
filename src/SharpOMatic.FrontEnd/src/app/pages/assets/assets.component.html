@@ -10,11 +10,28 @@
   </div>
   <hr class="m-0"/>
   <div class="p-3 bg-body-tertiary h-100 d-flex flex-column assets-tab">
+    <div class="assets-toolbar d-flex align-items-center gap-2 mb-3">
+      <div class="input-group assets-search">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input
+          type="search"
+          class="form-control"
+          placeholder="Search by name"
+          [value]="searchText"
+          (input)="onSearchChange($event)"
+          (keyup.enter)="applySearch()" />
+      </div>
+    </div>
     @if (!isLoading && assetsTotal === 0 && assets.length === 0) {
       <div class="empty-state text-body-secondary">
         <div class="empty-icon"><i class="bi bi-images"></i></div>
-        <div class="empty-title">No assets yet</div>
-        <div class="empty-subtitle">Upload files you want to reuse across workflows.</div>
+        @if (searchText) {
+          <div class="empty-title">No matching assets</div>
+          <div class="empty-subtitle">Try a different search to find assets by name.</div>
+        } @else {
+          <div class="empty-title">No assets yet</div>
+          <div class="empty-subtitle">Upload files you want to reuse across workflows.</div>
+        }
       </div>
     } @else {
       <div class="table-responsive assets-table">
