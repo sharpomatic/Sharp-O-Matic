@@ -36,28 +36,31 @@
 }
 
 .col-name {
-  min-width: 220px;
-  width: 35%;
+  min-width: 200px;
 }
 
 .col-type {
   min-width: 200px;
-  width: 30%;
+  max-width: 350px;
+  width: 20%;
 }
 
 .col-size {
-  width: 110px;
-  min-width: 110px;
+  width: 90px;
+  min-width: 90px;
+  max-width: 90px;
 }
 
 .col-created {
   width: 160px;
   min-width: 160px;
+  max-width: 160px;
 }
 
 .col-actions {
-  width: 110px;
-  min-width: 110px;
+  width: 90px;
+  min-width: 90px;
+  max-width: 90px;
 }
 
 .empty-state {
