@@ -1,0 +1,91 @@
+<div class="container-fluid p-0 assets-page">
+  <div class="d-flex justify-content-between align-items-center p-3 pt-2 pb-1 bg-body-secondary">
+    <h2><i class="bi bi-images pe-3 icon-sm"></i>Assets ({{ assetsTotal || assets.length }})</h2>
+    <div class="d-flex align-items-center gap-2">
+      <input #fileInput type="file" class="d-none" multiple (change)="uploadAssets($event)" />
+      <button class="btn btn-primary" [disabled]="isUploading" (click)="triggerUpload(fileInput)">
+        {{ isUploading ? 'Uploading...' : 'Upload' }}
+      </button>
+    </div>
+  </div>
+  <hr class="m-0"/>
+  <div class="p-3 bg-body-tertiary h-100 d-flex flex-column assets-tab">
+    @if (!isLoading && assetsTotal === 0 && assets.length === 0) {
+      <div class="empty-state text-body-secondary">
+        <div class="empty-icon"><i class="bi bi-images"></i></div>
+        <div class="empty-title">No assets yet</div>
+        <div class="empty-subtitle">Upload files you want to reuse across workflows.</div>
+      </div>
+    } @else {
+      <div class="table-responsive assets-table">
+        <table class="table table-sm table-striped table-hover align-middle">
+          <thead>
+            <tr>
+              <th scope="col" class="col-name">Name</th>
+              <th scope="col" class="col-type">Type</th>
+              <th scope="col" class="col-size">Size</th>
+              <th scope="col" class="col-created">Created</th>
+              <th scope="col" class="col-actions text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (asset of assets; track asset.assetId) {
+              <tr>
+                <td class="col-name text-truncate" title="{{ asset.name }}">{{ asset.name }}</td>
+                <td class="col-type text-truncate" title="{{ asset.mediaType }}">{{ asset.mediaType }}</td>
+                <td class="col-size">{{ formatSize(asset.sizeBytes) }}</td>
+                <td class="col-created">{{ asset.created | date:'short' }}</td>
+                <td class="col-actions text-end">
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteAsset(asset)">Delete</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (assetsTotal > 0) {
+        <div class="d-flex align-items-center justify-content-between assets-pagination">
+          <div class="text-muted small">
+            Page {{ assetsPage }} of {{ assetsPageCount() }} ({{ assetsTotal }} total assets)
+          </div>
+          @if (assetsPageCount() > 1) {
+            <nav aria-label="Assets pagination">
+              <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" [class.disabled]="assetsPage === 1">
+                  <button class="page-link" type="button" [disabled]="assetsPage === 1" aria-label="First"
+                    (click)="onAssetsPageChange(1)">
+                    <span aria-hidden="true">&laquo;</span>
+                  </button>
+                </li>
+                <li class="page-item" [class.disabled]="assetsPage === 1">
+                  <button class="page-link" type="button" [disabled]="assetsPage === 1" aria-label="Previous"
+                    (click)="onAssetsPageChange(assetsPage - 1)">
+                    <span aria-hidden="true">&lsaquo;</span>
+                  </button>
+                </li>
+                @for (page of assetsPageNumbers(); track page) {
+                  <li class="page-item" [class.active]="page === assetsPage"
+                    [attr.aria-current]="page === assetsPage ? 'page' : null">
+                    <button class="page-link" type="button" (click)="onAssetsPageChange(page)">{{ page }}</button>
+                  </li>
+                }
+                <li class="page-item" [class.disabled]="assetsPage >= assetsPageCount()">
+                  <button class="page-link" type="button" [disabled]="assetsPage >= assetsPageCount()"
+                    aria-label="Next" (click)="onAssetsPageChange(assetsPage + 1)">
+                    <span aria-hidden="true">&rsaquo;</span>
+                  </button>
+                </li>
+                <li class="page-item" [class.disabled]="assetsPage >= assetsPageCount()">
+                  <button class="page-link" type="button" [disabled]="assetsPage >= assetsPageCount()"
+                    aria-label="Last" (click)="onAssetsPageChange(assetsPageCount())">
+                    <span aria-hidden="true">&raquo;</span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

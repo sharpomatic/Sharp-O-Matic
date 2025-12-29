@@ -66,6 +66,7 @@ public interface IRepositoryService
     // Asset Operations
     // ------------------------------------------------
     Task<Asset> GetAsset(Guid assetId);
+    Task<int> GetAssetCount(AssetScope scope);
     Task<List<Asset>> GetAssetsByScope(AssetScope scope, int skip, int take);
     Task<List<Asset>> GetRunAssets(Guid runId);
     Task UpsertAsset(Asset asset);

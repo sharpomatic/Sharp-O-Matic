@@ -131,6 +131,30 @@ namespace SharpOMatic.Engine.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Assets",
+                columns: table => new
+                {
+                    AssetId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    RunId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Scope = table.Column<int>(type: "INTEGER", nullable: false),
+                    Created = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    MediaType = table.Column<string>(type: "TEXT", nullable: false),
+                    SizeBytes = table.Column<long>(type: "INTEGER", nullable: false),
+                    StorageKey = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Assets", x => x.AssetId);
+                    table.ForeignKey(
+                        name: "FK_Assets_Runs_RunId",
+                        column: x => x.RunId,
+                        principalTable: "Runs",
+                        principalColumn: "RunId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Traces",
                 columns: table => new
                 {
@@ -161,6 +185,16 @@ namespace SharpOMatic.Engine.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Assets_RunId",
+                table: "Assets",
+                column: "RunId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Assets_Scope_Created",
+                table: "Assets",
+                columns: new[] { "Scope", "Created" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Runs_WorkflowId_Created",
                 table: "Runs",
                 columns: new[] { "WorkflowId", "Created" });
@@ -179,6 +213,9 @@ namespace SharpOMatic.Engine.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Assets");
+
             migrationBuilder.DropTable(
                 name: "ConnectorConfigMetadata");
 

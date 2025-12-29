@@ -5,17 +5,25 @@
   </div>
   <hr class="m-0"/>
   <div class="d-flex flex-wrap gap-3 p-3 workflows-list">
-    @for (workflow of workflows; track workflow.id) {
-      <div class="card workflow-card">
-        <div class="card-header">
-          <h5>{{ workflow.name() }}</h5>
-        </div>
-        <div class="card-body">
-          <p class="card-text">{{ workflow.description() }}</p>
-          <button class="btn btn-primary" [routerLink]="['/workflows', workflow.id]" [queryParams]="{ tab: 'design' }">Open</button>
-          <button class="btn btn-primary ms-2" (click)="deleteWorkflow(workflow)">Delete</button>
-        </div>
+    @if (workflows.length === 0) {
+      <div class="empty-state text-body-secondary">
+        <div class="empty-icon"><i class="bi bi-share"></i></div>
+        <div class="empty-title">No workflows yet</div>
+        <div class="empty-subtitle">Create a workflow to start building automations.</div>
       </div>
+    } @else {
+      @for (workflow of workflows; track workflow.id) {
+        <div class="card workflow-card">
+          <div class="card-header">
+            <h5>{{ workflow.name() }}</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text">{{ workflow.description() }}</p>
+            <button class="btn btn-primary" [routerLink]="['/workflows', workflow.id]" [queryParams]="{ tab: 'design' }">Open</button>
+            <button class="btn btn-primary ms-2" (click)="deleteWorkflow(workflow)">Delete</button>
+          </div>
+        </div>
+      }
     }
   </div>
 </div>

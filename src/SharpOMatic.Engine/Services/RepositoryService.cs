@@ -599,6 +599,15 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
         return asset;
     }
 
+    public async Task<int> GetAssetCount(AssetScope scope)
+    {
+        using var dbContext = dbContextFactory.CreateDbContext();
+
+        return await dbContext.Assets.AsNoTracking()
+            .Where(a => a.Scope == scope)
+            .CountAsync();
+    }
+
     public async Task<List<Asset>> GetAssetsByScope(AssetScope scope, int skip, int take)
     {
         using var dbContext = dbContextFactory.CreateDbContext();

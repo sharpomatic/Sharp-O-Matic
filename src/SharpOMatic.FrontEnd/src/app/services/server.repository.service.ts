@@ -18,6 +18,8 @@ import { ToastService } from './toast.service';
 import { SettingsService } from './settings.service';
 import { RunSortField } from '../enumerations/run-sort-field';
 import { SortDirection } from '../enumerations/sort-direction';
+import { AssetScope } from '../enumerations/asset-scope';
+import { AssetSummary } from '../pages/assets/interfaces/asset-summary';
 
 @Injectable({
   providedIn: 'root',
@@ -270,6 +272,59 @@ export class ServerRepositoryService {
       catchError((error) => {
         this.notifyError('Loading tool display names', error);
         return of([]);
+      })
+    );
+  }
+
+  public getAssets(scope: AssetScope = AssetScope.Library, skip = 0, take = 0): Observable<AssetSummary[]> {
+    const apiUrl = this.settingsService.apiUrl();
+    const params = new HttpParams()
+      .set('scope', scope)
+      .set('skip', skip)
+      .set('take', take);
+    return this.http.get<AssetSummary[]>(`${apiUrl}/api/assets`, { params }).pipe(
+      catchError((error) => {
+        this.notifyError('Loading assets', error);
+        return of([]);
+      })
+    );
+  }
+
+  public getAssetsCount(scope: AssetScope = AssetScope.Library): Observable<number> {
+    const apiUrl = this.settingsService.apiUrl();
+    const params = new HttpParams().set('scope', scope);
+    return this.http.get<number>(`${apiUrl}/api/assets/count`, { params }).pipe(
+      catchError((error) => {
+        this.notifyError('Loading asset count', error);
+        return of(0);
+      })
+    );
+  }
+
+  public uploadAsset(file: File, name: string, scope: AssetScope, runId?: string): Observable<AssetSummary | null> {
+    const apiUrl = this.settingsService.apiUrl();
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', name);
+    formData.append('scope', scope);
+    if (runId) {
+      formData.append('runId', runId);
+    }
+
+    return this.http.post<AssetSummary>(`${apiUrl}/api/assets`, formData).pipe(
+      catchError((error) => {
+        this.notifyError('Uploading asset', error);
+        return of(null);
+      })
+    );
+  }
+
+  public deleteAsset(assetId: string): Observable<void> {
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.delete<void>(`${apiUrl}/api/assets/${assetId}`).pipe(
+      catchError((error) => {
+        this.notifyError('Deleting asset', error);
+        return of(undefined);
       })
     );
   }

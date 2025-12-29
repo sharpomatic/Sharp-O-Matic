@@ -5,7 +5,10 @@ namespace SharpOMatic.Editor.Controllers;
 public class AssetsController(IRepositoryService repositoryService, IAssetStore assetStore) : ControllerBase
 {
     [HttpGet]
-    public async Task<List<AssetSummary>> GetAssets([FromQuery] int skip = 0, [FromQuery] int take = 0)
+    public async Task<List<AssetSummary>> GetAssets(
+        [FromQuery] AssetScope scope = AssetScope.Library,
+        [FromQuery] int skip = 0,
+        [FromQuery] int take = 0)
     {
         if (skip < 0)
             skip = 0;
@@ -13,8 +16,17 @@ public class AssetsController(IRepositoryService repositoryService, IAssetStore 
         if (take < 0)
             take = 0;
 
-        var assets = await repositoryService.GetAssetsByScope(AssetScope.Library, skip, take);
+        var assets = await repositoryService.GetAssetsByScope(scope, skip, take);
         return [.. assets.Select(ToSummary)];
+    }
+
+    [HttpGet("count")]
+    public async Task<ActionResult<int>> GetAssetCount([FromQuery] AssetScope scope = AssetScope.Library)
+    {
+        if (!Enum.IsDefined(typeof(AssetScope), scope))
+            return BadRequest("Scope is invalid.");
+
+        return await repositoryService.GetAssetCount(scope);
     }
 
     [HttpGet("{id}")]

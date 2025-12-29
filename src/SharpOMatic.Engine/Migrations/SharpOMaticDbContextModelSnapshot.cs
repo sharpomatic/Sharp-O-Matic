@@ -17,6 +17,45 @@ namespace SharpOMatic.Engine.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
 
+            modelBuilder.Entity("SharpOMatic.Engine.Repository.Asset", b =>
+                {
+                    b.Property<Guid>("AssetId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MediaType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("RunId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Scope")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StorageKey")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AssetId");
+
+                    b.HasIndex("RunId");
+
+                    b.HasIndex("Scope", "Created");
+
+                    b.ToTable("Assets");
+                });
+
             modelBuilder.Entity("SharpOMatic.Engine.Repository.ConnectorConfigMetadata", b =>
                 {
                     b.Property<string>("ConfigId")
@@ -101,44 +140,6 @@ namespace SharpOMatic.Engine.Migrations
                     b.HasKey("ModelId");
 
                     b.ToTable("ModelMetadata");
-                });
-
-            modelBuilder.Entity("SharpOMatic.Engine.Repository.Asset", b =>
-                {
-                    b.Property<Guid>("AssetId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MediaType")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("RunId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Scope")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("SizeBytes")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("StorageKey")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("AssetId");
-
-                    b.HasIndex("RunId");
-
-                    b.HasIndex("Scope", "Created");
-
-                    b.ToTable("Assets");
                 });
 
             modelBuilder.Entity("SharpOMatic.Engine.Repository.Run", b =>
@@ -309,6 +310,14 @@ namespace SharpOMatic.Engine.Migrations
                     b.ToTable("Workflows");
                 });
 
+            modelBuilder.Entity("SharpOMatic.Engine.Repository.Asset", b =>
+                {
+                    b.HasOne("SharpOMatic.Engine.Repository.Run", null)
+                        .WithMany()
+                        .HasForeignKey("RunId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("SharpOMatic.Engine.Repository.Run", b =>
                 {
                     b.HasOne("SharpOMatic.Engine.Repository.Workflow", null)
@@ -316,14 +325,6 @@ namespace SharpOMatic.Engine.Migrations
                         .HasForeignKey("WorkflowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("SharpOMatic.Engine.Repository.Asset", b =>
-                {
-                    b.HasOne("SharpOMatic.Engine.Repository.Run", null)
-                        .WithMany()
-                        .HasForeignKey("RunId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SharpOMatic.Engine.Repository.Trace", b =>

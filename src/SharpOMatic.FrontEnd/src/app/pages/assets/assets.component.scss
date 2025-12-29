@@ -1,0 +1,84 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.assets-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.assets-tab {
+  min-height: 0;
+}
+
+.assets-table {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.assets-table .table {
+  table-layout: fixed;
+  min-width: 720px;
+  width: 100%;
+}
+
+.assets-pagination {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--bs-border-color);
+}
+
+.col-name {
+  min-width: 220px;
+  width: 35%;
+}
+
+.col-type {
+  min-width: 200px;
+  width: 30%;
+}
+
+.col-size {
+  width: 110px;
+  min-width: 110px;
+}
+
+.col-created {
+  width: 160px;
+  min-width: 160px;
+}
+
+.col-actions {
+  width: 110px;
+  min-width: 110px;
+}
+
+.empty-state {
+  margin: 48px auto 0;
+  text-align: center;
+  max-width: 320px;
+}
+
+.empty-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.empty-title {
+  font-weight: 600;
+}
+
+.empty-subtitle {
+  font-size: 0.9rem;
+}
+
+.icon-sm {
+  font-size: 1.5rem;
+}

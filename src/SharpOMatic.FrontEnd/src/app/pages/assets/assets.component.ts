@@ -1,0 +1,146 @@
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { forkJoin } from 'rxjs';
+import { ConfirmDialogComponent } from '../../dialogs/confirm/confirm-dialog.component';
+import { AssetScope } from '../../enumerations/asset-scope';
+import { ServerRepositoryService } from '../../services/server.repository.service';
+import { AssetSummary } from './interfaces/asset-summary';
+
+@Component({
+  selector: 'app-assets',
+  standalone: true,
+  imports: [
+    CommonModule,
+    DatePipe,
+  ],
+  templateUrl: './assets.component.html',
+  styleUrls: ['./assets.component.scss'],
+  providers: [BsModalService],
+})
+export class AssetsComponent {
+  private readonly serverRepository = inject(ServerRepositoryService);
+  private readonly modalService = inject(BsModalService);
+  private confirmModalRef: BsModalRef<ConfirmDialogComponent> | undefined;
+
+  public assets: AssetSummary[] = [];
+  public assetsPage = 1;
+  public assetsTotal = 0;
+  public readonly assetsPageSize = 50;
+  public isUploading = false;
+  public isLoading = false;
+
+  ngOnInit(): void {
+    this.refreshAssets();
+  }
+
+  triggerUpload(fileInput: HTMLInputElement): void {
+    fileInput.click();
+  }
+
+  uploadAssets(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const files = input?.files ? Array.from(input.files) : [];
+    if (files.length === 0 || this.isUploading) {
+      if (input) {
+        input.value = '';
+      }
+      return;
+    }
+
+    this.isUploading = true;
+    const uploads = files.map(file => this.serverRepository.uploadAsset(file, file.name, AssetScope.Library));
+    forkJoin(uploads).subscribe(() => {
+      this.isUploading = false;
+      this.refreshAssets();
+      if (input) {
+        input.value = '';
+      }
+    });
+  }
+
+  deleteAsset(asset: AssetSummary): void {
+    this.confirmModalRef = this.modalService.show(ConfirmDialogComponent, {
+      initialState: {
+        title: 'Delete Asset',
+        message: `Are you sure you want to delete the asset '${asset.name}'?`,
+      },
+    });
+
+    this.confirmModalRef.onHidden?.subscribe(() => {
+      if (this.confirmModalRef?.content?.result) {
+        this.serverRepository.deleteAsset(asset.assetId).subscribe(() => {
+          this.refreshAssets();
+        });
+      }
+    });
+  }
+
+  formatSize(bytes: number): string {
+    if (!Number.isFinite(bytes) || bytes <= 0) {
+      return '0 B';
+    }
+
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+    const value = bytes / Math.pow(1024, index);
+    return `${value.toFixed(value < 10 && index > 0 ? 1 : 0)} ${units[index]}`;
+  }
+
+  assetsPageCount(): number {
+    return Math.ceil(this.assetsTotal / this.assetsPageSize);
+  }
+
+  assetsPageNumbers(): number[] {
+    const totalPages = this.assetsPageCount();
+    if (totalPages <= 1) {
+      return [];
+    }
+
+    const currentPage = this.assetsPage;
+    const windowSize = 5;
+    let start = Math.max(1, currentPage - Math.floor(windowSize / 2));
+    let end = Math.min(totalPages, start + windowSize - 1);
+    start = Math.max(1, end - windowSize + 1);
+
+    const pages: number[] = [];
+    for (let page = start; page <= end; page += 1) {
+      pages.push(page);
+    }
+
+    return pages;
+  }
+
+  onAssetsPageChange(page: number): void {
+    const totalPages = this.assetsPageCount();
+    if (page < 1 || (totalPages > 0 && page > totalPages)) {
+      return;
+    }
+
+    if (page === this.assetsPage) {
+      return;
+    }
+
+    this.loadAssetsPage(page);
+  }
+
+  private refreshAssets(): void {
+    this.isLoading = true;
+    this.serverRepository.getAssetsCount(AssetScope.Library).subscribe(total => {
+      this.assetsTotal = total;
+      const totalPages = this.assetsPageCount();
+      const nextPage = totalPages === 0 ? 1 : Math.min(this.assetsPage, totalPages);
+      this.loadAssetsPage(nextPage);
+    });
+  }
+
+  private loadAssetsPage(page: number): void {
+    this.isLoading = true;
+    const skip = (page - 1) * this.assetsPageSize;
+    this.serverRepository.getAssets(AssetScope.Library, skip, this.assetsPageSize).subscribe(assets => {
+      this.assets = assets;
+      this.assetsPage = page;
+      this.isLoading = false;
+    });
+  }
+}
