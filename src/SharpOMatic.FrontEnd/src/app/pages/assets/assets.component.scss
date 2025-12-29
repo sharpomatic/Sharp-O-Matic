@@ -35,6 +35,20 @@
   border-top: 1px solid var(--bs-border-color);
 }
 
+.assets-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.assets-sort:hover,
+.assets-sort:focus {
+  text-decoration: underline;
+}
+
 .col-name {
   min-width: 200px;
 }

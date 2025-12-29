@@ -608,21 +608,41 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
             .CountAsync();
     }
 
-    public async Task<List<Asset>> GetAssetsByScope(AssetScope scope, int skip, int take)
+    public async Task<List<Asset>> GetAssetsByScope(AssetScope scope, AssetSortField sortBy, SortDirection sortDirection, int skip, int take)
     {
         using var dbContext = dbContextFactory.CreateDbContext();
 
         var assets = dbContext.Assets.AsNoTracking()
-            .Where(a => a.Scope == scope)
-            .OrderByDescending(a => a.Created);
+            .Where(a => a.Scope == scope);
+
+        var sortedAssets = GetSortedAssets(assets, sortBy, sortDirection);
 
         if (skip > 0)
-            assets = (IOrderedQueryable<Asset>)assets.Skip(skip);
+            sortedAssets = sortedAssets.Skip(skip);
 
         if (take > 0)
-            assets = (IOrderedQueryable<Asset>)assets.Take(take);
+            sortedAssets = sortedAssets.Take(take);
 
-        return await assets.ToListAsync();
+        return await sortedAssets.ToListAsync();
+    }
+
+    private static IQueryable<Asset> GetSortedAssets(IQueryable<Asset> assets, AssetSortField sortBy, SortDirection sortDirection)
+    {
+        return sortBy switch
+        {
+            AssetSortField.Name => sortDirection == SortDirection.Ascending
+                ? assets.OrderBy(a => a.Name).ThenByDescending(a => a.Created)
+                : assets.OrderByDescending(a => a.Name).ThenByDescending(a => a.Created),
+            AssetSortField.Type => sortDirection == SortDirection.Ascending
+                ? assets.OrderBy(a => a.MediaType).ThenByDescending(a => a.Created)
+                : assets.OrderByDescending(a => a.MediaType).ThenByDescending(a => a.Created),
+            AssetSortField.Size => sortDirection == SortDirection.Ascending
+                ? assets.OrderBy(a => a.SizeBytes).ThenByDescending(a => a.Created)
+                : assets.OrderByDescending(a => a.SizeBytes).ThenByDescending(a => a.Created),
+            _ => sortDirection == SortDirection.Ascending
+                ? assets.OrderBy(a => a.Name).ThenByDescending(a => a.Created)
+                : assets.OrderByDescending(a => a.Name).ThenByDescending(a => a.Created),
+        };
     }
 
     public async Task<List<Asset>> GetRunAssets(Guid runId)

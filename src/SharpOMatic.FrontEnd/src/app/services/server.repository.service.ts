@@ -19,6 +19,7 @@ import { SettingsService } from './settings.service';
 import { RunSortField } from '../enumerations/run-sort-field';
 import { SortDirection } from '../enumerations/sort-direction';
 import { AssetScope } from '../enumerations/asset-scope';
+import { AssetSortField } from '../enumerations/asset-sort-field';
 import { AssetSummary } from '../pages/assets/interfaces/asset-summary';
 
 @Injectable({
@@ -276,12 +277,20 @@ export class ServerRepositoryService {
     );
   }
 
-  public getAssets(scope: AssetScope = AssetScope.Library, skip = 0, take = 0): Observable<AssetSummary[]> {
+  public getAssets(
+    scope: AssetScope = AssetScope.Library,
+    skip = 0,
+    take = 0,
+    sortBy = AssetSortField.Name,
+    sortDirection = SortDirection.Descending
+  ): Observable<AssetSummary[]> {
     const apiUrl = this.settingsService.apiUrl();
     const params = new HttpParams()
       .set('scope', scope)
       .set('skip', skip)
-      .set('take', take);
+      .set('take', take)
+      .set('sortBy', sortBy)
+      .set('sortDirection', sortDirection);
     return this.http.get<AssetSummary[]>(`${apiUrl}/api/assets`, { params }).pipe(
       catchError((error) => {
         this.notifyError('Loading assets', error);

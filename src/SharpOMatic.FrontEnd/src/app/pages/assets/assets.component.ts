@@ -4,6 +4,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { forkJoin } from 'rxjs';
 import { ConfirmDialogComponent } from '../../dialogs/confirm/confirm-dialog.component';
 import { AssetScope } from '../../enumerations/asset-scope';
+import { AssetSortField } from '../../enumerations/asset-sort-field';
+import { SortDirection } from '../../enumerations/sort-direction';
 import { ServerRepositoryService } from '../../services/server.repository.service';
 import { AssetSummary } from './interfaces/asset-summary';
 
@@ -29,6 +31,10 @@ export class AssetsComponent {
   public readonly assetsPageSize = 50;
   public isUploading = false;
   public isLoading = false;
+  public readonly AssetSortField = AssetSortField;
+  public readonly SortDirection = SortDirection;
+  public assetsSortField: AssetSortField = AssetSortField.Name;
+  public assetsSortDirection: SortDirection = SortDirection.Descending;
 
   ngOnInit(): void {
     this.refreshAssets();
@@ -124,6 +130,20 @@ export class AssetsComponent {
     this.loadAssetsPage(page);
   }
 
+  onAssetsSortChange(field: AssetSortField): void {
+    if (this.assetsSortField === field) {
+      this.assetsSortDirection = this.assetsSortDirection === SortDirection.Descending
+        ? SortDirection.Ascending
+        : SortDirection.Descending;
+    } else {
+      this.assetsSortField = field;
+      this.assetsSortDirection = SortDirection.Descending;
+    }
+
+    this.assetsPage = 1;
+    this.refreshAssets();
+  }
+
   private refreshAssets(): void {
     this.isLoading = true;
     this.serverRepository.getAssetsCount(AssetScope.Library).subscribe(total => {
@@ -137,7 +157,13 @@ export class AssetsComponent {
   private loadAssetsPage(page: number): void {
     this.isLoading = true;
     const skip = (page - 1) * this.assetsPageSize;
-    this.serverRepository.getAssets(AssetScope.Library, skip, this.assetsPageSize).subscribe(assets => {
+    this.serverRepository.getAssets(
+      AssetScope.Library,
+      skip,
+      this.assetsPageSize,
+      this.assetsSortField,
+      this.assetsSortDirection
+    ).subscribe(assets => {
       this.assets = assets;
       this.assetsPage = page;
       this.isLoading = false;

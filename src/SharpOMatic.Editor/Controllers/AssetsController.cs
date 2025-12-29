@@ -7,6 +7,8 @@ public class AssetsController(IRepositoryService repositoryService, IAssetStore 
     [HttpGet]
     public async Task<List<AssetSummary>> GetAssets(
         [FromQuery] AssetScope scope = AssetScope.Library,
+        [FromQuery] AssetSortField sortBy = AssetSortField.Name,
+        [FromQuery] SortDirection sortDirection = SortDirection.Descending,
         [FromQuery] int skip = 0,
         [FromQuery] int take = 0)
     {
@@ -16,7 +18,7 @@ public class AssetsController(IRepositoryService repositoryService, IAssetStore 
         if (take < 0)
             take = 0;
 
-        var assets = await repositoryService.GetAssetsByScope(scope, skip, take);
+        var assets = await repositoryService.GetAssetsByScope(scope, sortBy, sortDirection, skip, take);
         return [.. assets.Select(ToSummary)];
     }
 
