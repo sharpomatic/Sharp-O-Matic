@@ -1,11 +1,7 @@
 ## Assets
 
-Assets table
-Assets service
-Assets file implementation
-Assets front end, list, search, add, rename, delete
-AssetRef, serialization
-Resolve AssetRef to DataContent
+StartNode, context init, Assets, list of asset names but delete/add button. Pick from asset library.
+Run sidebar needs to allow the same assets capability.
 
 ## LLM's
 
