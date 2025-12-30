@@ -32,9 +32,12 @@ jobs:
         working-directory: src
         run: dotnet restore
 
+      - name: Set build version
+        run: echo "BUILD_VERSION=0.9.$((GITHUB_RUN_NUMBER-1))" >> $GITHUB_ENV
+
       - name: Build
         working-directory: src
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore /p:Version=$BUILD_VERSION /p:AssemblyVersion=$BUILD_VERSION /p:FileVersion=$BUILD_VERSION
 
       - name: Test
         working-directory: src
