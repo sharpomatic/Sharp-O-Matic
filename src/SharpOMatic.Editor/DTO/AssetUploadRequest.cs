@@ -1,4 +1,4 @@
-namespace SharpOMatic.Editor.DataTransferObjects;
+namespace SharpOMatic.Editor.DTO;
 
 public class AssetUploadRequest
 {

@@ -12,7 +12,7 @@ global using Microsoft.Extensions.Options;
 global using OpenAI;
 global using OpenAI.Responses;
 global using SharpOMatic.Engine.Contexts;
-global using SharpOMatic.Engine.DataTransferObjects;
+global using SharpOMatic.Engine.DTO;
 global using SharpOMatic.Engine.Entities.Definitions;
 global using SharpOMatic.Engine.Entities.Enumerations;
 global using SharpOMatic.Engine.Enumerations;
