@@ -6,7 +6,7 @@ import { ConnectorConfig } from '../../metadata/definitions/connector-config';
 import { ServerRepositoryService } from '../../services/server.repository.service';
 import { MetadataService } from '../../services/metadata.service';
 import { FormsModule } from '@angular/forms';
-import { CanLeaveWithUnsavedChanges } from '../../guards/unsaved-changes.guard';
+import { CanLeaveWithUnsavedChanges } from '../../helper/unsaved-changes.guard';
 import { Observable, map } from 'rxjs';
 import { DynamicFieldsComponent } from '../../components/dynamic-fields/dynamic-fields.component';
 

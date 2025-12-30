@@ -5,6 +5,7 @@ import { AssetRef } from '../../entities/definitions/asset-ref';
 import { AssetScope } from '../../enumerations/asset-scope';
 import { AssetSortField } from '../../enumerations/asset-sort-field';
 import { SortDirection } from '../../enumerations/sort-direction';
+import { formatByteSize } from '../../helper/format-size';
 import { AssetSummary } from '../../pages/assets/interfaces/asset-summary';
 import { ServerRepositoryService } from '../../services/server.repository.service';
 import { DIALOG_DATA } from '../services/dialog.service';
@@ -95,14 +96,7 @@ export class AssetPickerDialogComponent implements OnInit {
   }
 
   formatSize(bytes: number): string {
-    if (!Number.isFinite(bytes) || bytes <= 0) {
-      return '0 B';
-    }
-
-    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-    const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
-    const value = bytes / Math.pow(1024, index);
-    return `${value.toFixed(value < 10 && index > 0 ? 1 : 0)} ${units[index]}`;
+    return formatByteSize(bytes);
   }
 
   assetsPageCount(): number {

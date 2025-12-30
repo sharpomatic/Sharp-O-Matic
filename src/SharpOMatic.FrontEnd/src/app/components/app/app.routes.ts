@@ -7,7 +7,7 @@ import { ConnectorComponent } from '../../pages/connector/connectorcomponent';
 import { ModelsComponent } from '../../pages/models/models.component';
 import { ModelComponent } from '../../pages/model/model.component';
 import { AssetsComponent } from '../../pages/assets/assets.component';
-import { unsavedChangesGuard } from '../../guards/unsaved-changes.guard';
+import { unsavedChangesGuard } from '../../helper/unsaved-changes.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/workflows', pathMatch: 'full' },

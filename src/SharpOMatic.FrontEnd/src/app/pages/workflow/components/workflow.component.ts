@@ -10,7 +10,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { TracebarComponent } from './tracebar.component';
 import { NodeType } from '../../../entities/enumerations/node-type';
 import { TabComponent, TabItem } from '../../../components/tab/tab.component';
-import { CanLeaveWithUnsavedChanges } from '../../../guards/unsaved-changes.guard';
+import { CanLeaveWithUnsavedChanges } from '../../../helper/unsaved-changes.guard';
 import { RunStatus } from '../../../enumerations/run-status';
 import { RunSortField } from '../../../enumerations/run-sort-field';
 import { SortDirection } from '../../../enumerations/sort-direction';

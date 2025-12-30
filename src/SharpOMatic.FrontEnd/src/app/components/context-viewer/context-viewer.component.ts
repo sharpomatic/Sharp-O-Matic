@@ -1,11 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { formatByteSize } from '../../helper/format-size';
 
 interface ContextNode {
   name: string;
   type: string;
   displayValue: string;
+  fullValue: string;
+  fullLength: number;
+  displayLength: string;
+  isTruncated: boolean;
+  showFull: boolean;
   children: ContextNode[];
   expanded: boolean;
 }
@@ -100,6 +106,12 @@ export class ContextViewerComponent implements OnChanges {
     this.contextTree.set([...this.contextTree()]);
   }
 
+  toggleValue(node: ContextNode): void {
+    if (!node.isTruncated) return;
+    node.showFull = !node.showFull;
+    this.contextTree.set([...this.contextTree()]);
+  }
+
   private buildNodesFromObject(obj: Record<string, unknown>): ContextNode[] {
     return Object.entries(obj).map(([name, payload]) => this.toContextNode(name, payload));
   }
@@ -116,6 +128,11 @@ export class ContextViewerComponent implements OnChanges {
         name,
         type: this.getPayloadType(payloadObject),
         displayValue: '',
+        fullValue: '',
+        fullLength: 0,
+        displayLength: '',
+        isTruncated: false,
+        showFull: false,
         children,
         expanded: false
       };
@@ -129,15 +146,26 @@ export class ContextViewerComponent implements OnChanges {
         name: nameWithLength,
         type: this.getPayloadType(payloadObject),
         displayValue: '',
+        fullValue: '',
+        fullLength: 0,
+        displayLength: '',
+        isTruncated: false,
+        showFull: false,
         children,
         expanded: false
       };
     }
 
+    const formatted = this.formatValue(payloadObject.value);
     return {
       name,
       type: this.getPayloadType(payloadObject),
-      displayValue: this.formatValue(payloadObject.value),
+      displayValue: formatted.displayValue,
+      fullValue: formatted.fullValue,
+      fullLength: formatted.fullLength,
+      displayLength: formatted.displayLength,
+      isTruncated: formatted.isTruncated,
+      showFull: false,
       children: [],
       expanded: false
     };
@@ -171,21 +199,39 @@ export class ContextViewerComponent implements OnChanges {
     return typeof value;
   }
 
-  private formatValue(value: unknown): string {
-    if (value === null) return 'null';
-    if (value === undefined) return 'undefined';
-    if (typeof value === 'string') return this.truncateValue(value);
-    if (typeof value === 'number' || typeof value === 'boolean') return value.toString();
+  private formatValue(value: unknown): {
+    displayValue: string;
+    fullValue: string;
+    fullLength: number;
+    displayLength: string;
+    isTruncated: boolean;
+  } {
+    if (value === null) return this.createDisplayValue('null');
+    if (value === undefined) return this.createDisplayValue('undefined');
+    if (typeof value === 'string') return this.createDisplayValue(value);
+    if (typeof value === 'number' || typeof value === 'boolean') return this.createDisplayValue(value.toString());
 
     try {
-      return this.truncateValue(JSON.stringify(value));
+      return this.createDisplayValue(JSON.stringify(value));
     } catch {
-      return '[unserializable]';
+      return this.createDisplayValue('[unserializable]');
     }
   }
 
-  private truncateValue(value: string): string {
-    if (value.length <= MAX_DISPLAY_LENGTH) return value;
-    return value.substring(0, MAX_DISPLAY_LENGTH);
+  private createDisplayValue(value: string): {
+    displayValue: string;
+    fullValue: string;
+    fullLength: number;
+    displayLength: string;
+    isTruncated: boolean;
+  } {
+    const isTruncated = value.length > MAX_DISPLAY_LENGTH;
+    return {
+      displayValue: isTruncated ? value.substring(0, MAX_DISPLAY_LENGTH) : value,
+      fullValue: value,
+      fullLength: value.length,
+      displayLength: formatByteSize(value.length),
+      isTruncated
+    };
   }
 }

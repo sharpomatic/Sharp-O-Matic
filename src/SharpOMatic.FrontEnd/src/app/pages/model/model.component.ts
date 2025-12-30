@@ -10,7 +10,7 @@ import { ModelConfig } from '../../metadata/definitions/model-config';
 import { MetadataService } from '../../services/metadata.service';
 import { ServerRepositoryService } from '../../services/server.repository.service';
 import { Connector } from '../../metadata/definitions/connector';
-import { CanLeaveWithUnsavedChanges } from '../../guards/unsaved-changes.guard';
+import { CanLeaveWithUnsavedChanges } from '../../helper/unsaved-changes.guard';
 import { Observable, map } from 'rxjs';
 import { DynamicFieldsCapabilityContext, DynamicFieldsComponent } from '../../components/dynamic-fields/dynamic-fields.component';
 import { FieldDescriptorType } from '../../metadata/enumerations/field-descriptor-type';
