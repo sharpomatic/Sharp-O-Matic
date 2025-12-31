@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "ConfigId": "openai_gpt-5.2",
-  "DisplayName": "gpt-5.2",
-  "Description": "Reasoning model",
-  "ConnectorConfigId": "openai",
+  "ConfigId": "azureopenai_gpt-5.2-chat",
+  "DisplayName": "gpt-5.2-chat",
+  "Description": "Chat completion model.",
+  "ConnectorConfigId": "azureopenai",
   "IsCustom": false,
   "Capabilities": [
     {
@@ -23,10 +23,6 @@
       "DisplayName": "Supports Max Output Tokens"
     },
     {
-      "Name": "SupportsReasoningEffort",
-      "DisplayName": "Supports Reasoning Effort"
-    },
-    {
       "Name": "SupportsStructuredOutput",
       "DisplayName": "Supports Structured Output"
     },
@@ -37,6 +33,14 @@
   ],
   "ParameterFields": [
     {
+      "Name": "deployment_name",
+      "Label": "Deployment Name",
+      "Description": "",
+      "CallDefined": false,
+      "Type": 0,
+      "IsRequired": true
+    },
+    {
       "Name": "max_output_tokens",
       "Label": "Max Output Tokens",
       "Description": "",
@@ -44,27 +48,10 @@
       "Type": 5,
       "IsRequired": false,
       "Capability": "SupportsMaxOutputTokens",
-      "DefaultValue": 128000,
+      "DefaultValue": 16384,
       "Min": 0,
-      "Max": 128000,
-      "Step": 10000
-    },
-    {
-      "Name": "reasoning_effort",
-      "Label": "Reasoning Effort",
-      "Description": "",
-      "CallDefined": true,
-      "Type": 3,
-      "IsRequired": false,
-      "Capability": "SupportsReasoningEffort",
-      "DefaultValue": "None",
-      "EnumOptions": [
-        "None",
-        "Low",
-        "Medium",
-        "High",
-        "XHigh"
-      ]
+      "Max": 16384,
+      "Step": 1000
     },
     {
       "Name": "structured_output",
@@ -84,8 +71,8 @@
     },
     {
       "Name": "parallel_tool_calls",
-      "Description": "",
       "Label": "Parallel Tool Calls",
+      "Description": "",
       "CallDefined": true,
       "IsRequired": false,
       "Type": 2,

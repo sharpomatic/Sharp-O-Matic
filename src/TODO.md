@@ -1,6 +1,6 @@
 ## LLM's
 
-- Azure OpenAI - models
+- Azure OpenAI - authentication options
 - Microsoft Foundry - models
 
 ## Export and Import to move between dev/staging/prod

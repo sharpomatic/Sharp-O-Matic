@@ -2,7 +2,7 @@
   "Version": 1,
   "ConfigId": "openai_custom",
   "DisplayName": "custom",
-  "Description": "Chat completion model.",
+  "Description": "Chat or reasoning model",
   "ConnectorConfigId": "openai",
   "IsCustom": true,
   "Capabilities": [
@@ -17,10 +17,6 @@
     {
       "Name": "SupportsImageIn",
       "DisplayName": "Supports Image Input"
-    },
-    {
-      "Name": "SupportsImageOut",
-      "DisplayName": "Supports Image Output"
     },
     {
       "Name": "SupportsMaxOutputTokens",
@@ -45,17 +41,17 @@
   ],
   "ParameterFields": [
     {
-      "Name": "modelName",
-      "Description": "",
+      "Name": "model_name",
       "Label": "Model Name",
+      "Description": "",
       "CallDefined": false,
       "Type": 0,
       "IsRequired": true
     },
     {
       "Name": "max_output_tokens",
-      "Description": "",
       "Label": "Max Output Tokens",
+      "Description": "",
       "CallDefined": true,
       "Type": 5,
       "IsRequired": true,

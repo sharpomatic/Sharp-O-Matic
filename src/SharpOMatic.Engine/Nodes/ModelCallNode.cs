@@ -1,9 +1,4 @@
 #pragma warning disable OPENAI001
-
-using SharpOMatic.Engine.Metadata.Definitions;
-using SharpOMatic.Engine.Services;
-using System.Collections.Generic;
-
 namespace SharpOMatic.Engine.Nodes;
 
 [RunNode(NodeType.ModelCall)]
@@ -56,20 +51,8 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
         foreach (var notification in notifications)
             notification.ConnectionOverride(ThreadContext.RunContext.Run.RunId, ThreadContext.RunContext.Run.WorkflowId, connectionFields);
 
-        if (!connectionFields.TryGetValue("apikey", out var apiKey))
-            throw new SharpOMaticException("Connector api key not specified.");
-
         if (!HasCapability("SupportsTextIn"))
             throw new SharpOMaticException("Model does not support text input.");
-
-        var modelName = "";
-        if (_modelConfig.IsCustom)
-        {
-            if (!_model.ParameterValues.TryGetValue("modelName", out modelName))
-                throw new SharpOMaticException("Model does not specify the custom model name");
-        }
-        else
-            modelName = _modelConfig.DisplayName;
 
         var responseOptions = new ResponseCreationOptions();
         var chatOptions = new ChatOptions() { AdditionalProperties = [], RawRepresentationFactory = (_) => responseOptions };
@@ -252,8 +235,46 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
             }
         }
 
-        OpenAIClient client = new OpenAIClient(apiKey);
-        var agentClient = client.GetOpenAIResponseClient(modelName);
+        OpenAIResponseClient? agentClient = null;
+        var modelName = "";
+
+        switch (connectorConfig.ConfigId)
+        {
+            case "openai":
+                {
+                    if (!connectionFields.TryGetValue("apikey", out var apiKey))
+                        throw new SharpOMaticException("Connector api key not specified.");
+
+                    if (_modelConfig.IsCustom)
+                    {
+                        if (!_model.ParameterValues.TryGetValue("model_name", out modelName))
+                            throw new SharpOMaticException("Model does not specify the custom model name");
+                    }
+                    else
+                        modelName = _modelConfig.DisplayName;
+
+                    var client = new OpenAIClient(apiKey);
+                    agentClient = client.GetOpenAIResponseClient(modelName);
+                }
+                break;
+            case "azureopenai":
+                {
+                    if (!connectionFields.TryGetValue("apikey", out var apiKey))
+                        throw new SharpOMaticException("Connector api key not specified.");
+
+                    if (!connectionFields.TryGetValue("endpoint", out var endpoint))
+                        throw new SharpOMaticException("Connector endpoint not specified.");
+
+                    if (!_model.ParameterValues.TryGetValue("deployment_name", out var deploymentName))
+                        throw new SharpOMaticException("Model does not specify a deployment name");
+
+                    var azureClient = new AzureOpenAIClient(new Uri(endpoint ?? ""), new AzureKeyCredential(apiKey ?? ""));
+                    agentClient = azureClient.GetOpenAIResponseClient(deploymentName);
+                }
+                break;
+            default:
+                throw new SharpOMaticException($"Unsupported connector config of '{connectorConfig.ConfigId}'");
+        }
 
         AIAgent agent = agentClient.CreateAIAgent(instructions: instructions, services: agentServiceProvider);
         var response = await agent.RunAsync(chat, options: new ChatClientAgentRunOptions(chatOptions));
@@ -290,7 +311,7 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
             ThreadContext.NodeContext.TrySet(Node.ChatOutputPath, chatList);
         }
 
-        return ("Model call executed", new List<NextNodeData> { new(ThreadContext, RunContext.ResolveSingleOutput(Node)) });
+        return ($"Model {_model.Name ?? "(empty)"} called", new List<NextNodeData> { new(ThreadContext, RunContext.ResolveSingleOutput(Node)) });
     }
 
     private bool HasCapability(string capability)
