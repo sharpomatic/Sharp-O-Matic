@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.TryAddScoped<IAssetService, AssetService>();
         services.TryAddScoped<IRepositoryService, RepositoryService>();
         services.TryAddScoped<IEngineService, EngineService>();
+        services.TryAddScoped<ITransferService, TransferService>();
         services.AddHostedService<NodeExecutionService>();
 
         // Add empty versions of optional services

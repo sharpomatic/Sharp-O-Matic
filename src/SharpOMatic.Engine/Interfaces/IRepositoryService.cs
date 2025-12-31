@@ -52,7 +52,7 @@ public interface IRepositoryService
     // Model Operations
     // ------------------------------------------------
     Task<List<ModelSummary>> GetModelSummaries();
-    Task<Model> GetModel(Guid modelId);
+    Task<Model> GetModel(Guid modelId, bool hideSecrets = true);
     Task UpsertModel(Model model);
     Task DeleteModel(Guid modelId);
 

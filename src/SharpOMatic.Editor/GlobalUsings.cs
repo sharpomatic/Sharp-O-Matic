@@ -1,9 +1,13 @@
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.ApplicationParts;
+global using Microsoft.AspNetCore.Mvc.Controllers;
 global using Microsoft.AspNetCore.SignalR;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.FileProviders;
+global using SharpOMatic.Editor.Controllers;
 global using SharpOMatic.Editor.DTO;
 global using SharpOMatic.Editor.Services;
 global using SharpOMatic.Engine.Contexts;
@@ -15,6 +19,8 @@ global using SharpOMatic.Engine.Helpers;
 global using SharpOMatic.Engine.Interfaces;
 global using SharpOMatic.Engine.Metadata.Definitions;
 global using SharpOMatic.Engine.Repository;
+global using SharpOMatic.Engine.Services;
+global using System.Reflection;
 global using System.Text;
 global using System.Text.Json;
 

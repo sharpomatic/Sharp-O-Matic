@@ -3,6 +3,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://localhost:9001");
 builder.Services.AddCors();
 builder.Services.AddControllers();
+builder.Services.AddSharpOMaticTransfer();
 builder.Services.AddSharpOMaticEditor();
 builder.Services.Configure<FileSystemAssetStoreOptions>(builder.Configuration.GetSection("AssetStorage:FileSystem"));
 builder.Services.AddSingleton<IAssetStore, FileSystemAssetStore>();

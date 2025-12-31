@@ -8,13 +8,18 @@ public static class SharpOMaticEditorExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.AddControllers()
-            .AddApplicationPart(typeof(SharpOMaticEditorExtensions).Assembly) // TODO what is this?
-            .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                options.JsonSerializerOptions.Converters.Add(new NodeEntityConverter());
-            });
+        var mvcBuilder = services.AddControllers();
+        SharpOMaticControllerFeatureSetup.EnsureApplicationPart(mvcBuilder, typeof(SharpOMaticEditorExtensions).Assembly);
+
+        var toggle = SharpOMaticControllerFeatureSetup.GetOrAddToggle(services);
+        toggle.EnableEditor = true;
+        SharpOMaticControllerFeatureSetup.EnsureFeatureProvider(mvcBuilder, toggle);
+
+        mvcBuilder.AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            options.JsonSerializerOptions.Converters.Add(new NodeEntityConverter());
+        });
 
         services.AddSignalR();
         services.AddSingleton<IProgressService, ProgressService>();

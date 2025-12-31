@@ -489,7 +489,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
                       }).ToListAsync();
     }
 
-    public async Task<Model> GetModel(Guid modelId)
+    public async Task<Model> GetModel(Guid modelId, bool hideSecrets = true)
     {
         using var dbContext = dbContextFactory.CreateDbContext();
 
@@ -506,7 +506,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
             throw new SharpOMaticException($"Model '{modelId}' configuration is invalid.");
 
         // We need to ensure that any parameter that is a secret, is replaced to prevent it being available in the client
-        if ((model.ParameterValues.Count > 0) && !string.IsNullOrWhiteSpace(model.ConfigId))
+        if (hideSecrets && (model.ParameterValues.Count > 0) && !string.IsNullOrWhiteSpace(model.ConfigId))
         {
             var config = await GetModelConfig(model.ConfigId);
             if (config is not null)
