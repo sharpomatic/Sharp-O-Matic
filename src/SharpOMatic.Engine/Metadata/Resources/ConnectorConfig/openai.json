@@ -5,13 +5,13 @@
   "Description": "Connector to the OpenAI API.",
   "AuthModes": [
     {
-      "Id": "apikey",
+      "Id": "api_key",
       "DisplayName": "API Key",
       "Kind": 0,
       "IsDefault": true,
       "Fields": [
         {
-          "Name": "apikey",
+          "Name": "api_key",
           "Label": "API key",
           "Description": "",
           "CallDefined": false,
@@ -19,7 +19,7 @@
           "IsRequired": true
         },
         {
-          "Name": "organizationid",
+          "Name": "organization_id",
           "Label": "Organization Id",
           "Description": "",
           "CallDefined": false,
@@ -27,7 +27,7 @@
           "IsRequired": false
         },
         {
-          "Name": "projectId",
+          "Name": "project_id",
           "Label": "Project Id",
           "Description": "",
           "CallDefined": false,

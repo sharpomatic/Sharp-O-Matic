@@ -5,7 +5,7 @@
   "Description": "Connector to OpenAI hosted on Azure",
   "AuthModes": [
     {
-      "Id": "apikey",
+      "Id": "api_key",
       "DisplayName": "API Key",
       "Kind": 0,
       "IsDefault": true,
@@ -20,12 +20,29 @@
           "DefaultValue": "https://<resource-name>.openai.azure.com"
         },
         {
-          "Name": "apikey",
+          "Name": "api_key",
           "Label": "API key",
           "Description": "",
           "CallDefined": false,
           "Type": 1,
           "IsRequired": true
+        }
+      ]
+    },
+    {
+      "Id": "default_azure_credential",
+      "DisplayName": "Default Azure Credential ",
+      "Kind": 0,
+      "IsDefault": true,
+      "Fields": [
+        {
+          "Name": "endpoint",
+          "Label": "Endpoint",
+          "Description": "string",
+          "CallDefined": false,
+          "Type": 0,
+          "IsRequired": true,
+          "DefaultValue": "https://<resource-name>.openai.azure.com"
         }
       ]
     }

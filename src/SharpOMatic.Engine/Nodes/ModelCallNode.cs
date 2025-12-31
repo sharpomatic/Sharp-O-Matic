@@ -1,4 +1,6 @@
 #pragma warning disable OPENAI001
+using Azure.Core;
+
 namespace SharpOMatic.Engine.Nodes;
 
 [RunNode(NodeType.ModelCall)]
@@ -36,9 +38,6 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
         var selectedAuthenticationModel = connectorConfig.AuthModes.FirstOrDefault(a => a.Id == connector.AuthenticationModeId);
         if (selectedAuthenticationModel is null)
             throw new SharpOMaticException("Connector has no selected authentication method");
-
-        if (selectedAuthenticationModel.Id != "apikey")
-            throw new SharpOMaticException("Only connector apikey authentication is currently supported");
 
         // Copy only the relevant connector fields into a new dictionary
         Dictionary<string, string?> connectionFields = [];
@@ -242,7 +241,7 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
         {
             case "openai":
                 {
-                    if (!connectionFields.TryGetValue("apikey", out var apiKey))
+                    if (!connectionFields.TryGetValue("api_key", out var apiKey))
                         throw new SharpOMaticException("Connector api key not specified.");
 
                     if (_modelConfig.IsCustom)
@@ -259,16 +258,28 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
                 break;
             case "azureopenai":
                 {
-                    if (!connectionFields.TryGetValue("apikey", out var apiKey))
-                        throw new SharpOMaticException("Connector api key not specified.");
-
                     if (!connectionFields.TryGetValue("endpoint", out var endpoint))
                         throw new SharpOMaticException("Connector endpoint not specified.");
 
                     if (!_model.ParameterValues.TryGetValue("deployment_name", out var deploymentName))
                         throw new SharpOMaticException("Model does not specify a deployment name");
 
-                    var azureClient = new AzureOpenAIClient(new Uri(endpoint ?? ""), new AzureKeyCredential(apiKey ?? ""));
+                    AzureOpenAIClient? azureClient = null;
+                    switch (selectedAuthenticationModel.Id)
+                    {
+                        case "api_key":
+                            if (!connectionFields.TryGetValue("api_key", out var apiKey))
+                                throw new SharpOMaticException("Connector api key not specified.");
+
+                            azureClient = new(new Uri(endpoint ?? ""), new AzureKeyCredential(apiKey ?? ""));
+                            break;
+                        case "default_azure_credential":
+                            azureClient = new(new Uri(endpoint ?? ""), new DefaultAzureCredential());
+                            break;
+                        default:
+                            throw new SharpOMaticException($"Unsupported authentication method of '{selectedAuthenticationModel.Id}'");
+                    }
+
                     agentClient = azureClient.GetOpenAIResponseClient(deploymentName);
                 }
                 break;
