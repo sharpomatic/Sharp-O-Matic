@@ -1,6 +1,6 @@
 namespace SharpOMatic.Engine.Services;
 
-public sealed class FileSystemAssetStore : IAssetStore
+public class FileSystemAssetStore : IAssetStore
 {
     private readonly string _rootPath;
 
@@ -84,4 +84,11 @@ public sealed class FileSystemAssetStore : IAssetStore
 
         return fullPath;
     }
+}
+
+public class FileSystemAssetStoreOptions
+{
+    public static string DefaultRootPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SharpOMatic", "Assets");
+
+    public string RootPath { get; set; } = DefaultRootPath;
 }

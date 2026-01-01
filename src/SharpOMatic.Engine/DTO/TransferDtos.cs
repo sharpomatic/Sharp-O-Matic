@@ -1,6 +1,6 @@
 namespace SharpOMatic.Engine.DTO;
 
-public sealed class TransferExportRequest
+public class TransferExportRequest
 {
     public bool IncludeSecrets { get; set; }
     public TransferSelection? Workflows { get; set; }
@@ -9,13 +9,13 @@ public sealed class TransferExportRequest
     public TransferSelection? Assets { get; set; }
 }
 
-public sealed class TransferSelection
+public class TransferSelection
 {
     public bool All { get; set; }
     public List<Guid> Ids { get; set; } = [];
 }
 
-public sealed class TransferManifest
+public class TransferManifest
 {
     public const int CurrentSchemaVersion = 1;
 
@@ -26,7 +26,7 @@ public sealed class TransferManifest
     public List<TransferAssetEntry> Assets { get; set; } = [];
 }
 
-public sealed class TransferCounts
+public class TransferCounts
 {
     public int Workflows { get; set; }
     public int Connectors { get; set; }
@@ -34,7 +34,7 @@ public sealed class TransferCounts
     public int Assets { get; set; }
 }
 
-public sealed class TransferAssetEntry
+public class TransferAssetEntry
 {
     public Guid AssetId { get; set; }
     public string Name { get; set; } = "";
@@ -43,7 +43,7 @@ public sealed class TransferAssetEntry
     public DateTime Created { get; set; }
 }
 
-public sealed class TransferImportResult
+public class TransferImportResult
 {
     public int WorkflowsImported { get; set; }
     public int ConnectorsImported { get; set; }

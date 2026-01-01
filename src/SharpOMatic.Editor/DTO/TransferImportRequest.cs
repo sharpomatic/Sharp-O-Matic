@@ -1,6 +1,6 @@
 namespace SharpOMatic.Editor.DTO;
 
-public sealed class TransferImportRequest
+public class TransferImportRequest
 {
     public required IFormFile File { get; set; }
 }

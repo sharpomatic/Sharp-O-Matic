@@ -2,7 +2,7 @@ using System;
 
 namespace SharpOMatic.Engine.Services;
 
-public sealed class SharpOMaticBuilder
+public class SharpOMaticBuilder
 {
     public SharpOMaticBuilder(IServiceCollection services)
     {

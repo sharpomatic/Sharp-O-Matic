@@ -1,6 +1,6 @@
 namespace SharpOMatic.Engine.Services;
 
-public sealed class AzureBlobStorageAssetStore : IAssetStore
+public class AzureBlobStorageAssetStore : IAssetStore
 {
     private readonly BlobContainerClient _containerClient;
     private readonly SemaphoreSlim _containerInit = new(1, 1);
@@ -97,4 +97,11 @@ public sealed class AzureBlobStorageAssetStore : IAssetStore
             _containerInit.Release();
         }
     }
+}
+
+public class AzureBlobStorageAssetStoreOptions
+{
+    public string? ConnectionString { get; set; }
+    public string? ServiceUri { get; set; }
+    public string ContainerName { get; set; } = string.Empty;
 }

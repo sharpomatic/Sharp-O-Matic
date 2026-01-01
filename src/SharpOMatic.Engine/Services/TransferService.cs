@@ -2,7 +2,7 @@ using System.IO.Compression;
 
 namespace SharpOMatic.Engine.Services;
 
-public sealed class TransferService(IRepositoryService repositoryService, IAssetStore assetStore) : ITransferService
+public class TransferService(IRepositoryService repositoryService, IAssetStore assetStore) : ITransferService
 {
     private const string ManifestFileName = "manifest.json";
     private const string WorkflowDirectory = "workflows";

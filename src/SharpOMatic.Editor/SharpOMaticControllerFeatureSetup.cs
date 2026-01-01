@@ -1,12 +1,12 @@
 namespace SharpOMatic.Editor;
 
-internal sealed class SharpOMaticControllerToggle
+internal class SharpOMaticControllerToggle
 {
     public bool EnableEditor { get; set; }
     public bool EnableTransfer { get; set; }
 }
 
-internal sealed class SharpOMaticControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
+internal class SharpOMaticControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
 {
     private readonly SharpOMaticControllerToggle toggle;
 
