@@ -25,10 +25,18 @@ export class ConnectorsComponent {
   private confirmModalRef: BsModalRef<ConfirmDialogComponent> | undefined;
   
   public connectors: ConnectorSummary[] = [];
+  public isLoading = true;
 
   ngOnInit(): void {
-    this.serverWorkflow.getConnectorSummaries().subscribe(connectors => {
-      this.connectors = connectors;
+    this.isLoading = true;
+    this.serverWorkflow.getConnectorSummaries().subscribe({
+      next: (connectors) => {
+        this.connectors = connectors;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 

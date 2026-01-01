@@ -25,10 +25,18 @@ export class ModelsComponent {
   private confirmModalRef: BsModalRef<ConfirmDialogComponent> | undefined;
 
   public models: ModelSummary[] = [];
+  public isLoading = true;
 
   ngOnInit(): void {
-    this.serverRepository.getModelSummaries().subscribe(models => {
-      this.models = models;
+    this.isLoading = true;
+    this.serverRepository.getModelSummaries().subscribe({
+      next: (models) => {
+        this.models = models;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 

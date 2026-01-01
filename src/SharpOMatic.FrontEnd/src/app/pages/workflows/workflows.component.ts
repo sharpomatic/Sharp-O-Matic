@@ -25,10 +25,18 @@ export class WorkflowsComponent implements OnInit {
   private bsModalRef: BsModalRef<ConfirmDialogComponent> | undefined;
 
   public workflows: WorkflowSummaryEntity[] = [];
+  public isLoading = true;
 
   ngOnInit(): void {
-    this.serverWorkflow.getWorkflows().subscribe(workflows => {
-      this.workflows = workflows;
+    this.isLoading = true;
+    this.serverWorkflow.getWorkflows().subscribe({
+      next: (workflows) => {
+        this.workflows = workflows;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 

@@ -5,7 +5,7 @@
   </div>
   <hr class="m-0"/>
   <div class="d-flex flex-wrap gap-3 p-3 models-list">
-    @if (models.length === 0) {
+    @if (!isLoading && models.length === 0) {
       <div class="empty-state text-body-secondary">
         <div class="empty-icon"><i class="bi bi-chat-text"></i></div>
         <div class="empty-title">No models yet</div>
