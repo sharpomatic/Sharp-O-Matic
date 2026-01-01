@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'SharpOMatic',
-  tagline: 'AI workflow designer for .NET projects',
+  tagline: 'AI workflow designer and engine for .NET projects',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -41,24 +41,8 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/sharpomatic/SharpOMatic/tree/main/docs/',
         },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/sharpomatic/SharpOMatic/tree/main/docs/',
-          // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
-        },
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -70,7 +54,9 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     colorMode: {
-      respectPrefersColorScheme: true,
+      defaultMode: 'dark',
+      disableSwitch: true,
+      respectPrefersColorScheme: false,
     },
     navbar: {
       title: 'SharpOMatic',
@@ -80,15 +66,13 @@ const config: Config = {
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
+          to: '/docs/intro',
+          position: 'right',
           label: 'Docs',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/sharpomatic/SharpOMatic',
-          label: 'GitHub',
+          href: 'https://github.com/sharpomatic/SharpOMatic/issues',
+          label: 'Support',
           position: 'right',
         },
       ],
@@ -109,17 +93,13 @@ const config: Config = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
               label: 'GitHub',
               href: 'https://github.com/sharpomatic/SharpOMatic',
             },
           ],
         },
       ],
-      copyright: `Copyright (c) ${new Date().getFullYear()} SharpOMatic. Built with Docusaurus.`,
+      copyright: `Copyright (c) ${new Date().getFullYear()} Phil Wright. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

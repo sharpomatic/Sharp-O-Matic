@@ -1,30 +1,64 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
-
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-font-family-base: 'Segoe UI', sans-serif;
+  --ifm-heading-font-family: 'Segoe UI', sans-serif;
+  --ifm-heading-font-weight: 700;
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-primary: #6ea8fe;
+  --ifm-color-primary-dark: #5a97f7;
+  --ifm-color-primary-darker: #4f8eee;
+  --ifm-color-primary-darkest: #3f78d8;
+  --ifm-color-primary-light: #84b5ff;
+  --ifm-color-primary-lighter: #9bc3ff;
+  --ifm-color-primary-lightest: #bdd8ff;
+  --ifm-background-color: #1c242b;
+  --ifm-background-surface-color: #232d36;
+  --ifm-color-content: #e3e7ea;
+  --ifm-color-content-secondary: #aab3b9;
+  --ifm-navbar-background-color: #1c2429;
+  --ifm-navbar-link-color: #ffffff;
+  --ifm-navbar-link-hover-color: #ffffff;
+  --ifm-footer-background-color: #12181d;
+  --ifm-footer-title-color: #eef2f4;
+  --ifm-footer-link-color: #c5cbd0;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  background: var(--ifm-background-color);
+}
+
+.navbar {
+  box-shadow: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.navbar__brand {
+  gap: 0.6rem;
+}
+
+.navbar__logo {
+  height: 28px;
+  width: 28px;
+}
+
+.navbar__title {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-size: 1.1rem;
+}
+
+.navbar__item {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.navbar__link {
+  padding: 0.5rem 0.75rem;
+}
+
+.footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }

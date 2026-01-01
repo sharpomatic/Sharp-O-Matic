@@ -1,23 +1,190 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
+.page {
+  background: linear-gradient(180deg, #1c2429 0%, #35454d 100%);
+}
 
-.heroBanner {
-  padding: 4rem 0;
+.hero {
+  padding: 3.7rem 0 3rem;
+}
+
+.heroInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3.75rem;
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: #eef2f4;
+  max-width: 720px;
+  margin: 0 auto;
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  align-items: center;
+}
+
+.heroTitle {
+  font-size: clamp(2.8rem, 5vw, 4.8rem);
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.heroSubtitle {
+  font-size: 1.35rem;
+  color: #d3d9de;
+  margin: 0;
+}
+
+.heroImage {
+  max-width: 980px;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 14px;
+  border: 1px solid #000000;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+  display: block;
+}
+
+.previewToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #28323b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.previewToolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.previewToggle {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #6ea8fe;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.previewSearch {
+  width: 150px;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #1f2730;
+  color: #9aa4ab;
+  font-size: 0.75rem;
+}
+
+.previewToolbarRight {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.previewIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.previewBody {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  min-height: 300px;
+}
+
+.previewSidebar {
+  padding: 1rem 0.75rem;
+  background: #1e262d;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.sidebarItem,
+.sidebarItemWide {
+  height: 12px;
+  border-radius: 6px;
+  background: #2a333b;
+}
+
+.sidebarItemWide {
+  width: 70%;
+}
+
+.previewTiles {
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 70px;
+  gap: 0.75rem;
+  background: #242d35;
+}
+
+.previewTile {
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tileOne {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #5bc0be, #4299e1);
+}
+
+.tileTwo {
+  background: linear-gradient(135deg, #e2b659, #c97c5d);
+}
+
+.tileThree {
+  background: linear-gradient(135deg, #6bd3c2, #39a96b);
+}
+
+.tileFour {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #759fd8, #415d8c);
+}
+
+.tileFive {
+  background: linear-gradient(135deg, #f0c987, #d0a36a);
+}
+
+.tileSix {
+  background: linear-gradient(135deg, #9f86d1, #6f58a8);
+}
+
+.tileSeven {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #c69e7b, #a56a4b);
+}
+
+.tileEight {
+  background: linear-gradient(135deg, #82c0d8, #4d7ea8);
 }
 
 @media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+  .hero {
+    padding: 4rem 0 4.5rem;
+  }
+
+  .previewBody {
+    grid-template-columns: 1fr;
+  }
+
+  .previewSidebar {
+    display: none;
   }
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@media screen and (max-width: 768px) {
+  .previewTiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
