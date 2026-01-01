@@ -1,12 +1,13 @@
 ## GitHub
 
 - Build first version of documentation
+- Flesh out the list of gpt models for the models config
+- Create sample workflows for different features with Server setup to help
+- Add mechanism for user to add a sample workflow (embedded in a directory then frontend can create from them)
 
 # Futures
 
-OpenAI - image generator
-
-Embeddings
+OpenAI - image generator, Embeddings
 
 Usage - token usage counts
 
@@ -20,7 +21,7 @@ Possible ChatKit integration
    need to handle domain lookup issue
    would need to see openai python library to see protocol, including initial get session call
 
-MCP Server
+MCP Servers
 
 Server
 	Integrate use of OmniSharp for full intellisense
@@ -30,6 +31,10 @@ Search
 	Connectors
 	Models
 
+Workflows, duplicate button
+Designer, copy and paste
+
+Evaluations
 
 
 
