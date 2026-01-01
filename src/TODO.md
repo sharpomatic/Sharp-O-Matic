@@ -1,7 +1,9 @@
-Bugs
+# Bugs
 
 Provide a search bar on the workflow / connectors / models and use the new search methods, add pageing details at bottom of page and vertical scroll.
 Connector and models briefly show the empty message until the data arrives, lets wait until the reply comes before showing it to prevent blinking
+
+# Azure Blob Storage for Assets
 
   
 ## GitHub
