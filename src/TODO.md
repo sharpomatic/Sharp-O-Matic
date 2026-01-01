@@ -1,7 +1,5 @@
 ## GitHub
 
-- Docusaurus setup for generated static pages site (auto build and publish on changes)
-- Add a custom domain for the documentation site
 - Build first version of documentation
 
 # Futures

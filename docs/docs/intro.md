@@ -1,28 +1,17 @@
----
-sidebar_position: 1
-title: SharpOMatic
----
+# Intro
 
-[![Development](https://github.com/sharpomatic/SharpOMatic/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sharpomatic/SharpOMatic/actions/workflows/ci.yml)
-[![Prerelease](https://img.shields.io/nuget/vpre/SharpOMatic.Engine?label=prerelease)](https://www.nuget.org/packages/SharpOMatic.Engine/)
-[![Stable](https://img.shields.io/nuget/v/SharpOMatic.Engine?label=stable)](https://www.nuget.org/packages/SharpOMatic.Engine/)
-[![Downloads](https://img.shields.io/nuget/dt/SharpOMatic.Engine?label=downloads)](https://www.nuget.org/packages/SharpOMatic.Engine/)
-[![TargetFramework](https://img.shields.io/badge/.NET-10.0-512BD4)](https://dotnet.microsoft.com/)
+## What is SharpOMatic?
+Introduce SharpOMatic as an open-source workflow editor and execution engine with .NET integration and AI-oriented tasks, and describe the primary audiences and scenarios it serves.
 
-## Under Construction
+## Architecture at a glance
+Summarize the Editor, Engine, Server, and FrontEnd roles and how they interact during design time and runtime.
 
-SharpOMatic is an AI workflow designer with deep integration into .NET projects.
-Design using a drag and drop editor.
-Perform evaluations against datasets.
-Deep integration into .NET projects as nuget packages.
-Currently under construction but with an intended first release in early 2026.
+## Core concepts snapshot
+Provide a quick glossary-style overview of workflows, nodes, runs, contexts, assets, and metadata to orient new readers.
 
-## Editor Screenshot
+## Where to start
+Point readers to the Getting Started path and highlight the fastest route to a first successful workflow run.
 
-![Editor Screenshot](https://github.com/user-attachments/assets/5b7b57e4-0218-4819-ac56-c1b62b958122)
+## Documentation map and support
+Explain how the docs are organized and list entry points for API references, troubleshooting, and community support.
 
-## Affiliation
-
-SharpOMatic is a personal project created and maintained by Phil Wright.
-It is not affiliated with, sponsored by, or endorsed by my employer.
-All names and trademarks remain the property of their respective owners.
