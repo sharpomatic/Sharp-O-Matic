@@ -3,17 +3,21 @@ name: Build
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
-      - 'src/Sharp-O-Matic.Frontend/**'
-      - 'src/Sharp-O-Matic.Editor/**'
-      - 'src/Sharp-O-Matic.Engine/**'
-      - 'src/Sharp-O-Matic.Server/**'
+      - 'src/SharpOMatic.FrontEnd/**'
+      - 'src/SharpOMatic.Editor/**'
+      - 'src/SharpOMatic.Engine/**'
+      - 'src/SharpOMatic.Server/**'
   pull_request:
+    branches:
+      - main
     paths:
-      - 'src/Sharp-O-Matic.Frontend/**'
-      - 'src/Sharp-O-Matic.Editor/**'
-      - 'src/Sharp-O-Matic.Engine/**'
-      - 'src/Sharp-O-Matic.Server/**'
+      - 'src/SharpOMatic.FrontEnd/**'
+      - 'src/SharpOMatic.Editor/**'
+      - 'src/SharpOMatic.Engine/**'
+      - 'src/SharpOMatic.Server/**'
 
 jobs:
   build-and-test:
