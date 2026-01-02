@@ -38,7 +38,7 @@
             </div>
             <div class="card-body">
               <p class="card-text">{{ connector.description }}</p>
-              <button class="btn btn-primary" [routerLink]="['/connectors', connector.connectorId]">Open</button>
+              <button class="btn btn-secondary" [routerLink]="['/connectors', connector.connectorId]">Open</button>
               <button class="btn btn-outline-danger ms-2" (click)="deleteConnector(connector)">Delete</button>
             </div>
           </div>

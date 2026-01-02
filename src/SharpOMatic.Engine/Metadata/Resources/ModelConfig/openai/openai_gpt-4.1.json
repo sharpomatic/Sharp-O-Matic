@@ -1,10 +1,10 @@
 {
   "Version": 1,
-  "ConfigId": "azureopenai_custom",
-  "DisplayName": "custom",
-  "Description": "Chat or reasoning model",
-  "ConnectorConfigId": "azureopenai",
-  "IsCustom": true,
+  "ConfigId": "openai_gpt-4.1",
+  "DisplayName": "gpt-4.1",
+  "Description": "Chat completion model",
+  "ConnectorConfigId": "openai",
+  "IsCustom": false,
   "Capabilities": [
     {
       "Name": "SupportsTextIn",
@@ -23,14 +23,6 @@
       "DisplayName": "Supports Max Output Tokens"
     },
     {
-      "Name": "SupportsReasoningEffort",
-      "DisplayName": "Supports Reasoning Effort"
-    },
-    {
-      "Name": "SupportsSampling",
-      "DisplayName": "Supports Sampling"
-    },
-    {
       "Name": "SupportsStructuredOutput",
       "DisplayName": "Supports Structured Output"
     },
@@ -41,14 +33,6 @@
   ],
   "ParameterFields": [
     {
-      "Name": "deployment_name",
-      "Label": "Deployment Name",
-      "Description": "",
-      "CallDefined": false,
-      "Type": 0,
-      "IsRequired": true
-    },
-    {
       "Name": "max_output_tokens",
       "Label": "Max Output Tokens",
       "Description": "",
@@ -56,51 +40,10 @@
       "Type": 5,
       "IsRequired": true,
       "Capability": "SupportsMaxOutputTokens",
-      "DefaultValue": 128000,
-      "Min": 0
-    },
-    {
-      "Name": "reasoning_effort",
-      "Label": "Reasoning Effort",
-      "Description": "",
-      "CallDefined": true,
-      "Type": 3,
-      "IsRequired": false,
-      "Capability": "SupportsReasoningEffort",
-      "DefaultValue": "None",
-      "EnumOptions": [
-        "None",
-        "Low",
-        "Medium",
-        "High",
-        "XHigh"
-      ]
-    },
-    {
-      "Name": "temperature",
-      "Description": "",
-      "Label": "Temperature",
-      "CallDefined": true,
-      "Type": 5,
-      "IsRequired": false,
-      "Capability": "SupportsSampling",
-      "DefaultValue": 1,
+      "DefaultValue": 32768,
       "Min": 0,
-      "Max": 2,
-      "Step": 0.1
-    },
-    {
-      "Name": "top_p",
-      "Description": "",
-      "Label": "Top P",
-      "CallDefined": true,
-      "IsRequired": false,
-      "Type": 5,
-      "Capability": "SupportsSampling",
-      "DefaultValue": 1,
-      "Min": 0,
-      "Max": 1,
-      "Step": 0.1
+      "Max": 32768,
+      "Step": 1000
     },
     {
       "Name": "structured_output",

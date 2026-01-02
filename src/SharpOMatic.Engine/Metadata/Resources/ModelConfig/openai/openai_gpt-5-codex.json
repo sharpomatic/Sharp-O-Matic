@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "ConfigId": "openai_gpt-5.2-chat-latest",
-  "DisplayName": "gpt-5.2-chat-latest",
-  "Description": "Chat completion model",
+  "ConfigId": "openai_gpt-5-codex",
+  "DisplayName": "gpt-5-codex",
+  "Description": "Coding model",
   "ConnectorConfigId": "openai",
   "IsCustom": false,
   "Capabilities": [
@@ -16,11 +16,15 @@
     },
     {
       "Name": "SupportsImageIn",
-      "DisplayName": "Supports Text Input"
+      "DisplayName": "Supports Image Input"
     },
     {
       "Name": "SupportsMaxOutputTokens",
       "DisplayName": "Supports Max Output Tokens"
+    },
+    {
+      "Name": "SupportsReasoningEffort",
+      "DisplayName": "Supports Reasoning Effort"
     },
     {
       "Name": "SupportsStructuredOutput",
@@ -38,12 +42,27 @@
       "Description": "",
       "CallDefined": true,
       "Type": 5,
-      "IsRequired": false,
+      "IsRequired": true,
       "Capability": "SupportsMaxOutputTokens",
-      "DefaultValue": 16384,
+      "DefaultValue": 128000,
       "Min": 0,
-      "Max": 16384,
+      "Max": 128000,
       "Step": 1000
+    },
+    {
+      "Name": "reasoning_effort",
+      "Label": "Reasoning Effort",
+      "Description": "",
+      "CallDefined": true,
+      "Type": 3,
+      "IsRequired": false,
+      "Capability": "SupportsReasoningEffort",
+      "DefaultValue": "None",
+      "EnumOptions": [
+        "Low",
+        "Medium",
+        "High"
+      ]
     },
     {
       "Name": "structured_output",

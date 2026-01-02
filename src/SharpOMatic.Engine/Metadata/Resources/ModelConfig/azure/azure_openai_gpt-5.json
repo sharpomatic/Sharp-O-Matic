@@ -1,10 +1,10 @@
 {
   "Version": 1,
-  "ConfigId": "openai_custom",
-  "DisplayName": "custom",
-  "Description": "Chat or reasoning model",
-  "ConnectorConfigId": "openai",
-  "IsCustom": true,
+  "ConfigId": "azure_openai_gpt-5",
+  "DisplayName": "gpt-5",
+  "Description": "Reasoning model",
+  "ConnectorConfigId": "azure_openai",
+  "IsCustom": false,
   "Capabilities": [
     {
       "Name": "SupportsTextIn",
@@ -27,10 +27,6 @@
       "DisplayName": "Supports Reasoning Effort"
     },
     {
-      "Name": "SupportsSampling",
-      "DisplayName": "Supports Sampling"
-    },
-    {
       "Name": "SupportsStructuredOutput",
       "DisplayName": "Supports Structured Output"
     },
@@ -41,8 +37,8 @@
   ],
   "ParameterFields": [
     {
-      "Name": "model_name",
-      "Label": "Model Name",
+      "Name": "deployment_name",
+      "Label": "Deployment Name",
       "Description": "",
       "CallDefined": false,
       "Type": 0,
@@ -57,7 +53,9 @@
       "IsRequired": true,
       "Capability": "SupportsMaxOutputTokens",
       "DefaultValue": 128000,
-      "Min": 0
+      "Min": 0,
+      "Max": 128000,
+      "Step": 1000
     },
     {
       "Name": "reasoning_effort",
@@ -69,38 +67,11 @@
       "Capability": "SupportsReasoningEffort",
       "DefaultValue": "None",
       "EnumOptions": [
-        "None",
+        "Minimal",
         "Low",
         "Medium",
-        "High",
-        "XHigh"
+        "High"
       ]
-    },
-    {
-      "Name": "temperature",
-      "Description": "",
-      "Label": "Temperature",
-      "CallDefined": true,
-      "Type": 5,
-      "IsRequired": false,
-      "Capability": "SupportsSampling",
-      "DefaultValue": 1,
-      "Min": 0,
-      "Max": 2,
-      "Step": 0.1
-    },
-    {
-      "Name": "top_p",
-      "Description": "",
-      "Label": "Top P",
-      "CallDefined": true,
-      "IsRequired": false,
-      "Type": 5,
-      "Capability": "SupportsSampling",
-      "DefaultValue": 1,
-      "Min": 0,
-      "Max": 1,
-      "Step": 0.1
     },
     {
       "Name": "structured_output",

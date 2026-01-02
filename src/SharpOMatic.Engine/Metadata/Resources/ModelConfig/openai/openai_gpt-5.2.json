@@ -16,7 +16,7 @@
     },
     {
       "Name": "SupportsImageIn",
-      "DisplayName": "Supports Text Input"
+      "DisplayName": "Supports Image Input"
     },
     {
       "Name": "SupportsMaxOutputTokens",
@@ -42,12 +42,12 @@
       "Description": "",
       "CallDefined": true,
       "Type": 5,
-      "IsRequired": false,
+      "IsRequired": true,
       "Capability": "SupportsMaxOutputTokens",
       "DefaultValue": 128000,
       "Min": 0,
       "Max": 128000,
-      "Step": 10000
+      "Step": 1000
     },
     {
       "Name": "reasoning_effort",

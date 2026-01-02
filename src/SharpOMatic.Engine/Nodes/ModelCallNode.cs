@@ -256,7 +256,7 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
                     agentClient = client.GetOpenAIResponseClient(modelName);
                 }
                 break;
-            case "azureopenai":
+            case "azure_openai":
                 {
                     if (!connectionFields.TryGetValue("endpoint", out var endpoint))
                         throw new SharpOMaticException("Connector endpoint not specified.");

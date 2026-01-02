@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "ConfigId": "azureopenai_gpt-5-nano",
-  "DisplayName": "gpt-5-nano",
-  "Description": "Reasoning model",
-  "ConnectorConfigId": "azureopenai",
+  "ConfigId": "azure_openai_gpt-5.1-codex",
+  "DisplayName": "gpt-5.1-codex",
+  "Description": "Coding model",
+  "ConnectorConfigId": "azure_openai",
   "IsCustom": false,
   "Capabilities": [
     {
@@ -16,11 +16,15 @@
     },
     {
       "Name": "SupportsImageIn",
-      "DisplayName": "Supports Text Input"
+      "DisplayName": "Supports Image Input"
     },
     {
       "Name": "SupportsMaxOutputTokens",
       "DisplayName": "Supports Max Output Tokens"
+    },
+    {
+      "Name": "SupportsReasoningEffort",
+      "DisplayName": "Supports Reasoning Effort"
     },
     {
       "Name": "SupportsStructuredOutput",
@@ -46,12 +50,27 @@
       "Description": "",
       "CallDefined": true,
       "Type": 5,
-      "IsRequired": false,
+      "IsRequired": true,
       "Capability": "SupportsMaxOutputTokens",
       "DefaultValue": 128000,
       "Min": 0,
       "Max": 128000,
-      "Step": 10000
+      "Step": 1000
+    },
+    {
+      "Name": "reasoning_effort",
+      "Label": "Reasoning Effort",
+      "Description": "",
+      "CallDefined": true,
+      "Type": 3,
+      "IsRequired": false,
+      "Capability": "SupportsReasoningEffort",
+      "DefaultValue": "None",
+      "EnumOptions": [
+        "Low",
+        "Medium",
+        "High"
+      ]
     },
     {
       "Name": "structured_output",
@@ -71,8 +90,8 @@
     },
     {
       "Name": "parallel_tool_calls",
-      "Label": "Parallel Tool Calls",
       "Description": "",
+      "Label": "Parallel Tool Calls",
       "CallDefined": true,
       "IsRequired": false,
       "Type": 2,
