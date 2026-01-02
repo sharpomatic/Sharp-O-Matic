@@ -3,10 +3,10 @@ title: Context
 sidebar_position: 1
 ---
 
-Context is the runtime data that flows through a workflow. 
+Context is the runtime data that flows through a workflow.
 Nodes can read from and write to context so that downstream nodes can use the results of earlier steps.
-A context can be passed into a workflow providing the parameters it needs as input.
-When a workflow run completes it passes back a context so you can access the results.
+A context can be passed into a workflow to provide the parameters it needs as input.
+When a workflow run completes, it returns a context so you can access the results.
 
 ## Context Types
 
@@ -15,9 +15,9 @@ SharpOMatic uses a small set of JSON-serializable context containers:
 - **`ContextObject`**: a dictionary of property names to values.
 - **`ContextList`**: a dynamic list of values.
 
-The context is always an instance of **`ContextObject`**. 
-You can add **`ContextObject`** and **`ContextList`** instances as values allowing the creation of arbitrary hierarchies.
-Values can also be any of the standard scalar types in C# such as **`string`**, **`bool`**, **`int`**, **`DateTimeOffset`** and so forth.
+The context is always an instance of **`ContextObject`**.
+You can add **`ContextObject`** and **`ContextList`** instances as values, allowing the creation of arbitrary hierarchies.
+Values can also be any of the standard scalar types in C# such as **`string`**, **`bool`**, **`int`**, **`DateTimeOffset`**, and so forth.
 
 ```csharp
   var context = new ContextObject
@@ -50,7 +50,7 @@ So you can use all the usual **`Dictionary`** and **`List`** methods and propert
 
   var context = new ContextObject();
   context.Add("myList", list);
-  context.Add("summary", "No additiona notes.");
+  context.Add("summary", "No additional notes.");
   context.Remove("notes");
   var count = context.Count;
 ```
@@ -60,15 +60,15 @@ So you can use all the usual **`Dictionary`** and **`List`** methods and propert
 There are some additional helper methods appropriate for handling nested values.
 
 Use **`Set`** with a path to traverse down objects and lists to set values.
-It has the useful logic that if an intermediate object is missing it will create it for you.
-For example, in the below code, the path _second.third_ refers to a _second_ property that does not yet exist.
+It has the useful logic that if an intermediate object is missing, it will create it for you.
+For example, in the code below, the path _second.third_ refers to a _second_ property that does not yet exist.
 It will automatically be created as a **`ContextObject`** and then the _third_ property added inside it with the _FooBar_ value.
 
 **`ContextList`** values can be traversed using the standard index notation, e.g. _[4]_.
-Note that for the list it does not automatically create instances, so the referenced index must exist.
+Note that for the list, it does not automatically create instances, so the referenced index must exist.
 
-Use **`Get`** to recover values using a path. 
-Both methods take a type so that the provided or returned value are strongly types.
+Use **`Get`** to recover values using a path.
+Both methods take a type so that the provided or returned value is strongly typed.
 
 ```csharp
   var context = new ContextObject();
@@ -95,15 +95,15 @@ There are also **`TrySet`** and **`TryGet`** variations for scenarios where you 
 ## Property Names
 
 One of the additional checks enforced by the **`ContextObject`** is that property names (the dictionary keys) must be valid C# identifier names.
-You cannot have a property name of an empty string or a name starting with numbers. It must have the same format as regular C# variable names.
+You cannot have a property name of an empty string or a name starting with a number. It must have the same format as regular C# variable names.
 
 ## JSON Serialization
 
 The context must be serializable to and from JSON so that it can be saved to the database.
 This restriction allows a workflow to be suspended and restarted and allows intermediate states to be recorded to help with debugging.
 
-You can always add scalar values as they persist automatically with JSON-serialization but classes do not.
-There is a mechanism provided that allows you specify additional classes from your own project so that they are allowed to be added into the context and be appropriately persisted.
+You can always add scalar values as they persist automatically with JSON serialization, but classes do not.
+There is a mechanism provided that allows you to specify additional classes from your own project so that they are allowed to be added to the context and be appropriately persisted.
 
 Here is a trivial class definition.
 
@@ -116,7 +116,7 @@ Here is a trivial class definition.
   }
 ```
 
-Now you need to implment a **`JsonConverter`** for it.
+Now you need to implement a **`JsonConverter`** for it.
 
 ```csharp
   public sealed class ClassExampleConverter : JsonConverter<ClassExample>
@@ -146,4 +146,3 @@ Provide the implementation type in the SharpOMatic setup.
   builder.Services.AddSharpOMaticEngine()
     .AddJsonConverters(typeof(ClassExampleConverter))
 ```
-
