@@ -20,7 +20,7 @@
           <div class="card-body">
             <p class="card-text">{{ model.description }}</p>
             <button class="btn btn-primary" [routerLink]="['/models', model.modelId]">Open</button>
-            <button class="btn btn-primary ms-2" (click)="deleteModel(model)">Delete</button>
+            <button class="btn btn-outline-danger ms-2" (click)="deleteModel(model)">Delete</button>
           </div>
         </div>
       }

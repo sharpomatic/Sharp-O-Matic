@@ -117,10 +117,20 @@ export class ServerRepositoryService {
     );
   }
 
+  public duplicateWorkflow(id: string): Observable<string | undefined> {
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.post<string>(`${apiUrl}/api/workflow/duplicate/${id}`, null).pipe(
+      catchError((error) => {
+        this.notifyError('Duplicating workflow', error);
+        return of(undefined);
+      })
+    );
+  }
+
   public getLatestWorkflowRun(id: string): Observable<RunProgressModel | null> {
     const apiUrl = this.settingsService.apiUrl();
     return this.http.get<RunProgressModel>(`${apiUrl}/api/run/latestforworkflow/${id}`).pipe(
-      catchError((error) => {
+      catchError((error: any) => {
         this.notifyError('Loading latest workflow run', error);
         return of(null);
       })

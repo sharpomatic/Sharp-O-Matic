@@ -130,6 +130,100 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task<Guid> DuplicateWorkflow(Guid workflowId)
+    {
+        using var dbContext = dbContextFactory.CreateDbContext();
+
+        var workflow = await dbContext.Workflows.AsNoTracking()
+            .FirstOrDefaultAsync(w => w.WorkflowId == workflowId);
+
+        if (workflow is null)
+            throw new SharpOMaticException($"Workflow '{workflowId}' cannot be found.");
+
+        var existingNames = await dbContext.Workflows.AsNoTracking()
+            .Select(w => w.Named)
+            .ToListAsync();
+
+        var nameSet = new HashSet<string>(existingNames, StringComparer.OrdinalIgnoreCase);
+        var baseName = workflow.Named;
+        var startIndex = 1;
+
+        if (TryParseCopySuffix(baseName, out var parsedBaseName, out var copyNumber))
+        {
+            baseName = parsedBaseName;
+            startIndex = Math.Max(copyNumber + 1, 2);
+        }
+
+        var copyName = string.Empty;
+
+        if (startIndex == 1)
+        {
+            copyName = $"{baseName} (Copy)";
+            if (nameSet.Contains(copyName))
+                startIndex = 2;
+        }
+
+        if (startIndex > 1)
+        {
+            for (var i = startIndex; ; i++)
+            {
+                copyName = $"{baseName} (Copy {i})";
+                if (!nameSet.Contains(copyName))
+                    break;
+            }
+        }
+
+        var newWorkflow = new Workflow
+        {
+            WorkflowId = Guid.NewGuid(),
+            Version = workflow.Version,
+            Named = copyName,
+            Description = workflow.Description,
+            Nodes = workflow.Nodes,
+            Connections = workflow.Connections
+        };
+
+        dbContext.Workflows.Add(newWorkflow);
+        await dbContext.SaveChangesAsync();
+
+        return newWorkflow.WorkflowId;
+    }
+
+    private static bool TryParseCopySuffix(string name, out string baseName, out int copyNumber)
+    {
+        baseName = name;
+        copyNumber = 0;
+
+        const string copySuffix = " (Copy)";
+        if (name.EndsWith(copySuffix, StringComparison.OrdinalIgnoreCase))
+        {
+            baseName = name.Substring(0, name.Length - copySuffix.Length);
+            copyNumber = 1;
+            return true;
+        }
+
+        const string copyPrefix = " (Copy ";
+        if (!name.EndsWith(")", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var prefixIndex = name.LastIndexOf(copyPrefix, StringComparison.OrdinalIgnoreCase);
+        if (prefixIndex < 0)
+            return false;
+
+        var numberStart = prefixIndex + copyPrefix.Length;
+        var numberLength = name.Length - numberStart - 1;
+        if (numberLength <= 0)
+            return false;
+
+        var numberSpan = name.AsSpan(numberStart, numberLength);
+        if (!int.TryParse(numberSpan, out var parsed) || parsed < 1)
+            return false;
+
+        baseName = name.Substring(0, prefixIndex);
+        copyNumber = parsed;
+        return true;
+    }
+
     private static IQueryable<Workflow> ApplyWorkflowSearch(IQueryable<Workflow> workflows, string? search)
     {
         if (string.IsNullOrWhiteSpace(search))

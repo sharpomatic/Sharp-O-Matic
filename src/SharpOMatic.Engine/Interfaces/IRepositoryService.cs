@@ -11,6 +11,7 @@ public interface IRepositoryService
     Task<WorkflowEntity> GetWorkflow(Guid workflowId);
     Task UpsertWorkflow(WorkflowEntity workflow);
     Task DeleteWorkflow(Guid workflowId);
+    Task<Guid> DuplicateWorkflow(Guid workflowId);
 
     // ------------------------------------------------
     // Run Operations

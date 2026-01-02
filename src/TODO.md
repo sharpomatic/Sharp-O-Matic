@@ -33,7 +33,6 @@ Search
 	Connectors
 	Models
 
-Workflows, duplicate button
 Designer, copy and paste
 
 Evaluations

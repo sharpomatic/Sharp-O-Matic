@@ -28,6 +28,10 @@ export class WorkflowsComponent implements OnInit {
   public isLoading = true;
 
   ngOnInit(): void {
+    this.loadWorkflows();
+  }
+
+  private loadWorkflows(): void {
     this.isLoading = true;
     this.serverWorkflow.getWorkflows().subscribe({
       next: (workflows) => {
@@ -60,6 +64,14 @@ export class WorkflowsComponent implements OnInit {
         this.serverWorkflow.deleteWorkflow(workflow.id).subscribe(() => {
           this.workflows = this.workflows.filter(w => w.id !== workflow.id);
         });
+      }
+    });
+  }
+
+  duplicateWorkflow(workflow: WorkflowSummaryEntity): void {
+    this.serverWorkflow.duplicateWorkflow(workflow.id).subscribe((newWorkflowId) => {
+      if (newWorkflowId) {
+        this.loadWorkflows();
       }
     });
   }
