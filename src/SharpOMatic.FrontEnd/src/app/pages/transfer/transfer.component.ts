@@ -686,7 +686,7 @@ export class TransferComponent implements OnInit {
   private loadWorkflowsPage(page: number): void {
     const skip = (page - 1) * this.exportPageSize;
     const search = this.workflowsSearchText.trim();
-    this.serverRepository.getWorkflows(
+    this.serverRepository.getWorkflowSummaries(
       search,
       skip,
       this.exportPageSize,

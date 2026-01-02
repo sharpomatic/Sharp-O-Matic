@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { forkJoin } from 'rxjs';
 import { ConfirmDialogComponent } from '../../dialogs/confirm/confirm-dialog.component';
@@ -21,10 +21,11 @@ import { AssetSummary } from './interfaces/asset-summary';
   styleUrls: ['./assets.component.scss'],
   providers: [BsModalService],
 })
-export class AssetsComponent {
+export class AssetsComponent implements AfterViewInit {
   private readonly serverRepository = inject(ServerRepositoryService);
   private readonly modalService = inject(BsModalService);
   private confirmModalRef: BsModalRef<ConfirmDialogComponent> | undefined;
+  @ViewChild('searchInput') private searchInput?: ElementRef<HTMLInputElement>;
 
   public assets: AssetSummary[] = [];
   public assetsPage = 1;
@@ -41,6 +42,10 @@ export class AssetsComponent {
 
   ngOnInit(): void {
     this.refreshAssets();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.searchInput?.nativeElement.focus(), 0);
   }
 
   triggerUpload(fileInput: HTMLInputElement): void {

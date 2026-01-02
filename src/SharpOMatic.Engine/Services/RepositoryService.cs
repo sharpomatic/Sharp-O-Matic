@@ -231,8 +231,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
 
         var normalizedSearch = search.Trim().ToLower();
         return workflows.Where(workflow =>
-            workflow.Named.ToLower().Contains(normalizedSearch) ||
-            workflow.Description.ToLower().Contains(normalizedSearch));
+            workflow.Named.ToLower().Contains(normalizedSearch));
     }
 
     private static IQueryable<Workflow> GetSortedWorkflows(
@@ -589,8 +588,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
 
         var normalizedSearch = search.Trim().ToLower();
         return connectors.Where(connector =>
-            connector.Name.ToLower().Contains(normalizedSearch) ||
-            connector.Description.ToLower().Contains(normalizedSearch));
+            connector.Name.ToLower().Contains(normalizedSearch));
     }
 
     private static IQueryable<ConnectorMetadata> GetSortedConnectors(
@@ -791,8 +789,7 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
 
         var normalizedSearch = search.Trim().ToLower();
         return models.Where(model =>
-            model.Name.ToLower().Contains(normalizedSearch) ||
-            model.Description.ToLower().Contains(normalizedSearch));
+            model.Name.ToLower().Contains(normalizedSearch));
     }
 
     private static IQueryable<ModelMetadata> GetSortedModels(

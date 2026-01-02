@@ -28,11 +28,6 @@ MCP Servers
 Server
 	Integrate use of OmniSharp for full intellisense
 
-Search
-	Workflows
-	Connectors
-	Models
-
 Designer, copy and paste
 
 Evaluations

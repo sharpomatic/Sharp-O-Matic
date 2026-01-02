@@ -35,7 +35,7 @@ export class ServerRepositoryService {
   private readonly toastService = inject(ToastService);
   private readonly settingsService = inject(SettingsService);
 
-  public getWorkflows(
+  public getWorkflowSummaries(
     search = '',
     skip = 0,
     take = 0,

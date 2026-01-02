@@ -12,11 +12,29 @@
   overflow: hidden;
 }
 
+.models-body {
+  min-height: 0;
+}
+
+.models-toolbar {
+  flex: 0 0 auto;
+}
+
+.models-search {
+  max-width: 360px;
+}
+
 .models-list {
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
   align-content: flex-start;
+}
+
+.models-pagination {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--bs-border-color);
 }
 
 .empty-state {

@@ -12,8 +12,20 @@
   overflow: hidden;
 }
 
+.workflows-body {
+  min-height: 0;
+}
+
+.workflows-toolbar {
+  flex: 0 0 auto;
+}
+
+.workflows-search {
+  max-width: 360px;
+}
+
 .workflows-list {
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
   align-content: flex-start;
@@ -21,6 +33,12 @@
 
 .workflow-card {
   width: 300px;
+}
+
+.workflows-pagination {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--bs-border-color);
 }
 
 .empty-state {
