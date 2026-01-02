@@ -33,7 +33,7 @@ builder.Services.AddSharpOMaticEngine()
     {
         // Customize the database tables added for SharpOMatic
         dbOptions.TablePrefix = "SOM_";
-        dbOptions.DefaultSchema = "SharpOMatic";
+        //dbOptions.DefaultSchema = "SharpOMatic";
         dbOptions.CommandTimeout = 120;
         dbOptions.ApplyMigrationsOnStartup = true;
     });

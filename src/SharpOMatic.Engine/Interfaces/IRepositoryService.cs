@@ -77,6 +77,8 @@ public interface IRepositoryService
     Task<int> GetAssetCount(AssetScope scope, string? search);
     Task<List<Asset>> GetAssetsByScope(AssetScope scope, string? search, AssetSortField sortBy, SortDirection sortDirection, int skip, int take);
     Task<List<Asset>> GetRunAssets(Guid runId);
+    Task<Asset?> GetRunAssetByName(Guid runId, string name);
+    Task<Asset?> GetLibraryAssetByName(string name);
     Task UpsertAsset(Asset asset);
     Task DeleteAsset(Guid assetId);
 }

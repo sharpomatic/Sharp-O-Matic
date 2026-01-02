@@ -162,9 +162,12 @@ public static class ContextHelpers
         if (string.IsNullOrWhiteSpace(input))
             return input;
 
-        return System.Text.RegularExpressions.Regex.Replace(input, @"\{\{\s*(.*?)\s*\}\}", match =>
+        return System.Text.RegularExpressions.Regex.Replace(input, @"\{\{\s*(?:\$\s*)?(.*?)\s*\}\}", match =>
         {
-            var path = match.Groups[1].Value;
+            var path = match.Groups[1].Value.Trim();
+            if (string.IsNullOrWhiteSpace(path))
+                return string.Empty;
+
             if (ContextPathResolver.TryGetValue(context, path, false, false, out var value))
             {
                 return value?.ToString() ?? string.Empty;
@@ -173,4 +176,80 @@ public static class ContextHelpers
             return string.Empty;
         });
     }
+
+    public static async Task<string> SubstituteValuesAsync(
+        string input,
+        ContextObject context,
+        IRepositoryService repositoryService,
+        IAssetStore assetStore,
+        Guid? runId)
+    {
+        var substituted = SubstituteValues(input, context);
+        return await SubstituteAssetValuesAsync(substituted, repositoryService, assetStore, runId);
+    }
+
+    private static async Task<string> SubstituteAssetValuesAsync(
+        string input,
+        IRepositoryService repositoryService,
+        IAssetStore assetStore,
+        Guid? runId)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            return input;
+
+        var matches = System.Text.RegularExpressions.Regex.Matches(input, @"<<\s*(.*?)\s*>>");
+        if (matches.Count == 0)
+            return input;
+
+        var sb = new StringBuilder(input.Length);
+        var lastIndex = 0;
+
+        foreach (System.Text.RegularExpressions.Match match in matches)
+        {
+            sb.Append(input, lastIndex, match.Index - lastIndex);
+
+            var assetName = match.Groups[1].Value.Trim();
+            var replacement = await ResolveAssetTextAsync(assetName, repositoryService, assetStore, runId);
+            sb.Append(replacement);
+
+            lastIndex = match.Index + match.Length;
+        }
+
+        sb.Append(input, lastIndex, input.Length - lastIndex);
+        return sb.ToString();
+    }
+
+    private static async Task<string> ResolveAssetTextAsync(
+        string assetName,
+        IRepositoryService repositoryService,
+        IAssetStore assetStore,
+        Guid? runId)
+    {
+        if (string.IsNullOrWhiteSpace(assetName))
+            return string.Empty;
+
+        Asset? asset = null;
+
+        if (runId.HasValue)
+            asset = await repositoryService.GetRunAssetByName(runId.Value, assetName);
+
+        if (asset is null)
+            asset = await repositoryService.GetLibraryAssetByName(assetName);
+
+        if (asset is null || !IsTextMediaType(asset.MediaType))
+            return string.Empty;
+
+        try
+        {
+            await using var stream = await assetStore.OpenReadAsync(asset.StorageKey);
+            using var reader = new StreamReader(stream);
+            return await reader.ReadToEndAsync();
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
+    private static bool IsTextMediaType(string mediaType) => mediaType.StartsWith("text/", StringComparison.OrdinalIgnoreCase);
 }

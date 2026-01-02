@@ -185,6 +185,11 @@ namespace SharpOMatic.Engine.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Assets_Name",
+                table: "Assets",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Assets_RunId",
                 table: "Assets",
                 column: "RunId");

@@ -1,7 +1,12 @@
+## Bugs
+
+ModelCall with an empty mode selected cannot be reloaded
+table prefix
+default schema
+
 ## GitHub
 
 - Build first version of documentation
-- Pull in text library assets in a prompt templating
 - Code to write from context into the asset library again
 
 # Futures

@@ -936,6 +936,37 @@ public class RepositoryService(IDbContextFactory<SharpOMaticDbContext> dbContext
             .ToListAsync();
     }
 
+    public async Task<Asset?> GetRunAssetByName(Guid runId, string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
+
+        using var dbContext = dbContextFactory.CreateDbContext();
+        var normalizedName = name.Trim().ToLower();
+
+        return await dbContext.Assets.AsNoTracking()
+            .Where(a => a.Scope == AssetScope.Run &&
+                        a.RunId == runId &&
+                        a.Name.ToLower() == normalizedName)
+            .OrderByDescending(a => a.Created)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<Asset?> GetLibraryAssetByName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
+
+        using var dbContext = dbContextFactory.CreateDbContext();
+        var normalizedName = name.Trim().ToLower();
+
+        return await dbContext.Assets.AsNoTracking()
+            .Where(a => a.Scope == AssetScope.Library &&
+                        a.Name.ToLower() == normalizedName)
+            .OrderByDescending(a => a.Created)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task UpsertAsset(Asset asset)
     {
         using var dbContext = dbContextFactory.CreateDbContext();

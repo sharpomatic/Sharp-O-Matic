@@ -12,6 +12,7 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
     protected override async Task<(string, List<NextNodeData>)> RunInternal()
     {
         var repository = ThreadContext.RunContext.RepositoryService;
+        var assetStore = ThreadContext.RunContext.ServiceScope.ServiceProvider.GetRequiredService<IAssetStore>();
 
         if (Node.ModelId is null)
             throw new SharpOMaticException("No model selected");
@@ -185,11 +186,21 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
 
         string? instructions = null;
         if (!string.IsNullOrWhiteSpace(Node.Instructions))
-            instructions = ContextHelpers.SubstituteValues(Node.Instructions, ThreadContext.NodeContext);
+            instructions = await ContextHelpers.SubstituteValuesAsync(
+                Node.Instructions,
+                ThreadContext.NodeContext,
+                repository,
+                assetStore,
+                ThreadContext.RunContext.Run.RunId);
 
         if (!string.IsNullOrWhiteSpace(Node.Prompt))
         {
-            var prompt = ContextHelpers.SubstituteValues(Node.Prompt, ThreadContext.NodeContext);
+            var prompt = await ContextHelpers.SubstituteValuesAsync(
+                Node.Prompt,
+                ThreadContext.NodeContext,
+                repository,
+                assetStore,
+                ThreadContext.RunContext.Run.RunId);
             chat.Add(new ChatMessage(ChatRole.User, [new TextContent(prompt)]));
         }
 
@@ -217,7 +228,6 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
                 else
                     throw new SharpOMaticException($"Image input path '{Node.ImageInputPath}' must be an asset or asset list.");
 
-                var assetStore = RunContext.ServiceScope.ServiceProvider.GetRequiredService<IAssetStore>();
                 foreach (var entry in assetRefs)
                 {
                     var asset = await repository.GetAsset(entry.AssetId);
