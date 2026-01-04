@@ -22,14 +22,37 @@
   color: #eef2f4;
   max-width: 720px;
   margin: 0 auto;
-  text-align: center;
-  align-items: center;
+  text-align: left;
+  align-items: flex-start;
+}
+
+.heroTitleRow {
+  display: flex;
+}
+
+.heroLogoWrap {
+  flex: 0 0 80px;
+  width: 80px;
+  display: flex;
+}
+
+.heroLogo {
+  height: 100%;
+  width: 100%;
+  display: block;
+  padding: 0 16px 0 0;  
+  object-fit: contain;
+}
+
+.heroTitleText {
+  display: flex;
+  flex-direction: column;
 }
 
 .heroTitle {
   font-size: clamp(2.8rem, 5vw, 4.8rem);
   line-height: 1.05;
-  margin: 0;
+  margin: 0 0 10px 0;
   letter-spacing: 0.02em;
 }
 

@@ -52,7 +52,6 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
     colorMode: {
       defaultMode: 'light',
       disableSwitch: true,
@@ -61,8 +60,8 @@ const config: Config = {
     navbar: {
       title: 'SharpOMatic',
       logo: {
-        alt: 'SharpOMatic Logo',
-        src: 'img/logo.svg',
+        alt: 'SharpOMatic',
+        src: 'img/small_dark.png',
       },
       items: [
         {
