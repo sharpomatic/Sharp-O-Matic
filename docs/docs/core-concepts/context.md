@@ -3,10 +3,11 @@ title: Context
 sidebar_position: 2
 ---
 
-Context is the runtime data that flows through a workflow.
-Nodes can read from and write to context so that downstream nodes can use the results of earlier steps.
-A context can be passed into a workflow to provide the parameters it needs as input.
-When a workflow run completes, it returns a context so you can access the results.
+Context is the runtime data that flows through a workflow. It provides inputs, carries intermediate state, and returns outputs.
+
+- Nodes read from and write to context so downstream steps can use earlier results.
+- An initial context can be passed into a workflow to provide input parameters.
+- When a workflow run completes, the final context is returned as the result.
 
 ## Context Types
 
@@ -40,9 +41,8 @@ Values can also be any of the standard scalar types in C# such as **string**, **
 
 ## Dictionary and List
 
-A **ContextObject** is just a **Dictionary** with some extra checks added.
-Likewise, the **ContextList** is just a **List** with additional checks.
-So you can use all the usual **Dictionary** and **List** methods and properties.
+**ContextObject** is a **Dictionary** with additional checks, and **ContextList** is a **List** with additional checks.
+You can use the usual **Dictionary** and **List** methods and properties.
 
 ```csharp
   var list = new ContextList();
@@ -57,18 +57,7 @@ So you can use all the usual **Dictionary** and **List** methods and properties.
 
 ## Path Accessors
 
-There are some additional helper methods appropriate for handling nested values.
-
-Use **Set** with a path to traverse down objects and lists to set values.
-It has the useful logic that if an intermediate object is missing, it will create it for you.
-For example, in the code below, the path _second.third_ refers to a _second_ property that does not yet exist.
-It will automatically be created as a **ContextObject** and then the _third_ property added inside it with the _FooBar_ value.
-
-**ContextList** values can be traversed using the standard index notation, e.g. _[4]_.
-Note that for the list, it does not automatically create instances, so the referenced index must exist.
-
-Use **Get** to recover values using a path.
-Both methods take a type so that the provided or returned value is strongly typed.
+There are some additional helper methods for handling nested values.
 
 ```csharp
   var context = new ContextObject();
@@ -83,6 +72,11 @@ Both methods take a type so that the provided or returned value is strongly type
   var pi = context.Get<double>("second.fourth[0]");
 ```
 
+- Use **Set** with a path to traverse down objects and lists to set values. If an intermediate object is missing, it is created for you. For example, the path _second.third_ refers to a _second_ property that does not yet exist, so **Set** creates it as a **ContextObject** and adds the _third_ property with the _FooBar_ value.
+- **ContextList** values can be traversed using standard index notation, for example _[4]_. The list does not automatically create instances, so the referenced index must exist.
+- Use **Get** to recover values using a path. 
+- Both methods take a type so that the provided or returned value is strongly typed.
+
 There are also **TrySet** and **TryGet** variations for scenarios where you do not know if they will succeed.
 
 ```csharp
@@ -94,16 +88,16 @@ There are also **TrySet** and **TryGet** variations for scenarios where you do n
 
 ## Property Names
 
-One of the additional checks enforced by the **ContextObject** is that property names (the dictionary keys) must be valid C# identifier names.
-You cannot have a property name of an empty string or a name starting with a number. It must have the same format as regular C# variable names.
+One of the additional checks enforced by **ContextObject** is that property names (the dictionary keys) must be valid C# identifiers.
+For example, they cannot be an empty string, cannot start with a number or contain a fullstop, plus the other rules for regular C# variable names.
 
 ## JSON Serialization
 
 The context must be serializable to and from JSON so that it can be saved to the database.
 This restriction allows a workflow to be suspended and restarted and allows intermediate states to be recorded to help with debugging.
 
-You can always add scalar values as they persist automatically with JSON serialization, but classes do not.
-There is a mechanism provided that allows you to specify additional classes from your own project so that they are allowed to be added to the context and be appropriately persisted.
+- Scalar values persist automatically with standard JSON serialization.
+- Classes require a converter. You can register additional types from your project so they can be added to the context and persisted.
 
 Here is a trivial class definition.
 
