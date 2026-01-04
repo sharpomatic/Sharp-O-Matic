@@ -9,7 +9,9 @@ Can view but cannot edit
 ## GitHub
 
 - Build first version of documentation
-- Code to write from context into the asset library again
+- Core Concepts
+Transfer - import and export between environments.
+Connectors & Models
 
 # Futures
 
