@@ -1,6 +1,6 @@
 ---
 title: Context
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 Context is the runtime data that flows through a workflow.
