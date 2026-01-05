@@ -9,7 +9,8 @@ Today this focuses on language model providers, but it will expand in the future
 
 ## Connector Configs
 
-The repository stores connector configs. These are metadata definitions that describe supported providers.
+The repository stores connector configs. 
+These are metadata definitions that describe supported providers.
 Each config lists the fields the editor should collect, such as API keys, tenant IDs, endpoints, and so forth.
 When the user creates a new connector instance, they can select from this list of known providers.
 Future releases will expand this list to include more well-known model providers.
