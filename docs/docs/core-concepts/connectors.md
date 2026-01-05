@@ -36,6 +36,8 @@ You can provide the following values:
 - **Organization ID** - optional
 - **Project ID** - optional
 
+<img src="/img/connectors_openai_apikey.png" alt="NodeCall capability tabs" width="600" style={{ maxWidth: '100%', height: 'auto' }} />
+
 ### Azure OpenAI
 
 This allows requests to Azure-hosted models that support the OpenAI protocol.
@@ -49,12 +51,16 @@ This is good for initial prototyping but not recommended for production systems.
 - **Endpoint** - mandatory
 - **API Key** - mandatory
 
+<img src="/img/connectors_azure_openai_apikey.png" alt="NodeCall capability tabs" width="600" style={{ maxWidth: '100%', height: 'auto' }} />
+
 #### Default Azure Credential
 
 The alternate approach avoids API keys and instead uses one of the many supported Azure authentication methods.
 This approach only requires the endpoint to be specified.
 
 - **Endpoint** - mandatory
+
+<img src="/img/connectors_azure_openai_default.png" alt="NodeCall capability tabs" width="600" style={{ maxWidth: '100%', height: 'auto' }} />
 
 Internally, it uses the `DefaultAzureCredential` class.
 This flexible class pulls credentials from a long list of possible sources and should cover most production scenarios.

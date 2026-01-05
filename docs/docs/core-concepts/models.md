@@ -30,9 +30,14 @@ For example, reasoning, structured output, tool calling, image input, and so for
 You can look up this information online for the model of interest and then set up the model instance as needed.
 This customization mechanism allows you to call models that have been released since the last SharpOMatic update.
 
+<img src="/img/models_custom.png" alt="Custom model setup" width="700" style={{ maxWidth: '100%', height: 'auto' }} />
+
 ## ModelCall Node
 
 Opening the **ModelCall** node details shows a drop-down that allows the user to select a model to call.
 You then get additional tabs that allow configuration based on the model capabilities.
 For example, if the model supports structured output, you get an extra tab for this feature.
 Inside that tab, you can define structured-output values that are used during the actual call.
+
+<img src="/img/models_modelcall.png" alt="NodeCall capability tabs" width="600" style={{ maxWidth: '100%', height: 'auto' }} />
+
