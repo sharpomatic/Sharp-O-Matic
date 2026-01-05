@@ -5,6 +5,10 @@ builder.Services.AddControllers();
 
 // --------- SharpOMatic Specific Start ------------------------
 //
+// Assets are stored in the current users profile
+builder.Services.Configure<FileSystemAssetStoreOptions>(builder.Configuration.GetSection("AssetStorage:FileSystem"));
+builder.Services.AddSingleton<IAssetStore, FileSystemAssetStore>();
+
 // Provide the controllers and signalr needed by the visual editor
 // This and the MapSharpOMaticEditor call go together, use both or neither
 builder.Services.AddSharpOMaticEditor();
@@ -12,10 +16,6 @@ builder.Services.AddSharpOMaticEditor();
 // Provide the controller needed for data transfer (export/import)
 // You might want to be able to import even without the visual editor
 builder.Services.AddSharpOMaticTransfer();
-
-// Specify how assets are stored, here we setup the default file system storage implementation
-builder.Services.Configure<FileSystemAssetStoreOptions>(builder.Configuration.GetSection("AssetStorage:FileSystem"));
-builder.Services.AddSingleton<IAssetStore, FileSystemAssetStore>();
 
 // Setup the engine and its capabilties
 builder.Services.AddSharpOMaticEngine()
@@ -25,10 +25,10 @@ builder.Services.AddSharpOMaticEngine()
     .AddJsonConverters(typeof(ClassExampleConverter))
     .AddRepository((optionBuilder) =>
     {
-        // We are using SQLite as the Entity Framework target database
+        // SQLite database in current users profile
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
-        var dbPath = Path.Join(path, "sharpomatic.db");
+        var dbPath = Path.Join(path, "SharpOMatic", "sharpomatic.db");
         optionBuilder.UseSqlite($"Data Source={dbPath}");
     });
 //
