@@ -1,5 +1,6 @@
 #pragma warning disable OPENAI001
 using Azure.Core;
+using System.ClientModel;
 
 namespace SharpOMatic.Engine.Nodes;
 
@@ -251,18 +252,26 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
         {
             case "openai":
                 {
-                    if (!connectionFields.TryGetValue("api_key", out var apiKey))
+                    var options = new OpenAIClientOptions();
+
+                    if (!connectionFields.TryGetValue("api_key", out var apiKey) || !string.IsNullOrWhiteSpace(apiKey))
                         throw new SharpOMaticException("Connector api key not specified.");
 
                     if (_modelConfig.IsCustom)
                     {
-                        if (!_model.ParameterValues.TryGetValue("model_name", out modelName))
+                        if (!_model.ParameterValues.TryGetValue("model_name", out modelName) || !string.IsNullOrWhiteSpace(modelName))
                             throw new SharpOMaticException("Model does not specify the custom model name");
                     }
                     else
                         modelName = _modelConfig.DisplayName;
 
-                    var client = new OpenAIClient(apiKey);
+                    if (connectionFields.TryGetValue("organization_id", out var organizationId) && !string.IsNullOrWhiteSpace(organizationId))
+                        options.OrganizationId = organizationId;
+
+                    if (connectionFields.TryGetValue("project_id", out var projectId) && !string.IsNullOrWhiteSpace(projectId))
+                        options.ProjectId = projectId;
+
+                    var client = new OpenAIClient(new ApiKeyCredential(apiKey ?? ""), options);
                     agentClient = client.GetOpenAIResponseClient(modelName);
                 }
                 break;

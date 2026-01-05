@@ -3,21 +3,32 @@ title: Start with GitHub code
 sidebar_position: 1
 ---
 
-Use this path if you want to work directly from source.
+Use these steps if you want to work directly from source.
+This is the fastest way to get up and running and start experimenting with SharpOMatic.
 It includes the sample server, editor host, and workflow engine projects.
 
-## Clone and build
+## Clone the repo
 
 ```powershell
 git clone https://github.com/sharpomatic/SharpOMatic.git
 cd SharpOMatic
-dotnet build src/SharpOMatic.sln
 ```
 
-## Run the sample server
+## Build and run via CLI
 
 ```powershell
+dotnet build src/SharpOMatic.sln
 dotnet run --project src/SharpOMatic.Server
 ```
 
-The sample server hosts the editor UI and backend APIs so you can test the full workflow.
+## Build and run via Visual Studio
+
+- Use Visual Studio to open `src/SharpOMatic.sln`
+- Ensure `SharpOMatic.Server` is the startup project
+- Set the configuration to `Release`
+- Run
+
+
+## Open Visual Editor
+
+Use your favorite browser to open http://localhost:9001/editor
