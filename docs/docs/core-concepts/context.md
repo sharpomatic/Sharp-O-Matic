@@ -1,6 +1,6 @@
 ---
 title: Context
-sidebar_position: 2
+sidebar_position: 4
 ---
 
 Context is the runtime data that flows through a workflow. It provides inputs, carries intermediate state, and returns outputs.

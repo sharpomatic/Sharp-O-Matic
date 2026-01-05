@@ -1,6 +1,6 @@
 ---
 title: Repository
-sidebar_position: 3
+sidebar_position: 5
 ---
 
 The repository is the persistent store for workflows and other data.
