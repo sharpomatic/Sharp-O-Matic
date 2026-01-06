@@ -1,6 +1,6 @@
 ---
 title: ModelCall Node
-sidebar_position: 101
+sidebar_position: 5
 ---
 
 The ModelCall node runs an LLM request using a configured model instance.

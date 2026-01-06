@@ -1,6 +1,6 @@
 ---
 title: Edit Node
-sidebar_position: 99
+sidebar_position: 3
 ---
 
 The edit node adds, updates, or deletes entries in the workflow context.

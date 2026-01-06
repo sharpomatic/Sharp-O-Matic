@@ -1,6 +1,6 @@
 ---
 title: Code Node
-sidebar_position: 100
+sidebar_position: 4
 ---
 
 The code node runs a C# script against the current workflow context.

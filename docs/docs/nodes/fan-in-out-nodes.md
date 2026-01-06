@@ -1,6 +1,6 @@
 ---
 title: FanOut / FanIn Nodes
-sidebar_position: 103
+sidebar_position: 7
 ---
 
 **FanOut** and **FanIn** nodes are used together to run multiple branches in parallel and then merge the results.

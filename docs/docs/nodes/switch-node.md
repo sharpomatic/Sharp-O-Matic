@@ -1,6 +1,6 @@
 ---
 title: Switch Node
-sidebar_position: 102
+sidebar_position: 6
 ---
 
 The switch node routes execution to a single output based on the evaluation of ordered C# expressions.
