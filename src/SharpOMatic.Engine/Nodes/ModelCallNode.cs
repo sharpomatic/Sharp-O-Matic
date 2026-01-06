@@ -254,12 +254,12 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
                 {
                     var options = new OpenAIClientOptions();
 
-                    if (!connectionFields.TryGetValue("api_key", out var apiKey) || !string.IsNullOrWhiteSpace(apiKey))
+                    if (!connectionFields.TryGetValue("api_key", out var apiKey) || string.IsNullOrWhiteSpace(apiKey))
                         throw new SharpOMaticException("Connector api key not specified.");
 
                     if (_modelConfig.IsCustom)
                     {
-                        if (!_model.ParameterValues.TryGetValue("model_name", out modelName) || !string.IsNullOrWhiteSpace(modelName))
+                        if (!_model.ParameterValues.TryGetValue("model_name", out modelName) || string.IsNullOrWhiteSpace(modelName))
                             throw new SharpOMaticException("Model does not specify the custom model name");
                     }
                     else
