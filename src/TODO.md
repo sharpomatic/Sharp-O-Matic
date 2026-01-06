@@ -1,3 +1,9 @@
+## Server
+
+Rename to DemoServer
+Update namespace, project name
+Update docs for demo server instead of just server
+
 ## Assets
 
 Allow view of view assets.
@@ -8,10 +14,7 @@ Can view but cannot edit
 
 ## GitHub
 
-- Build first version of documentation
-- Core Concepts
-Transfer - import and export between environments.
-Connectors & Models
+Build first version of documentation
 
 # Futures
 

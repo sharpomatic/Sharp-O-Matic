@@ -11,7 +11,7 @@
     <Company>SharpOMatic</Company>
     <RepositoryUrl>https://github.com/sharpomatic/SharpOMatic</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://github.com/sharpomatic/SharpOMatic</PackageProjectUrl>
+	<PackageProjectUrl>https://sharpomatic.com</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>SharpOMatic;AspNet</PackageTags>
