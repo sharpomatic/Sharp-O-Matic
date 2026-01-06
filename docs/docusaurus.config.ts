@@ -98,7 +98,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright (c) ${new Date().getFullYear()} Phil Wright. Built with Docusaurus.`,
+      copyright: `Copyright (c) ${new Date().getFullYear()} Phil Wright.`,
     },
     prism: {
       theme: prismThemes.vsDark,
