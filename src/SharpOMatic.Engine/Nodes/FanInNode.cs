@@ -24,8 +24,8 @@ public class FanInNode(ThreadContext threadContext, FanInNodeEntity node) : RunN
         {
             if (ThreadContext.Parent.FanInMergedContext is null)
             {
-                var json = RunContext.TypedSerialization(ThreadContext.Parent.NodeContext);
-                ThreadContext.Parent.FanInMergedContext = RunContext.TypedDeserialization(json);
+                var json = ThreadContext.Parent.NodeContext.Serialize(RunContext.JsonConverters);
+                ThreadContext.Parent.FanInMergedContext = ContextObject.Deserialize(json, RunContext.JsonConverters);
             }
 
             if (ThreadContext.NodeContext.TryGetValue("output", out var outputValue))

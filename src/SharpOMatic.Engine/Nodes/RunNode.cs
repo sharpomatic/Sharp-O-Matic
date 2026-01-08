@@ -23,7 +23,7 @@ public abstract class RunNode<T> : IRunNode where T : NodeEntity
             NodeStatus = NodeStatus.Running,
             Title = node.Title,
             Message = "Running",
-            InputContext = RunContext.TypedSerialization(ThreadContext.NodeContext)
+            InputContext = ThreadContext.NodeContext.Serialize(RunContext.JsonConverters)
         };
     }
 
@@ -69,7 +69,7 @@ public abstract class RunNode<T> : IRunNode where T : NodeEntity
     {
         Trace.Finished = DateTime.Now;
         Trace.Message = message;
-        Trace.OutputContext = RunContext.TypedSerialization(ThreadContext.NodeContext);
+        Trace.OutputContext = ThreadContext.NodeContext.Serialize(RunContext.JsonConverters);
         await RunContext.RepositoryService.UpsertTrace(Trace);
         await RunContext.ProgressService.TraceProgress(Trace);
     }

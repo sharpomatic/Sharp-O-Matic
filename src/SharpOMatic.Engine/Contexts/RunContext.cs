@@ -140,16 +140,6 @@ public class RunContext
         return nextNode;
     }
 
-    public string TypedSerialization(ContextObject nodeContext)
-    {
-        return JsonSerializer.Serialize(nodeContext, new JsonSerializerOptions().BuildOptions(JsonConverters));
-    }
-
-    public ContextObject TypedDeserialization(string json)
-    {
-        return JsonSerializer.Deserialize<ContextObject>(json, new JsonSerializerOptions().BuildOptions(JsonConverters))!;
-    }
-
     public void MergeContexts(ContextObject target, ContextObject source)
     {
         foreach (var key in source.Keys)

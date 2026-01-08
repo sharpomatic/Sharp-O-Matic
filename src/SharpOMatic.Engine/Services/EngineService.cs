@@ -9,7 +9,7 @@ public class EngineService(IServiceScopeFactory scopeFactory,
                            IScriptOptionsService ScriptOptionsService,
                            IJsonConverterService JsonConverterService) : IEngineService
 {
-    public async Task<Guid> TryGetWorkflowId(string workflowName)
+    public async Task<Guid> GetWorkflowId(string workflowName)
     {
         if (string.IsNullOrWhiteSpace(workflowName))
             throw new SharpOMaticException("Workflow name cannot be empty or whitespace.");

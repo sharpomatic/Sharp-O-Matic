@@ -1,4 +1,6 @@
-﻿namespace SharpOMatic.Engine.Nodes;
+﻿using System.Text.Json.Serialization;
+
+namespace SharpOMatic.Engine.Nodes;
 
 [RunNode(NodeType.End)]
 public class EndNode(ThreadContext threadContext, EndNodeEntity node) : RunNode<EndNodeEntity>(threadContext, node)
@@ -35,7 +37,7 @@ public class EndNode(ThreadContext threadContext, EndNodeEntity node) : RunNode<
             Trace.Message = "Exited workflow";
 
         // Last run EndNode has its output used as the output of the workflow
-        RunContext.Run.OutputContext = RunContext.TypedSerialization(ThreadContext.NodeContext);
+        RunContext.Run.OutputContext = ThreadContext.NodeContext.Serialize(RunContext.JsonConverters);
 
         return (Trace.Message, []);
     }

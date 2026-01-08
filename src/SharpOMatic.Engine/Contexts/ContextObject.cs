@@ -1,4 +1,6 @@
-﻿namespace SharpOMatic.Engine.Contexts;
+﻿using System.Text.Json.Serialization;
+
+namespace SharpOMatic.Engine.Contexts;
 
 public class ContextObject : IDictionary<string, object?>
 {
@@ -141,5 +143,42 @@ public class ContextObject : IDictionary<string, object?>
     public bool RemovePath(string path)
     {
         return ContextPathResolver.TryRemove(this, path, requireLeadingIndex: false, throwOnError: false);
+    }
+
+    public string Serialize(IServiceProvider serviceProvider)
+    {
+        var jsonConverterService = serviceProvider.GetRequiredService<IJsonConverterService>();
+        return Serialize(jsonConverterService);
+    }
+
+    public string Serialize(IJsonConverterService jsonConverterService)
+    {
+        var jsonConverters = jsonConverterService.GetConverters();
+        return Serialize(jsonConverters);
+    }
+
+    public string Serialize(IEnumerable<JsonConverter>? jsonConverters)
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions().BuildOptions(jsonConverters));
+    }
+
+    public static ContextObject Deserialize(string? json, IServiceProvider serviceProvider)
+    {
+        var jsonConverterService = serviceProvider.GetRequiredService<IJsonConverterService>();
+        return Deserialize(json, jsonConverterService);
+    }
+
+    public static ContextObject Deserialize(string? json, IJsonConverterService jsonConverterService)
+    {
+        var jsonConverters = jsonConverterService.GetConverters();
+        return Deserialize(json, jsonConverters);
+    }
+
+    public static ContextObject Deserialize(string? json, IEnumerable<JsonConverter>? jsonConverters)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return [];
+
+        return JsonSerializer.Deserialize<ContextObject>(json, new JsonSerializerOptions().BuildOptions(jsonConverters))!;
     }
 }

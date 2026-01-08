@@ -31,6 +31,9 @@ builder.Services.AddSharpOMaticEngine()
         var dbPath = Path.Join(path, "SharpOMatic", "sharpomatic.db");
         optionBuilder.UseSqlite($"Data Source={dbPath}");
     });
+
+// Custom implementation to track when workflows are completed
+builder.Services.AddSingleton<IProgressService, ProgressService>();
 //
 // --------- SharpOMatic Specific End --------------------------
 

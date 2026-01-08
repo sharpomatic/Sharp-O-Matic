@@ -100,7 +100,7 @@ public class NodeExecutionService(INodeQueueService queue,
 
         // If no EndNode was encountered then use the output of the last run node
         if (threadContext.RunContext.Run.OutputContext is null)
-            runContext.Run.OutputContext = runContext.TypedSerialization(threadContext.NodeContext);
+            runContext.Run.OutputContext = threadContext.NodeContext.Serialize(threadContext.RunContext.JsonConverters);
 
         await runContext.RunUpdated();
 

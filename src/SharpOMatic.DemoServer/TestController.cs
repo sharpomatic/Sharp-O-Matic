@@ -1,4 +1,6 @@
 ﻿
+using SharpOMatic.Engine.FastSerializer;
+
 namespace SharpOMatic.DemoServer;
 
 [Route("api/[controller]")]
@@ -7,23 +9,32 @@ public class TestController : ControllerBase
 {
     [HttpPost]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Test([FromForm] List<IFormFile>? images, IEngineService engine, IAssetService assetService)
+    public async Task<IActionResult> Test([FromForm] List<IFormFile>? images, IServiceProvider serviceProvider)
     {
         try
         {
-            var workflowId = await engine.TryGetWorkflowId("Test");
+            var engine = serviceProvider.GetRequiredService<IEngineService>();
+            var workflowId = await engine.GetWorkflowId("Example Workflow");
             var runId = await engine.CreateWorkflowRun(workflowId);
 
-            ContextObject inputContext = [];
-            ContextList assetList = [];
-            inputContext.Add("image", assetList);
+            await engine.StartWorkflowRunAndNotify(runId);
 
-            foreach (var image in images ?? [])
-                if ((image is not null) && (image.Length > 0))
-                    assetList.Add(await image.CreateAssetRefAsync(assetService, AssetScope.Run, runId, image.Name, image.ContentType));
 
-            var completedRun = await engine.StartWorkflowRunAndWait(runId, inputContext);
-            return Ok(completedRun?.RunStatus.ToString() ?? "Unknown");
+
+            //var workflowId = await engine.GetWorkflowId("Test");
+            //var runId = await engine.CreateWorkflowRun(workflowId);
+
+            //ContextObject inputContext = [];
+            //ContextList assetList = [];
+            //inputContext.Add("image", assetList);
+
+            //foreach (var image in images ?? [])
+            //    if ((image is not null) && (image.Length > 0))
+            //        assetList.Add(await image.CreateAssetRefAsync(assetService, AssetScope.Run, runId, image.Name, image.ContentType));
+
+            //var completedRun = await engine.StartWorkflowRunAndWait(runId, inputContext);
+            //ContextObject context = ContextObject.Deserialize(completedRun.OutputContext, serviceProvider);
+            return Ok();
         }
         catch (Exception ex)
         {
