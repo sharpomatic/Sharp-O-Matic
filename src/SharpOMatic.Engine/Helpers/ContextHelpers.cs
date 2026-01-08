@@ -7,7 +7,7 @@ public static class ContextHelpers
         PropertyNameCaseInsensitive = true
     };
 
-    public static async Task<object?> ResolveContextEntryValue(ContextObject context, ContextEntryEntity entry, IScriptOptionsService scriptOptionsService)
+    public static async Task<object?> ResolveContextEntryValue(IServiceProvider serviceProvider, ContextObject context, ContextEntryEntity entry, IScriptOptionsService scriptOptionsService)
     {
         object? entryValue = entry.EntryValue;
 
@@ -55,7 +55,7 @@ public static class ContextHelpers
                 if (!string.IsNullOrWhiteSpace(entry.EntryValue))
                 {
                     var options = scriptOptionsService.GetScriptOptions();
-                    var globals = new ScriptCodeContext() { Context = context };
+                    var globals = new ScriptCodeContext() { Context = context, ServiceProvider = serviceProvider };
 
                     try
                     {

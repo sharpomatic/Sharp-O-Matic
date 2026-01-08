@@ -19,7 +19,7 @@ public class SwitchNode(ThreadContext threadContext, SwitchNodeEntity node)
 
                 try
                 {
-                    var result = await CSharpScript.EvaluateAsync(switcher.Code, options, new ScriptCodeContext() { Context = ThreadContext.NodeContext }, typeof(ScriptCodeContext));
+                    var result = await CSharpScript.EvaluateAsync(switcher.Code, options, new ScriptCodeContext() { Context = ThreadContext.NodeContext, ServiceProvider = RunContext.ServiceScope.ServiceProvider }, typeof(ScriptCodeContext));
                     if (result is null)
                         throw new SharpOMaticException($"Switch node entry '{switcher.Name}' returned null instead of a boolean value.");
 

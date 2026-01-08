@@ -3,4 +3,6 @@
 public class ScriptCodeContext
 {
     public required ContextObject Context { get; set; }
+    public required IServiceProvider ServiceProvider { get; set; }
+    
 }

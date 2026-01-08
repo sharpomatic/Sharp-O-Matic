@@ -9,7 +9,7 @@ public class CodeNode(ThreadContext threadContext, CodeNodeEntity node)
         if (!string.IsNullOrWhiteSpace(Node.Code))
         {
             var options = ThreadContext.RunContext.ScriptOptionsService.GetScriptOptions();
-            var globals = new ScriptCodeContext() { Context = ThreadContext.NodeContext };
+            var globals = new ScriptCodeContext() { Context = ThreadContext.NodeContext, ServiceProvider = RunContext.ServiceScope.ServiceProvider };
 
             try
             {
@@ -30,6 +30,13 @@ public class CodeNode(ThreadContext threadContext, CodeNodeEntity node)
                 StringBuilder sb = new();
                 sb.AppendLine($"Code node failed during execution.\n");
                 sb.Append(e2.Message);
+                throw new SharpOMaticException(sb.ToString());
+            }
+            catch(Exception e3)
+            {
+                StringBuilder sb = new();
+                sb.AppendLine($"Code node failed during execution.\n");
+                sb.Append(e3.Message);
                 throw new SharpOMaticException(sb.ToString());
             }
         }

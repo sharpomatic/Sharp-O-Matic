@@ -2,7 +2,8 @@
 
 namespace SharpOMatic.Engine.Services;
 
-public class EngineService(INodeQueueService QueueService,
+public class EngineService(IServiceScopeFactory scopeFactory,
+                           INodeQueueService QueueService,
                            IRepositoryService RepositoryService,
                            IRunContextFactory RunContextFactory,
                            IScriptOptionsService ScriptOptionsService,
@@ -102,28 +103,37 @@ public class EngineService(INodeQueueService QueueService,
     {
         nodeContext ??= [];
 
-        var inputJson = await ApplyInputEntries(nodeContext, inputEntries);
+        var serviceScope = scopeFactory.CreateScope();
 
-        var workflow = await RepositoryService.GetWorkflow(run.WorkflowId) ?? throw new SharpOMaticException($"Could not load workflow {run.WorkflowId}.");
-        var currentNodes = workflow.Nodes.Where(n => n.NodeType == NodeType.Start).ToList();
-        if (currentNodes.Count != 1)
-            throw new SharpOMaticException("Must have exactly one start node.");
+        try
+        {
+            var inputJson = await ApplyInputEntries(serviceScope.ServiceProvider, nodeContext, inputEntries);
 
-        var converters = JsonConverterService.GetConverters();
-        run.InputEntries = inputJson;
-        run.InputContext = JsonSerializer.Serialize(nodeContext, new JsonSerializerOptions().BuildOptions(converters));
+            var workflow = await RepositoryService.GetWorkflow(run.WorkflowId) ?? throw new SharpOMaticException($"Could not load workflow {run.WorkflowId}.");
+            var currentNodes = workflow.Nodes.Where(n => n.NodeType == NodeType.Start).ToList();
+            if (currentNodes.Count != 1)
+                throw new SharpOMaticException("Must have exactly one start node.");
 
-        var nodeRunLimitSetting = await RepositoryService.GetSetting("RunNodeLimit");
-        var nodeRunLimit = nodeRunLimitSetting?.ValueInteger ?? NodeExecutionService.DEFAULT_NODE_RUN_LIMIT;
+            var converters = JsonConverterService.GetConverters();
+            run.InputEntries = inputJson;
+            run.InputContext = JsonSerializer.Serialize(nodeContext, new JsonSerializerOptions().BuildOptions(converters));
 
-        var runContext = RunContextFactory.Create(workflow, run, converters, nodeRunLimit, completionSource);
-        var threadContext = new ThreadContext(runContext, nodeContext);
+            var nodeRunLimitSetting = await RepositoryService.GetSetting("RunNodeLimit");
+            var nodeRunLimit = nodeRunLimitSetting?.ValueInteger ?? NodeExecutionService.DEFAULT_NODE_RUN_LIMIT;
 
-        await runContext.RunUpdated();
-        QueueService.Enqueue(threadContext, currentNodes[0]);
+            var runContext = RunContextFactory.Create(serviceScope, workflow, run, converters, nodeRunLimit, completionSource);
+            var threadContext = new ThreadContext(runContext, nodeContext);
+            await runContext.RunUpdated();
+            QueueService.Enqueue(threadContext, currentNodes[0]);
+        }
+        catch
+        {
+            serviceScope.Dispose();
+            throw;
+        }
     }
 
-    private async Task<string?> ApplyInputEntries(ContextObject nodeContext, ContextEntryListEntity? inputEntries)
+    private async Task<string?> ApplyInputEntries(IServiceProvider serviceProvider, ContextObject nodeContext, ContextEntryListEntity? inputEntries)
     {
         if (inputEntries is null)
             return null;
@@ -131,7 +141,7 @@ public class EngineService(INodeQueueService QueueService,
         var inputJson = JsonSerializer.Serialize(inputEntries);
         foreach (var entry in inputEntries.Entries)
         {
-            var entryValue = await ContextHelpers.ResolveContextEntryValue(nodeContext, entry, ScriptOptionsService);
+            var entryValue = await ContextHelpers.ResolveContextEntryValue(serviceProvider, nodeContext, entry, ScriptOptionsService);
             if (!nodeContext.TrySet(entry.InputPath, entryValue))
                 throw new SharpOMaticException($"Input entry '{entry.InputPath}' could not be assigned the value.");
         }

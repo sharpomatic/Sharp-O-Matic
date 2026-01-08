@@ -13,7 +13,12 @@ public class ScriptOptionsService : IScriptOptionsService
         "System.IO",
         "System.Threading.Tasks",
         "Microsoft.Extensions.AI",
-        "SharpOMatic.Engine.Contexts"
+        "Microsoft.Extensions.DependencyInjection",
+        "SharpOMatic.Engine.Interfaces",
+        "SharpOMatic.Engine.Contexts",
+        "SharpOMatic.Engine.FastSerializer",
+        "SharpOMatic.Engine.Enumerations",
+        "SharpOMatic.Engine.Helpers"
     ];
 
     private static readonly Assembly[] s_defaultAssemblies =
