@@ -96,6 +96,9 @@
                     @if (isImageAsset(asset)) {
                       <button class="btn btn-sm btn-outline-primary" (click)="openAssetPreview(asset)">View</button>
                     }
+                    @if (isEditableTextAsset(asset)) {
+                      <button class="btn btn-sm btn-outline-primary" (click)="openAssetEditor(asset)">Edit</button>
+                    }
                     <button class="btn btn-sm btn-outline-danger" (click)="deleteAsset(asset)">Delete</button>
                   </div>
                 </td>

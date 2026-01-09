@@ -24,6 +24,7 @@ import { WorkflowSortField } from '../enumerations/workflow-sort-field';
 import { ConnectorSortField } from '../enumerations/connector-sort-field';
 import { ModelSortField } from '../enumerations/model-sort-field';
 import { AssetSummary } from '../pages/assets/interfaces/asset-summary';
+import { AssetText } from '../pages/assets/interfaces/asset-text';
 import { TransferImportResult } from '../pages/transfer/interfaces/transfer-import-result';
 import { TransferExportRequest } from '../pages/transfer/interfaces/transfer-export-request';
 
@@ -477,6 +478,27 @@ export class ServerRepositoryService {
       catchError((error) => {
         this.notifyError('Downloading asset', error);
         return of(null);
+      })
+    );
+  }
+
+  public getAssetText(assetId: string): Observable<AssetText | null> {
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.get<AssetText>(`${apiUrl}/api/assets/${assetId}/text`).pipe(
+      catchError((error) => {
+        this.notifyError('Loading asset text', error);
+        return of(null);
+      })
+    );
+  }
+
+  public updateAssetText(assetId: string, content: string): Observable<boolean> {
+    const apiUrl = this.settingsService.apiUrl();
+    return this.http.put<void>(`${apiUrl}/api/assets/${assetId}/text`, { content }).pipe(
+      map(() => true),
+      catchError((error) => {
+        this.notifyError('Saving asset text', error);
+        return of(false);
       })
     );
   }

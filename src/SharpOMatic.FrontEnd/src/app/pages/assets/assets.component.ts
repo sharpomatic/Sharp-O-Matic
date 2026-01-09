@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild, inject } from '@angula
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { forkJoin } from 'rxjs';
 import { AssetPreviewDialogComponent } from '../../dialogs/asset-preview/asset-preview-dialog.component';
+import { AssetTextDialogComponent } from '../../dialogs/asset-text/asset-text-dialog.component';
 import { ConfirmDialogComponent } from '../../dialogs/confirm/confirm-dialog.component';
 import { AssetScope } from '../../enumerations/asset-scope';
 import { AssetSortField } from '../../enumerations/asset-sort-field';
@@ -26,7 +27,21 @@ export class AssetsComponent implements AfterViewInit {
   private readonly serverRepository = inject(ServerRepositoryService);
   private readonly modalService = inject(BsModalService);
   private confirmModalRef: BsModalRef<ConfirmDialogComponent> | undefined;
+  private textModalRef: BsModalRef<AssetTextDialogComponent> | undefined;
   @ViewChild('searchInput') private searchInput?: ElementRef<HTMLInputElement>;
+  private readonly editableTextMediaTypes = new Set([
+    'text/plain',
+    'text/markdown',
+    'text/csv',
+    'text/html',
+    'text/xml',
+    'text/css',
+    'text/javascript',
+    'application/json',
+    'application/xml',
+    'application/x-yaml',
+    'application/javascript',
+  ]);
 
   public assets: AssetSummary[] = [];
   public assetsPage = 1;
@@ -109,7 +124,41 @@ export class AssetsComponent implements AfterViewInit {
   }
 
   isImageAsset(asset: AssetSummary): boolean {
-    return asset.mediaType?.toLowerCase().startsWith('image') ?? false;
+    const mediaType = this.normalizeMediaType(asset.mediaType);
+    return mediaType.startsWith('image/');
+  }
+
+  openAssetEditor(asset: AssetSummary): void {
+    if (!this.isEditableTextAsset(asset)) {
+      return;
+    }
+
+    this.textModalRef = this.modalService.show(AssetTextDialogComponent, {
+      initialState: {
+        assetId: asset.assetId,
+        title: asset.name,
+      },
+      class: 'modal-fullscreen asset-text-modal',
+    });
+
+    this.textModalRef.onHidden?.subscribe(() => {
+      if (this.textModalRef?.content?.saved) {
+        this.refreshAssets();
+      }
+    });
+  }
+
+  isEditableTextAsset(asset: AssetSummary): boolean {
+    const mediaType = this.normalizeMediaType(asset.mediaType);
+    return this.editableTextMediaTypes.has(mediaType);
+  }
+
+  private normalizeMediaType(mediaType: string | undefined | null): string {
+    if (!mediaType) {
+      return '';
+    }
+
+    return mediaType.split(';', 2)[0].trim().toLowerCase();
   }
 
   formatSize(bytes: number): string {
