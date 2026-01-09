@@ -22,9 +22,8 @@ View assets for a particular run
 Cannot delete or add them
 Can view but cannot edit
 
-## GitHub
 
-Build first version of documentation
+
 
 # Futures
 
