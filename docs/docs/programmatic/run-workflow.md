@@ -1,5 +1,5 @@
 ---
-title: Run Workflow
+title: Running Workflows
 sidebar_position: 1
 ---
 

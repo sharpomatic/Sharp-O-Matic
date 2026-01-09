@@ -1,5 +1,5 @@
 ---
-title: JSON Serialization
+title: Handling Serialization
 sidebar_position: 2
 ---
 
