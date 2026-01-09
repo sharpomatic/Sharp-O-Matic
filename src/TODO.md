@@ -16,14 +16,6 @@ chat bot style interface
 auto add the workflow on startup
 add documentation about the sample
 
-## Id
-
-Expose the Id, so manual export can select them
-
-Connectors
-Models
-Assets
-
 ## Assets
 
 Allow view of view assets.

@@ -9,6 +9,12 @@
   
   <div class="p-3 details bg-body-tertiary">
     <div class="mb-3 form-line">
+      <label for="connector-id" class="form-label field-label">Id</label>
+      <div class="flex-fill control-column short">
+        <input type="text" class="form-control w-100" id="connector-id" [ngModel]="connector.connectorId" readonly />
+      </div>
+    </div>
+    <div class="mb-3 form-line">
       <label for="connection-type" class="form-label field-label">Type</label>
       <div class="flex-fill control-column short">
         <select

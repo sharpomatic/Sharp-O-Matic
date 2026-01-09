@@ -39,6 +39,7 @@
         <table class="table table-sm table-striped table-hover align-middle">
           <thead>
             <tr>
+              <th scope="col" class="col-id">Id</th>
               <th scope="col" class="col-name">
                 <button class="btn btn-link p-0 assets-sort" type="button" (click)="onAssetsSortChange(AssetSortField.Name)">
                   Name
@@ -85,6 +86,7 @@
           <tbody>
             @for (asset of assets; track asset.assetId) {
               <tr>
+                <td class="col-id text-truncate" title="{{ asset.assetId }}">{{ asset.assetId }}</td>
                 <td class="col-name text-truncate" title="{{ asset.name }}">{{ asset.name }}</td>
                 <td class="col-type text-truncate" title="{{ asset.mediaType }}">{{ asset.mediaType }}</td>
                 <td class="col-size">{{ formatSize(asset.sizeBytes) }}</td>

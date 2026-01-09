@@ -33,7 +33,7 @@
 
 .assets-table .table {
   table-layout: fixed;
-  min-width: 720px;
+  min-width: 940px;
   width: 100%;
 }
 
@@ -66,6 +66,12 @@
 
 .col-name {
   min-width: 200px;
+}
+
+.col-id {
+  width: 330px;
+  min-width: 330px;
+  max-width: 330px;
 }
 
 .col-type {
