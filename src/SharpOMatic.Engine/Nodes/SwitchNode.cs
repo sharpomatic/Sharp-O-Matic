@@ -53,6 +53,6 @@ public class SwitchNode(ThreadContext threadContext, SwitchNodeEntity node)
         }
 
         matchingIndex ??= Node.Switches.Length - 1;
-        return ($"Switched to {Node.Switches[matchingIndex.Value].Name}", [new NextNodeData(ThreadContext, RunContext.ResolveSingleOutput(Node))]);
+        return ($"Switched to {Node.Switches[matchingIndex.Value].Name}", [new NextNodeData(ThreadContext, RunContext.ResolveOutput(Node.Outputs[matchingIndex.Value]))]);
     }
 }

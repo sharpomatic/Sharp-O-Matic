@@ -1,4 +1,6 @@
-﻿namespace SharpOMatic.Engine.Nodes;
+﻿using SharpOMatic.Engine.Interfaces;
+
+namespace SharpOMatic.Engine.Nodes;
 
 public abstract class RunNode<T> : IRunNode where T : NodeEntity
 {
@@ -49,7 +51,8 @@ public abstract class RunNode<T> : IRunNode where T : NodeEntity
     protected async Task NodeRunning()
     {
         await RunContext.RepositoryService.UpsertTrace(Trace);
-        await RunContext.ProgressService.TraceProgress(Trace);
+        foreach (var progressService in RunContext.ProgressServices)
+            await progressService.TraceProgress(Trace);
     }
 
     protected Task NodeSuccess(string message)
@@ -71,7 +74,8 @@ public abstract class RunNode<T> : IRunNode where T : NodeEntity
         Trace.Message = message;
         Trace.OutputContext = ThreadContext.NodeContext.Serialize(RunContext.JsonConverters);
         await RunContext.RepositoryService.UpsertTrace(Trace);
-        await RunContext.ProgressService.TraceProgress(Trace);
+        foreach (var progressService in RunContext.ProgressServices)
+            await progressService.TraceProgress(Trace);
     }
 
     protected Task<object?> EvaluateContextEntryValue(ContextEntryEntity entry)

@@ -36,7 +36,7 @@ const BenefitList: BenefitItem[] = [
     ),
   },
   {
-    title: 'Safe, Typed Workflow Logic',
+    title: 'Safe, Typed Logic',
     description: (
       <>
         Keep workflow logic in C# with full type checking and IDE support.
