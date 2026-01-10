@@ -35,6 +35,33 @@ const BenefitList: BenefitItem[] = [
       </>
     ),
   },
+  {
+    title: 'Safe, Typed Workflow Logic',
+    description: (
+      <>
+        Keep workflow logic in C# with full type checking and IDE support.
+        Reduce runtime surprises while still moving quickly.
+      </>
+    ),
+  },
+  {
+    title: 'Local-First, Cloud-Ready',
+    description: (
+      <>
+        Develop and test locally with the bundled server.
+        Deploy the same engine and editor in your hosting environment.
+      </>
+    ),
+  },
+  {
+    title: 'Designed for Teams',
+    description: (
+      <>
+        Standardize how workflows are authored and reviewed.
+        Make collaboration easier with consistent models and metadata.
+      </>
+    ),
+  },
 ];
 
 function Benefit({title, description}: BenefitItem) {

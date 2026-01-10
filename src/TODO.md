@@ -1,7 +1,6 @@
 ## Documentation
 
 Better screenshot for home screen
-Pad out with another 3 benefits or features
 
 ## Sample Workflows
 
@@ -16,16 +15,18 @@ chat bot style interface
 auto add the workflow on startup
 add documentation about the sample
 
-## Assets
 
-View assets for a particular run
-Cannot delete or add them
-Can view but cannot edit
 
 
 
 
 # Futures
+
+## Assets
+
+View assets for a particular run
+Cannot delete or add them
+Can view but cannot edit
 
 Controllers - allow path to be changed, specified, to prevent clashes, need to provide it to editor?
 
