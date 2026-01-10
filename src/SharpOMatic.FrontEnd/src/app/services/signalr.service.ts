@@ -26,7 +26,6 @@ export class SignalrService {
 
   public startConnection = () => {
     const apiUrl = this.currentApiUrl ?? this.settingsService.apiUrl();
-    console.log(`startConnection apiUrl:${apiUrl}`);
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${apiUrl}/notifications`, {
         skipNegotiation: true,

@@ -1,26 +1,10 @@
-## Documentation
-
-Better screenshot for home screen
-
-## Sample Workflows
-
-Using Code nodes
-Branching logic
-Parallel execution
-Creating loops
+# Futures
 
 ## Sample Projects
 
 chat bot style interface
 auto add the workflow on startup
 add documentation about the sample
-
-
-
-
-
-
-# Futures
 
 ## Assets
 

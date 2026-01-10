@@ -48,6 +48,7 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Samples\Workflows\" />
   </ItemGroup>
 
   <ItemGroup>

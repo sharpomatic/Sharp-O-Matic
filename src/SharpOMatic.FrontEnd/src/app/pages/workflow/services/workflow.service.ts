@@ -125,20 +125,16 @@ export class WorkflowService implements OnDestroy  {
   }
 
   addListeners(): void {
-    console.log(`addListeners`);
     this.signalrService.addListener("RunProgress", this.runProgressListener);
     this.signalrService.addListener("TraceProgress", this.traceProgressListener);
   }
 
   removeListeners(): void {
-    console.log(`removeListeners`);
     this.signalrService.removeListener("RunProgress", this.runProgressListener);
     this.signalrService.removeListener("TraceProgress", this.traceProgressListener);
   }
 
   onRunProgress(data: RunProgressModel) {
-    console.log(`onRunProgress`);
-
     const workflow = this.workflow();
     if (workflow) {
       switch(data.runStatus) {
@@ -174,8 +170,6 @@ export class WorkflowService implements OnDestroy  {
   }
 
   onTraceProgress(data: TraceProgressModel) {
-    console.log(`onTraceProgressd`);
-
     const workflow = this.workflow();
     if (workflow) {
       const nodeEntity = workflow.nodes().find(n => n.id == data.nodeEntityId);
