@@ -1,12 +1,3 @@
-# Release 1
-
-Fix designer bug where connectors do not show when zoomed in and trace bar shows
-Improve ModelCall using a couple of classes
-Update intro page of docs
-Check that new asp.net with nuget packages works as described
-Update the readme page on github
-announce release to relevant people blogs
-
 # vNext
 
 ## Major Features
