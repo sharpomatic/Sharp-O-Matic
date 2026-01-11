@@ -31,4 +31,6 @@ dotnet run --project src/SharpOMatic.DemoServer
 ## Open visual editor
 
 Check the generated port number for new project in the `launchSettings.json`.
-Use your favorite browser to open  http://localhost:(portNumber)/editor
+NOTE: Replace 9001 with your project specific port number
+
+Use your favorite browser to open http://localhost:9001/editor
