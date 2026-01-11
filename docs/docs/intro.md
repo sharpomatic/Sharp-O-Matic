@@ -40,6 +40,9 @@ Expose your C# types for structured outputs and C# functions for tool calling.
 
 ## What next?
 
-Use the getting started guides to get up and running in just a few minutes.
-Use the embedded samples to quickly try out the system.
-Read the Core Concepts section before continuing to more specific features.
+Use the [Getting Started](./getting-started/start-with-github-code.md) guides to get up and running in just a few minutes.
+
+Read the [Core Concepts](./core-concepts/workflows.md) section before continuing to more specific features.
+
+
+
