@@ -3,7 +3,7 @@ title: Running Workflows
 sidebar_position: 1
 ---
 
-This section covers how to run workflows programmatically from your own code. 
+This section covers how to run workflows programmatically from your own code.
 
 ## Create a new Run
 
@@ -16,7 +16,7 @@ At this point the run has not started execution, but it will perform some valida
   var runId = await engine.CreateWorkflowRun(workflowId);
 ```
 
-You can get the workflow identifier from the details page of the workflow page.
+You can get the workflow identifier from the workflow details page.
 
 <img src="/img/programmatic_workflowid.png" alt="Custom model setup" width="600" style={{ maxWidth: '100%', height: 'auto' }} />
 
@@ -36,13 +36,13 @@ There are multiple engine methods for starting the workflow, to match different 
 
 ### Await result
 
-When inside an async method you can start the run and wait for the workflow to finish by using the **StartWorkflowRunAndWait** method.
+When you are inside an async method, you can start the run and wait for the workflow to finish by using the **StartWorkflowRunAndWait** method.
 The workflow will actually execute on background threads, but once it finishes your await will complete.
 A **Run** object is always returned that contains a **RunStatus** property.
 Examine this to discover the **RunStatus.Success** or **RunStatus.Failed** outcome.
 
-On success the **OutputContext** property has a JSON serialized string of the finishing context.
-To access the contents use the helper method **Deserialize** on the **ContextObject** object.
+On success the **OutputContext** property has a JSON-serialized string of the finishing context.
+To access the contents, use the **Deserialize** helper on **ContextObject**.
 The example below shows how to perform that conversion.
 
 ```csharp
@@ -68,14 +68,14 @@ The example below shows how to perform that conversion.
 
 The advantage of this approach is that it is easy to implement and can be exposed as the logic of a REST endpoint.
 As long as your workflow is expected to finish before the timeout of the REST call, it provides a synchronous result to the caller.
-If you cannot guarantee completion within the timeout period then this approach will not be reliable.
-In that case consider using the next option.
+If you cannot guarantee completion within the timeout period, then this approach will not be reliable.
+In that case, consider using the next option.
 
 ### Notify result
 
 Instead of waiting for the result, you can start the workflow executing and then return immediately.
-In this scenario the completion will notify you by using the **IProgressService** that you must implement and register.
-Here is the simple code to start the workflow running.
+In this scenario, completion is reported through the **IEngineNotification** interface that you must implement and register.
+Here is the code to start the workflow running.
 
 ```csharp
   var engine = serviceProvider.GetRequiredService<IEngineService>();
@@ -85,7 +85,85 @@ Here is the simple code to start the workflow running.
   await engine.StartWorkflowRunAndNotify(runId);
 ```
 
-The interface you need to implement only has 2 methods.
+The interface you need to implement only has two methods.
+
+```csharp
+  public interface IEngineNotification
+  {
+    public Task RunCompleted(
+        Guid runId, 
+        Guid workflowId, 
+        RunStatus runStatus, 
+        string? outputContext, 
+        string? error);
+
+    public void ConnectionOverride(
+        Guid runId, 
+        Guid workflowId, 
+        string connectorId, 
+        AuthenticationModeConfig authenticationModel, 
+        Dictionary<string, string?> parameters);
+  }
+```
+
+The **RunCompleted** method is invoked each time a **Run** completes with success or failure.
+**ConnectionOverride** is called whenever a connection is about to be used.
+It allows you to override the connection properties such as the target endpoint and API key.
+This makes it easy to implement different values per environment.
+For example, your application could retrieve the values from Azure Key Vault.
+
+Here is a simple implementation of the interface to duplicate the previous logic.
+
+```csharp
+  public class EngineNotification(IServiceProvider serviceProvider) : IEngineNotification
+  {
+    public async Task RunCompleted(
+        Guid runId, 
+        Guid workflowId, 
+        RunStatus runStatus, 
+        string? outputContext, 
+        string? error)
+    {
+      if (runStatus == RunStatus.Failed)
+      {
+        // Log or otherwise process a failure as needed
+        Console.WriteLine($"Failed with error {error ?? ""}");
+      }
+      else if (runStatus == RunStatus.Success)
+      { 
+        // Deserialize needs access to the customized list of json converters
+        var jsonConverters = serviceProvider.GetRequiredService<IJsonConverterService>();
+        ContextObject context = ContextObject.Deserialize(outputContext, jsonConverters);
+
+        // Perform success actions here
+      }        
+    }
+
+    public void ConnectionOverride(
+        Guid runId, 
+        Guid workflowId, 
+        string connectorId, 
+        AuthenticationModeConfig authenticationModel, 
+        Dictionary<string, string?> parameters)
+    {
+      if (connectorId == "azure_openAI")
+      {
+        if (authenticationModel.Id == "api_key")
+        {
+          // Override settings with values from environment or Azure Key Vault etc...
+          parameters["endpoint"] = "myEndpoint";
+          parameters["api_key"] = "mySecret";
+        }
+      }
+    }
+  }
+```
+
+### Progress Notifications
+
+If you need to monitor workflow execution at a more granular level, then implement the **IProgressService** interface.
+
+The interface you need to implement only has two methods.
 
 ```csharp
   public interface IProgressService
@@ -95,10 +173,11 @@ The interface you need to implement only has 2 methods.
   }
 ```
 
+
 The **RunProgress** method is invoked each time a **Run** changes state.
-**TraceProgress** is called whenever a new **Trace** record is created or changes value.
+**TraceProgress** is called whenever a new **Trace** record is created or changes its value.
 A trace record is used to track the state of an individual node as it is processed.
-Here is a simple implementation of the interface to duplicate the previous logic.
+Here is a simple implementation.
 
 ```csharp
   public class ProgressService(IServiceProvider serviceProvider) : IProgressService
@@ -107,50 +186,37 @@ Here is a simple implementation of the interface to duplicate the previous logic
     {
       if (model.RunStatus == RunStatus.Failed)
       {
-        // Log or otherwise process a failure as needed
-        Console.WriteLine($"Failed with error {model.Error}");
+        // Log or otherwise process a failure
+        Console.WriteLine($"Workflow {model.workflowId} failed with error {model.Error}");
       }
-      else if (model.RunStatus == RunStatus.Success)
+      else
       { 
-        // Deserialize needs access to the customized list of json converters
-        var jsonConverters = serviceProvider.GetRequiredService<IJsonConverterService>();
-        ContextObject context = ContextObject.Deserialize(model.OutputContext, jsonConverters);
-
-        // Perform success actions here
-      }        
+        // Log all other state changes
+        Console.WriteLine($"Workflow {model.workflowId} is now {model.RunStatus}");
+      }
     }
 
     public async Task TraceProgress(Trace model)
     {
+        Console.WriteLine($"Workflow {model.workflowId} Node {model.nodeId} is now {model.Message}");
     }
   }
 ```
 
-Note that you can add more than one **IProgressService** implementation if you need to split up functionality, in that case they are called in sequence.
-There are multiple advantages to processing results using the interface based approach.
-You can centralize processing for all your different workflows into a single location.
-Long-running workflow runs do not time out the caller's HTTP request; they complete very quickly because they only need to start the workflow.
-Once it completes in the future you process the result and then use whatever mechanism you choose to notify the client.
-
-Some examples include:
-
-- Use WebSockets (SignalR) for an immediate notification
-- Record outcome in a database and wait for the user to request it
-- Send an email message with result details
-- Queue a processing message to an event queue
+Note that you can add more than one **IProgressService** implementation if you need to split up functionality, in that case, they are called in sequence.
 
 ### Synchronous
 
 This is not a recommended approach, but you can perform a synchronous call and wait for the workflow to finish.
 The problem is that a long-running request is going to cause the thread to be suspended until the workflow finishes.
-Potentially this can result in thread starvation if you have many parallel workflows.
+Potentially, this can result in thread starvation if you have many parallel workflows.
 
 ```csharp
   var engine = serviceProvider.GetRequiredService<IEngineService>();
   var workflowId = await engine.GetWorkflowId("Example Workflow");
   var runId = await engine.CreateWorkflowRun(workflowId);
 
-  // NOTICE: It does not use AWAIT on the call making it synchronous
+  // NOTICE: It does not use await on the call, making it synchronous
   var completed = engine.StartWorkflowRunSynchronously(runId);
   if (completed.RunStatus == RunStatus.Failed)
   {
@@ -187,6 +253,6 @@ How to provide a context:
   context.Set<DateTimeOffset>("input.now", DateTimeOffset.Now);
 
   var completed = await engine.StartWorkflowRunAndWait(runId, context);
-  ```
+```
 
-  For more detailed information about contexts, see the [Context](../core-concepts/context.md) section.
+For more detailed information about contexts, see the [Context](../core-concepts/context.md) section.

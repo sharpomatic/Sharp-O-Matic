@@ -50,7 +50,7 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
         // Allow the user notifications to customize the field values
         var notifications = ThreadContext.RunContext.ServiceScope.ServiceProvider.GetServices<IEngineNotification>();
         foreach (var notification in notifications)
-            notification.ConnectionOverride(ThreadContext.RunContext.Run.RunId, ThreadContext.RunContext.Run.WorkflowId, connectionFields);
+            notification.ConnectionOverride(ThreadContext.RunContext.Run.RunId, ThreadContext.RunContext.Run.WorkflowId, connector.ConfigId, selectedAuthenticationModel, connectionFields);
 
         if (!HasCapability("SupportsTextIn"))
             throw new SharpOMaticException("Model does not support text input.");
