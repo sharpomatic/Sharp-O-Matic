@@ -42,7 +42,9 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
         },
-        blog: false,
+        blog: {
+          showReadingTime: false,
+        },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -70,6 +72,11 @@ const config: Config = {
           label: 'Docs',
         },
         {
+          to: '/blog',
+          position: 'right',
+          label: 'Blog',
+        },
+        {
           href: 'https://github.com/sharpomatic/SharpOMatic/issues',
           label: 'Support',
           position: 'right',
@@ -85,6 +92,10 @@ const config: Config = {
             {
               label: 'Intro',
               to: '/docs/',
+            },
+            {
+              label: 'Blog',
+              to: '/blog',
             },
           ],
         },
@@ -109,4 +120,3 @@ const config: Config = {
 };
 
 export default config;
-
