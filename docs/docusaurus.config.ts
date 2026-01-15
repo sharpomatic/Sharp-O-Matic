@@ -45,6 +45,10 @@ const config: Config = {
         blog: {
           showReadingTime: false,
         },
+        gtag: {
+          trackingID: 'G-P1MPCDFX5W',
+          anonymizeIP: true,
+        },
         theme: {
           customCss: './src/css/custom.css',
         },
