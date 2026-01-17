@@ -1,8 +1,10 @@
+using SharpOMatic.Engine.Contexts;
+
 namespace SharpOMatic.Tests.Workflows;
 
 public class WorkflowRunner
 {
-    public static async Task<Run> RunWorkflow(params WorkflowEntity[] workflows)
+    public static async Task<Run> RunWorkflow(ContextObject ctx, params WorkflowEntity[] workflows)
     {
         // Create full set of engine services
         var services = new ServiceCollection();
@@ -29,7 +31,7 @@ public class WorkflowRunner
             await using var scope = provider.CreateAsyncScope();
             var engine = scope.ServiceProvider.GetRequiredService<IEngineService>();
             var runId = await engine.CreateWorkflowRun(workflows[0].Id);
-            var run = await engine.StartWorkflowRunAndWait(runId);
+            var run = await engine.StartWorkflowRunAndWait(runId, ctx);
             return run;
 
         }

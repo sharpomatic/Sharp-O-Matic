@@ -26,7 +26,9 @@ public sealed class WorkflowBuilder
         return this;
     }
 
-    public WorkflowBuilder AddStart(string title = "start")
+    public WorkflowBuilder AddStart(string title = "start", 
+                                    bool applyInitialization = false, 
+                                    params ContextEntryEntity[] entries)
     {
         var node = new StartNodeEntity
         {
@@ -40,15 +42,15 @@ public sealed class WorkflowBuilder
             Height = 80f,
             Inputs = [],
             Outputs = [CreateConnector()],
-            ApplyInitialization = false,
-            Initializing = CreateContextEntryList()
+            ApplyInitialization = applyInitialization,
+            Initializing = CreateContextEntryList(entries)
         };
 
         _nodes.Add(node);
         return this;
     }
 
-    public WorkflowBuilder AddEnd(string title = "end")
+    public WorkflowBuilder AddEnd(string title = "end", params ContextEntryEntity[] entries)
     {
         var node = new EndNodeEntity
         {
@@ -63,7 +65,7 @@ public sealed class WorkflowBuilder
             Inputs = [CreateConnector()],
             Outputs = [],
             ApplyMappings = false,
-            Mappings = CreateContextEntryList()
+            Mappings = CreateContextEntryList(entries)
         };
 
         _nodes.Add(node);
@@ -91,7 +93,7 @@ public sealed class WorkflowBuilder
         return this;
     }
 
-    public WorkflowBuilder AddEdit(string title = "edit")
+    public WorkflowBuilder AddEdit(string title = "edit", params ContextEntryEntity[] entries)
     {
         var node = new EditNodeEntity
         {
@@ -105,7 +107,7 @@ public sealed class WorkflowBuilder
             Height = 80f,
             Inputs = [CreateConnector()],
             Outputs = [CreateConnector()],
-            Edits = CreateContextEntryList()
+            Edits = CreateContextEntryList(entries)
         };
 
         _nodes.Add(node);
@@ -338,6 +340,51 @@ public sealed class WorkflowBuilder
             Id = Guid.NewGuid(),
             Version = 1,
             Entries = entries ?? Array.Empty<ContextEntryEntity>()
+        };
+    }
+
+    public static ContextEntryEntity CreateBoolInput(string inputPath, bool optional = false, bool entryValue = false)
+    {
+        return CreateInputEntry(inputPath, optional, ContextEntryType.Bool, entryValue.ToString());
+    }
+
+    public static ContextEntryEntity CreateIntInput(string inputPath, bool optional = false, int entryValue = 0)
+    {
+        return CreateInputEntry(inputPath, optional, ContextEntryType.Int, entryValue.ToString());
+    }
+
+    public static ContextEntryEntity CreateDoubleInput(string inputPath, bool optional = false, double entryValue = 0)
+    {
+        return CreateInputEntry(inputPath, optional, ContextEntryType.Double, entryValue.ToString());
+    }
+
+    public static ContextEntryEntity CreateStringInput(string inputPath, bool optional = false, string entryValue = "")
+    {
+        return CreateInputEntry(inputPath, optional, ContextEntryType.String, entryValue);
+    }
+
+    public static ContextEntryEntity CreateJsonInput(string inputPath, bool optional = false, string json = "")
+    {
+        return CreateInputEntry(inputPath, optional, ContextEntryType.JSON, json);
+    }
+
+    public static ContextEntryEntity CreateExpressionInput(string inputPath, bool optional = false, string code = "")
+    {
+        return CreateInputEntry(inputPath, optional, ContextEntryType.Expression, code);
+    }
+
+    private static ContextEntryEntity CreateInputEntry(string inputPath, bool optional, ContextEntryType entryType, string entryValue)
+    {
+        return new ContextEntryEntity
+        {
+            Id = Guid.NewGuid(),
+            Version = 1,
+            Purpose = ContextEntryPurpose.Input,
+            InputPath = inputPath,
+            OutputPath = string.Empty,
+            Optional = optional,
+            EntryType = entryType,
+            EntryValue = entryValue
         };
     }
 
