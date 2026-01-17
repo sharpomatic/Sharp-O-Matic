@@ -9,6 +9,8 @@ import { FanInNodeEntity, FanInNodeSnapshot } from "./fan-in-node.entity";
 import { FanOutNodeEntity, FanOutNodeSnapshot } from "./fan-out-node.entity";
 import { ModelCallNodeEntity, ModelCallNodeSnapshot } from "./model-call-node.entity";
 import { BatchNodeEntity, BatchNodeSnapshot } from "./batch-node.entity";
+import { GosubNodeEntity, GosubNodeSnapshot } from "./gosub-node.entity";
+import { InputNodeEntity, InputNodeSnapshot } from "./input-node.entity";
 
 export function nodeFromSnapshot(snapshot: NodeSnapshot): NodeEntity<NodeSnapshot> {
   switch (snapshot.nodeType) {
@@ -30,5 +32,9 @@ export function nodeFromSnapshot(snapshot: NodeSnapshot): NodeEntity<NodeSnapsho
       return ModelCallNodeEntity.fromSnapshot(snapshot as ModelCallNodeSnapshot);
     case NodeType.Batch:
       return BatchNodeEntity.fromSnapshot(snapshot as BatchNodeSnapshot);
+    case NodeType.Gosub:
+      return GosubNodeEntity.fromSnapshot(snapshot as GosubNodeSnapshot);
+    case NodeType.Input:
+      return InputNodeEntity.fromSnapshot(snapshot as InputNodeSnapshot);
   }
 }

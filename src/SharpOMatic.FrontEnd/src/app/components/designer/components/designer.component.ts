@@ -31,6 +31,10 @@ import { FanOutNodeEntity } from '../../../entities/definitions/fan-out-node.ent
 import { TraceProgressModel } from '../../../pages/workflow/interfaces/trace-progress-model';
 import { BatchNodeEntity } from '../../../entities/definitions/batch-node.entity';
 import { BatchNodeDialogComponent } from '../../../dialogs/batch-node/batch-node-dialog.component';
+import { GosubNodeEntity } from '../../../entities/definitions/gosub-node.entity';
+import { InputNodeEntity } from '../../../entities/definitions/input-node.entity';
+import { GosubNodeDialogComponent } from '../../../dialogs/gosub-node/gosub-node-dialog.component';
+import { InputNodeDialogComponent } from '../../../dialogs/input-node/input-node-dialog.component';
 
 @Component({
   selector: 'app-designer',
@@ -309,6 +313,10 @@ export class DesignerComponent {
       this.dialogService.open(FanOutNodeDialogComponent, { node, nodeTraces });
     } else if (node instanceof BatchNodeEntity) {
       this.dialogService.open(BatchNodeDialogComponent, { node, nodeTraces });
+    } else if (node instanceof GosubNodeEntity) {
+      this.dialogService.open(GosubNodeDialogComponent, { node, nodeTraces });
+    } else if (node instanceof InputNodeEntity) {
+      this.dialogService.open(InputNodeDialogComponent, { node, nodeTraces });
     }
   }
 

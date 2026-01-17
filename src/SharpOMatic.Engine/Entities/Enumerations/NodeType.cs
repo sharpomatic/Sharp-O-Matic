@@ -10,5 +10,7 @@ public enum NodeType
     FanIn = 5,
     FanOut = 6,
     ModelCall = 7,
-    Batch = 8
+    Batch = 8,
+    Gosub = 9,
+    Input = 10
 }

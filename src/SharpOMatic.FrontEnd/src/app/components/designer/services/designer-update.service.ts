@@ -15,6 +15,8 @@ import { FanInNodeEntity } from '../../../entities/definitions/fan-in-node.entit
 import { FanOutNodeEntity } from '../../../entities/definitions/fan-out-node.entity';
 import { ModelCallNodeEntity } from '../../../entities/definitions/model-call-node.entity';
 import { BatchNodeEntity } from '../../../entities/definitions/batch-node.entity';
+import { GosubNodeEntity } from '../../../entities/definitions/gosub-node.entity';
+import { InputNodeEntity } from '../../../entities/definitions/input-node.entity';
 
 @Injectable({
   providedIn: 'root',
@@ -73,6 +75,16 @@ export class DesignerUpdateService {
   addBatchNode(workflow: WorkflowEntity) {
     const [top, left] = this.getAddLocation();
     workflow.nodes.update(nodes => [...nodes, BatchNodeEntity.create(top, left)]);
+  }
+
+  addGosubNode(workflow: WorkflowEntity) {
+    const [top, left] = this.getAddLocation();
+    workflow.nodes.update(nodes => [...nodes, GosubNodeEntity.create(top, left)]);
+  }
+
+  addInputNode(workflow: WorkflowEntity) {
+    const [top, left] = this.getAddLocation();
+    workflow.nodes.update(nodes => [...nodes, InputNodeEntity.create(top, left)]);
   }
 
   addConnection(workflow: WorkflowEntity, from: ConnectorEntity, to: ConnectorEntity) {
