@@ -1,6 +1,4 @@
-﻿using SharpOMatic.Engine.Repository;
-
-namespace SharpOMatic.DemoServer;
+﻿namespace SharpOMatic.DemoServer;
 
 public class ProgressService(IServiceProvider serviceProvider) : IProgressService
 {

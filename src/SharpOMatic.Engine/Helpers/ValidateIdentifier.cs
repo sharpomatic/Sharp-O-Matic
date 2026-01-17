@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
-
-namespace SharpOMatic.Engine.Helpers;
+﻿namespace SharpOMatic.Engine.Helpers;
 
 public static class IdentifierValidator
 {

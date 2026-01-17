@@ -1,5 +1,3 @@
-using SharpOMatic.Engine.Enumerations;
-
 namespace SharpOMatic.Editor.Controllers;
 
 [ApiController]

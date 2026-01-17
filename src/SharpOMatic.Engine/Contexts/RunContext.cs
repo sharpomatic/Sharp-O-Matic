@@ -1,6 +1,4 @@
-﻿using SharpOMatic.Engine.Services;
-
-namespace SharpOMatic.Engine.Contexts;
+﻿namespace SharpOMatic.Engine.Contexts;
 
 public class RunContext
 {

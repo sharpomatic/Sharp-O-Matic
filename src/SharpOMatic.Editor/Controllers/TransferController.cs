@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http.Features;
-
 namespace SharpOMatic.Editor.Controllers;
 
 [ApiController]

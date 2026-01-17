@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace SharpOMatic.Engine.Contexts;
+﻿namespace SharpOMatic.Engine.Contexts;
 
 public class ContextObject : IDictionary<string, object?>
 {

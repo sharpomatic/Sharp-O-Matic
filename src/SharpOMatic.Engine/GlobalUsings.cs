@@ -4,6 +4,7 @@ global using Azure.Identity;
 global using Azure.Storage.Blobs;
 global using Microsoft.Agents.AI;
 global using Microsoft.CodeAnalysis;
+global using Microsoft.CodeAnalysis.CSharp;
 global using Microsoft.CodeAnalysis.CSharp.Scripting;
 global using Microsoft.CodeAnalysis.Scripting;
 global using Microsoft.EntityFrameworkCore;

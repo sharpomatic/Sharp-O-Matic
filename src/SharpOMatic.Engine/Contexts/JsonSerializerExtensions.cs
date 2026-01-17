@@ -1,5 +1,3 @@
-using Microsoft.Extensions.AI;
-
 namespace SharpOMatic.Engine.Contexts;
 
 public static class JsonSerializerExtensions

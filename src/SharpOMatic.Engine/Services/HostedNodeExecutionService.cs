@@ -1,5 +1,3 @@
-using SharpOMatic.Engine.Contexts;
-
 namespace SharpOMatic.Engine.Services;
 
 public class HostedNodeExecutionService(IServiceScopeFactory scopeFactory, INodeExecutionService executionService) : BackgroundService

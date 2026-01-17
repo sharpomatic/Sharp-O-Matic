@@ -1,6 +1,4 @@
-﻿using SharpOMatic.Engine.Entities.Definitions;
-
-namespace SharpOMatic.Engine.Helpers;
+﻿namespace SharpOMatic.Engine.Helpers;
 
 public static class ContextHelpers
 {
