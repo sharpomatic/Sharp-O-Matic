@@ -41,6 +41,6 @@ public class CodeNode(ThreadContext threadContext, CodeNodeEntity node)
             }
         }
 
-        return ("Code executed", [new NextNodeData(ThreadContext, RunContext.ResolveSingleOutput(Node))]);
+        return ("Code executed", ResolveOptionalSingleOutput(ThreadContext));
     }
 }

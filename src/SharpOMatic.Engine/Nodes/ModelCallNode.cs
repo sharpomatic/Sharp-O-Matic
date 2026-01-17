@@ -340,7 +340,7 @@ public class ModelCallNode(ThreadContext threadContext, ModelCallNodeEntity node
             ThreadContext.NodeContext.TrySet(Node.ChatOutputPath, chatList);
         }
 
-        return ($"Model {_model.Name ?? "(empty)"} called", new List<NextNodeData> { new(ThreadContext, RunContext.ResolveSingleOutput(Node)) });
+        return ($"Model {_model.Name ?? "(empty)"} called", ResolveOptionalSingleOutput(ThreadContext));
     }
 
     private static object? FastDeserializeString(string json)

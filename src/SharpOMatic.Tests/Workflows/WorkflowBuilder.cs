@@ -1,6 +1,3 @@
-using SharpOMatic.Engine.Entities.Definitions;
-using SharpOMatic.Engine.Entities.Enumerations;
-
 namespace SharpOMatic.Tests.Workflows;
 
 public sealed class WorkflowBuilder
@@ -124,15 +121,16 @@ public sealed class WorkflowBuilder
             throw new ArgumentException("AddSwitch must have at least one switch choice");
 
         var switches = new SwitchEntryEntity[choices.Length];
-        foreach(var choice in choices)
+        for (var i = 0; i < choices.Length; i++)
         {
-            switches.Append(new SwitchEntryEntity
+            var choice = choices[i];
+            switches[i] = new SwitchEntryEntity
             {
                 Id = Guid.NewGuid(),
                 Version = 1,
                 Name = choice.Name ?? string.Empty,
                 Code = choice.Code ?? string.Empty
-            }
+            };
         }
 
         var node = new SwitchNodeEntity
@@ -292,6 +290,34 @@ public sealed class WorkflowBuilder
         return this;
     }
 
+    public WorkflowBuilder Connect(string sourceNode, string destinationNode)
+    {
+        if (string.IsNullOrWhiteSpace(sourceNode))
+            throw new ArgumentException("Source node must be provided.", nameof(sourceNode));
+        if (string.IsNullOrWhiteSpace(destinationNode))
+            throw new ArgumentException("Destination node must be provided.", nameof(destinationNode));
+
+        var (sourceTitle, outputName) = ParseSourceNode(sourceNode);
+        var source = GetNodeByTitle(sourceTitle);
+        var destination = GetNodeByTitle(destinationNode);
+
+        if (destination is StartNodeEntity || destination.NodeType == NodeType.Start)
+            throw new InvalidOperationException("Cannot connect to a start node.");
+
+        var fromConnector = ResolveOutputConnector(source, outputName, sourceNode);
+        var toConnector = ResolveSingleInputConnector(destination);
+
+        _connections.Add(new ConnectionEntity
+        {
+            Id = Guid.NewGuid(),
+            Version = 1,
+            From = fromConnector.Id,
+            To = toConnector.Id
+        });
+
+        return this;
+    }
+
     public WorkflowEntity Build()
     {
         return new WorkflowEntity
@@ -313,6 +339,61 @@ public sealed class WorkflowBuilder
             Version = 1,
             Entries = entries ?? Array.Empty<ContextEntryEntity>()
         };
+    }
+
+    private NodeEntity GetNodeByTitle(string title)
+    {
+        var node = _nodes.FirstOrDefault(n => string.Equals(n.Title, title, StringComparison.Ordinal));
+        if (node is null)
+            throw new InvalidOperationException($"Node with title '{title}' was not found.");
+
+        return node;
+    }
+
+    private static (string SourceTitle, string? OutputName) ParseSourceNode(string sourceNode)
+    {
+        var dotIndex = sourceNode.LastIndexOf('.');
+        if (dotIndex < 0)
+            return (sourceNode, null);
+
+        if (dotIndex == 0 || dotIndex == sourceNode.Length - 1)
+            throw new ArgumentException("Source node must be in 'node.output' format when using dot notation.", nameof(sourceNode));
+
+        var sourceTitle = sourceNode[..dotIndex];
+        var outputName = sourceNode[(dotIndex + 1)..];
+
+        if (string.IsNullOrWhiteSpace(sourceTitle) || string.IsNullOrWhiteSpace(outputName))
+            throw new ArgumentException("Source node must be in 'node.output' format when using dot notation.", nameof(sourceNode));
+
+        return (sourceTitle, outputName);
+    }
+
+    private static ConnectorEntity ResolveOutputConnector(NodeEntity node, string? outputName, string sourceNode)
+    {
+        if (outputName is null)
+        {
+            if (node.Outputs.Length != 1)
+                throw new InvalidOperationException($"Node '{node.Title}' must have exactly one output when using '{sourceNode}'.");
+
+            return node.Outputs[0];
+        }
+
+        if (node.Outputs.Length == 0)
+            throw new InvalidOperationException($"Node '{node.Title}' has no outputs to match '{outputName}'.");
+
+        var connector = node.Outputs.FirstOrDefault(output => string.Equals(output.Name, outputName, StringComparison.Ordinal));
+        if (connector is null)
+            throw new InvalidOperationException($"Node '{node.Title}' does not have an output named '{outputName}'.");
+
+        return connector;
+    }
+
+    private static ConnectorEntity ResolveSingleInputConnector(NodeEntity node)
+    {
+        if (node.Inputs.Length != 1)
+            throw new InvalidOperationException($"Node '{node.Title}' must have exactly one input but has {node.Inputs.Length}.");
+
+        return node.Inputs[0];
     }
 
     private static ConnectorEntity CreateConnector(string name = "")

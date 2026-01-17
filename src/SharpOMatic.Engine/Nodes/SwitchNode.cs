@@ -6,7 +6,9 @@ public class SwitchNode(ThreadContext threadContext, SwitchNodeEntity node)
 {
     protected override async Task<(string, List<NextNodeData>)> RunInternal()
     {
-        int? matchingIndex = null;
+        var lastIndex = Node.Switches.Length - 1;
+        if (!IsOutputConnected(Node.Outputs[lastIndex]))
+            throw new SharpOMaticException("Switch node must have an output connection on the last output connector.");
 
         // Check each switch that has linked code
         for (int i = 0; i < Node.Switches.Length; i++)
@@ -28,8 +30,10 @@ public class SwitchNode(ThreadContext threadContext, SwitchNodeEntity node)
 
                     if ((bool)result)
                     {
-                        matchingIndex = i;
-                        break;
+                        if (!IsOutputConnected(Node.Outputs[i]))
+                            continue;
+
+                        return ($"Switched to {switcher.Name}", [new NextNodeData(ThreadContext, RunContext.ResolveOutput(Node.Outputs[i]))]);
                     }
                 }
                 catch (CompilationErrorException e1)
@@ -52,7 +56,6 @@ public class SwitchNode(ThreadContext threadContext, SwitchNodeEntity node)
             }
         }
 
-        matchingIndex ??= Node.Switches.Length - 1;
-        return ($"Switched to {Node.Switches[matchingIndex.Value].Name}", [new NextNodeData(ThreadContext, RunContext.ResolveOutput(Node.Outputs[matchingIndex.Value]))]);
+        return ($"Switched to {Node.Switches[lastIndex].Name}", [new NextNodeData(ThreadContext, RunContext.ResolveOutput(Node.Outputs[lastIndex]))]);
     }
 }

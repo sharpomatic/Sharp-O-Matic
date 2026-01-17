@@ -11,6 +11,6 @@ public class GosubNode(ThreadContext threadContext, GosubNodeEntity node) : RunN
         if (Node.WorkflowId is null || Node.WorkflowId == Guid.Empty)
             throw new SharpOMaticException("Gosub node workflow id must be set.");
 
-        return ("continue", [new NextNodeData(ThreadContext, RunContext.ResolveSingleOutput(Node))]);
+        return ("continue", ResolveOptionalSingleOutput(ThreadContext));
     }
 }

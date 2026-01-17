@@ -47,6 +47,6 @@ public class StartNode(ThreadContext threadContext, StartNodeEntity node)
         else
             Trace.Message = "Entered workflow";
 
-        return (Trace.Message, [new NextNodeData(ThreadContext, RunContext.ResolveSingleOutput(Node))]);
+        return (Trace.Message, ResolveOptionalSingleOutput(ThreadContext));
     }
 }

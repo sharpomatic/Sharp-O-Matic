@@ -44,6 +44,6 @@ public class EditNode(ThreadContext threadContext, EditNodeEntity node)
 
         message.Append($", {numDeletes} deleted");
 
-        return (message.ToString(), [new NextNodeData(ThreadContext, RunContext.ResolveSingleOutput(Node))]);
+        return (message.ToString(), ResolveOptionalSingleOutput(ThreadContext));
     }
 }

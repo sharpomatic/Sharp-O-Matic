@@ -49,7 +49,7 @@ public class FanInNode(ThreadContext threadContext, FanInNodeEntity node) : RunN
                 // Must set the merged context into this thread, so tracing progresses merges
                 ThreadContext.NodeContext = ThreadContext.Parent.FanInMergedContext;
                 ThreadContext.Parent.NodeContext = ThreadContext.NodeContext;
-                return ("Threads synchronized", [new NextNodeData(ThreadContext.Parent, RunContext.ResolveSingleOutput(Node))]);
+                return ("Threads synchronized", ResolveOptionalSingleOutput(ThreadContext.Parent));
             }
         }
     }

@@ -78,6 +78,25 @@ public abstract class RunNode<T> : IRunNode where T : NodeEntity
             await progressService.TraceProgress(Trace);
     }
 
+    protected List<NextNodeData> ResolveOptionalSingleOutput(ThreadContext nextThreadContext)
+    {
+        if (Node.Outputs.Length == 0)
+            return [];
+
+        if (Node.Outputs.Length != 1)
+            throw new SharpOMaticException($"Node must have a single output but found {Node.Outputs.Length}.");
+
+        if (!IsOutputConnected(Node.Outputs[0]))
+            return [];
+
+        return [new NextNodeData(nextThreadContext, RunContext.ResolveSingleOutput(Node))];
+    }
+
+    protected bool IsOutputConnected(ConnectorEntity connector)
+    {
+        return RunContext.Workflow.Connections.Any(connection => connection.From == connector.Id);
+    }
+
     protected Task<object?> EvaluateContextEntryValue(ContextEntryEntity entry)
     {
         return ContextHelpers.ResolveContextEntryValue(RunContext.ServiceScope.ServiceProvider, ThreadContext.NodeContext, entry, RunContext.ScriptOptionsService);

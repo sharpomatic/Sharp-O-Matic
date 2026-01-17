@@ -1,0 +1,168 @@
+namespace SharpOMatic.Tests.Services;
+
+public sealed class TestRepositoryService : IRepositoryService
+{
+    private readonly Dictionary<string, Setting> _settings = [];
+    private readonly Dictionary<Guid, WorkflowEntity> _workflows = [];
+    private readonly Dictionary<Guid, Run> _runs = [];
+    private readonly Dictionary<Guid, Trace> _traces = [];
+
+    public Task<List<WorkflowSummary>> GetWorkflowSummaries()
+        => throw new NotImplementedException();
+
+    public Task<int> GetWorkflowSummaryCount(string? search)
+        => throw new NotImplementedException();
+
+    public Task<List<WorkflowSummary>> GetWorkflowSummaries(string? search, WorkflowSortField sortBy, SortDirection sortDirection, int skip, int take)
+        => throw new NotImplementedException();
+
+    public Task<WorkflowEntity> GetWorkflow(Guid workflowId)
+    {
+        if (!_workflows.TryGetValue(workflowId, out var workflowEntity))
+            throw new ApplicationException($"GetWorkflow failed for '{workflowId}'");
+
+        return Task.FromResult(workflowEntity);
+    }
+
+    public Task UpsertWorkflow(WorkflowEntity workflow)
+    {
+        _workflows.Remove(workflow.Id);
+        _workflows.Add(workflow.Id, workflow);
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteWorkflow(Guid workflowId)
+        => throw new NotImplementedException();
+
+    public Task<Guid> CopyWorkflow(Guid workflowId)
+        => throw new NotImplementedException();
+
+    public Task<Run?> GetRun(Guid runId)
+    {
+        _runs.TryGetValue(runId, out var run);
+        return Task.FromResult(run);
+    }
+
+    public Task<Run?> GetLatestRunForWorkflow(Guid workflowId)
+        => throw new NotImplementedException();
+
+    public Task<int> GetWorkflowRunCount(Guid workflowId)
+        => throw new NotImplementedException();
+
+    public Task<List<Run>> GetWorkflowRuns(Guid workflowId, RunSortField sortBy, SortDirection sortDirection, int skip, int take)
+        => throw new NotImplementedException();
+
+    public Task UpsertRun(Run run)
+    {
+        _runs.Remove(run.RunId);
+        _runs.Add(run.RunId, run);
+        return Task.CompletedTask;
+    }
+
+    public Task PruneWorkflowRuns(Guid workflowId, int keepLatest)
+        => throw new NotImplementedException();
+
+    public Task<List<Trace>> GetRunTraces(Guid runId)
+        => throw new NotImplementedException();
+
+    public Task UpsertTrace(Trace trace)
+    {
+        _traces.Remove(trace.TraceId);
+        _traces.Add(trace.TraceId, trace);
+        return Task.CompletedTask;
+    }
+
+    public Task<List<ConnectorConfig>> GetConnectorConfigs()
+        => throw new NotImplementedException();
+
+    public Task<ConnectorConfig?> GetConnectorConfig(string configId)
+        => throw new NotImplementedException();
+
+    public Task UpsertConnectorConfig(ConnectorConfig config)
+        => throw new NotImplementedException();
+
+    public Task<List<ConnectorSummary>> GetConnectorSummaries()
+        => throw new NotImplementedException();
+
+    public Task<int> GetConnectorSummaryCount(string? search)
+        => throw new NotImplementedException();
+
+    public Task<List<ConnectorSummary>> GetConnectorSummaries(string? search, ConnectorSortField sortBy, SortDirection sortDirection, int skip, int take)
+        => throw new NotImplementedException();
+
+    public Task<Connector> GetConnector(Guid connectionId, bool hideSecrets = true)
+        => throw new NotImplementedException();
+
+    public Task UpsertConnector(Connector connection, bool hideSecrets = true)
+        => throw new NotImplementedException();
+
+    public Task DeleteConnector(Guid connectionId)
+        => throw new NotImplementedException();
+
+    public Task<List<ModelConfig>> GetModelConfigs()
+        => throw new NotImplementedException();
+
+    public Task<ModelConfig?> GetModelConfig(string configId)
+        => throw new NotImplementedException();
+
+    public Task UpsertModelConfig(ModelConfig config)
+        => throw new NotImplementedException();
+
+    public Task<List<ModelSummary>> GetModelSummaries()
+        => throw new NotImplementedException();
+
+    public Task<int> GetModelSummaryCount(string? search)
+        => throw new NotImplementedException();
+
+    public Task<List<ModelSummary>> GetModelSummaries(string? search, ModelSortField sortBy, SortDirection sortDirection, int skip, int take)
+        => throw new NotImplementedException();
+
+    public Task<Model> GetModel(Guid modelId, bool hideSecrets = true)
+        => throw new NotImplementedException();
+
+    public Task UpsertModel(Model model)
+        => throw new NotImplementedException();
+
+    public Task DeleteModel(Guid modelId)
+        => throw new NotImplementedException();
+
+    public Task<List<Setting>> GetSettings()
+        => throw new NotImplementedException();
+
+    public Task<Setting?> GetSetting(string name)
+    {
+        _settings.TryGetValue(name, out var setting);
+        return Task.FromResult(setting);
+    }
+
+    public Task UpsertSetting(Setting model)
+    {
+        _settings.Remove(model.Name);
+        _settings.Add(model.Name, model);
+        return Task.CompletedTask;
+    }
+
+    public Task<Asset> GetAsset(Guid assetId)
+        => throw new NotImplementedException();
+
+    public Task<int> GetAssetCount(AssetScope scope, string? search)
+        => throw new NotImplementedException();
+
+    public Task<List<Asset>> GetAssetsByScope(AssetScope scope, string? search, AssetSortField sortBy, SortDirection sortDirection, int skip, int take)
+        => throw new NotImplementedException();
+
+    public Task<List<Asset>> GetRunAssets(Guid runId)
+        => throw new NotImplementedException();
+
+    public Task<Asset?> GetRunAssetByName(Guid runId, string name)
+        => throw new NotImplementedException();
+
+    public Task<Asset?> GetLibraryAssetByName(string name)
+        => throw new NotImplementedException();
+
+    public Task UpsertAsset(Asset asset)
+        => throw new NotImplementedException();
+
+    public Task DeleteAsset(Guid assetId)
+        => throw new NotImplementedException();
+}

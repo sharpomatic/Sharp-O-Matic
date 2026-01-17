@@ -7,6 +7,6 @@ public class InputNode(ThreadContext threadContext, InputNodeEntity node) : RunN
     {
         // Placeholder until input wait/resume is implemented.
         await Task.Delay(1);
-        return ("continue", [new NextNodeData(ThreadContext, RunContext.ResolveSingleOutput(Node))]);
+        return ("continue", ResolveOptionalSingleOutput(ThreadContext));
     }
 }
